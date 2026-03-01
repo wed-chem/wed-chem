@@ -45,7 +45,6 @@ export async function getMatches(photoAnswers, manualAnswers) {
           if (coupleCountry === pCountry) bonus += 4
         } else if (coupleLat && coupleLng && pLat && pLng) {
           // Calculate actual distance
-          
           const dist = calculateDistance(coupleLat, coupleLng, pLat, pLng)
           const maxMiles = parseInt(radius) || 150
 

@@ -16,6 +16,8 @@ const routes = [
   { path: '/dashboard/inquiries', name: 'Inquiries', component: () => import('@/views/photographer/InquiriesPage.vue'), meta: { requiresAuth: true, role: 'photographer' } },
   { path: '/dashboard/upgrade', name: 'Upgrade', component: () => import('@/views/photographer/UpgradePage.vue'), meta: { requiresAuth: true, role: 'photographer' } },
   { path: '/admin', name: 'Admin', component: () => import('@/views/admin/AdminDashboard.vue'), meta: { requiresAuth: true, role: 'admin' } },
+  { path: '/terms', name: 'Terms', component: () => import('@/views/public/TermsPage.vue') },
+  { path: '/privacy', name: 'Privacy', component: () => import('@/views/public/PrivacyPage.vue') },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('@/views/public/NotFoundPage.vue') }
 ]
 

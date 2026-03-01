@@ -9,7 +9,7 @@
         <div class="footer-col">
           <h4>For Couples</h4>
           <ul>
-            <li><router-link to="/quiz">Take the Quiz</router-link></li>
+            <li><router-link to="/quiz">Get Matched</router-link></li>
             <li><router-link to="/directory">Browse Photographers</router-link></li>
             <li><router-link to="/pricing">Pricing</router-link></li>
           </ul>
@@ -24,17 +24,17 @@
         <div class="footer-col">
           <h4>Company</h4>
           <ul>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">Blog</a></li>
+            <li><a href="mailto:hello@wedchem.com">Contact</a></li>
+            <li><router-link to="/terms">Terms of Service</router-link></li>
+            <li><router-link to="/privacy">Privacy Policy</router-link></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
         <div>&copy; {{ new Date().getFullYear() }} WedChem. All rights reserved.</div>
         <div class="footer-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <router-link to="/privacy">Privacy</router-link>
+          <router-link to="/terms">Terms</router-link>
         </div>
       </div>
     </div>
