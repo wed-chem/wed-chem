@@ -29,12 +29,15 @@
           <div v-if="phase==='photoStyle'">
             <div class="quiz-q">What photo styles describe your work?</div>
             <div class="quiz-sub">Select in order of preference</div>
-            <div class="rank-grid rank-grid-4">
-              <button class="rank-card" v-for="style in photoStyles" :key="style.id"
+            <div class="style-rank-grid">
+              <button class="style-rank-card" v-for="style in photoStyles" :key="style.id"
                 :class="{selected: answers.photoStyles.includes(style.id)}"
                 @click="toggleList(answers.photoStyles, style.id)">
-                <div class="rank-label">{{ style.label }}</div>
-                <div class="rank-desc">{{ style.description }}</div>
+                <div class="style-rank-img" v-if="style.image" :style="{backgroundImage: 'url(' + style.image + ')'}"></div>
+                <div class="style-rank-body">
+                  <div class="rank-label">{{ style.label }}</div>
+                  <div class="rank-desc">{{ style.description }}</div>
+                </div>
                 <div class="rank-number" v-if="answers.photoStyles.includes(style.id)">
                   {{ answers.photoStyles.indexOf(style.id) + 1 }}
                 </div>
@@ -199,6 +202,13 @@ async function saveQuiz() {
 .quiz-img { aspect-ratio:4/3; }
 .quiz-lbl { padding:12px; text-align:center; font-size:0.88rem; font-weight:500; }
 
+.style-rank-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:24px; }
+.style-rank-card { position:relative; border:2.5px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); text-align:left; background:var(--warm-white); }
+.style-rank-card:hover { border-color:var(--sage); transform:translateY(-2px); }
+.style-rank-card.selected { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.15); }
+.style-rank-img { height:120px; background-size:cover; background-position:center; }
+.style-rank-body { padding:12px 14px; }
+
 .rank-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-bottom:24px; }
 .rank-grid-4 { grid-template-columns:repeat(4, 1fr); }
 .rank-card { position:relative; padding:14px 10px; border:2px solid var(--light-gray); border-radius:var(--radius); cursor:pointer; transition:var(--transition); text-align:center; background:var(--warm-white); }
@@ -220,6 +230,8 @@ async function saveQuiz() {
   .quiz-pair { grid-template-columns:1fr; }
   .rank-grid { grid-template-columns:repeat(2, 1fr); }
   .rank-grid-4 { grid-template-columns:repeat(2, 1fr); }
+  .style-rank-grid { grid-template-columns:1fr; }
+  .style-rank-img { height:100px; }
   .feature-options { flex-direction:column; }
 }
 </style>

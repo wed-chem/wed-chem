@@ -54,13 +54,16 @@
         <template v-if="!quizStore.completed && !quizStore.showThinking && quizStore.isPhotoStyleRank">
           <div style="text-align:center"><span class="phase-label phase-style">Photo Style</span></div>
           <div class="qz-title">What photo styles do you prefer?</div>
-          <div class="qz-sub">Select in order of preference · <a href="https://www.vogue.com/article/wedding-photography-styles" target="_blank" style="color:var(--terracotta)">Learn about styles →</a></div>
-          <div class="rank-grid rank-grid-4">
-            <button class="rank-card" v-for="style in photoStyles" :key="style.id"
+          <div class="qz-sub">Select in order of preference · <router-link to="/blog/traditional-vs-editorial-vs-documentary-wedding-photography" style="color:var(--terracotta)">See examples & learn more →</router-link></div>
+          <div class="style-rank-grid">
+            <button class="style-rank-card" v-for="style in photoStyles" :key="style.id"
               :class="{selected: quizStore.photoStyleRanking.includes(style.id)}"
               @click="quizStore.togglePhotoStyle(style.id)">
-              <div class="rank-label">{{ style.label }}</div>
-              <div class="rank-desc">{{ style.description }}</div>
+              <div class="style-rank-img" v-if="style.image" :style="{backgroundImage: 'url(' + style.image + ')'}"></div>
+              <div class="style-rank-body">
+                <div class="rank-label">{{ style.label }}</div>
+                <div class="rank-desc">{{ style.description }}</div>
+              </div>
               <div class="rank-number" v-if="quizStore.photoStyleRanking.includes(style.id)">
                 {{ quizStore.photoStyleRanking.indexOf(style.id) + 1 }}
               </div>
@@ -339,6 +342,14 @@ function retakeQuiz() {
 .rank-desc { font-size:0.75rem; color:var(--warm-gray); line-height:1.4; }
 .rank-number { position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--terracotta); color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; }
 
+/* ═══════════ PHOTO STYLE CARDS WITH IMAGES ═══════════ */
+.style-rank-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:40px; }
+.style-rank-card { position:relative; border:2.5px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); text-align:left; background:var(--warm-white); }
+.style-rank-card:hover { border-color:var(--sage); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+.style-rank-card.selected { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.15); }
+.style-rank-img { height:140px; background-size:cover; background-position:center; }
+.style-rank-body { padding:14px 16px; }
+
 /* ═══════════ A/B PAIRS ═══════════ */
 .photo-pair { display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px; }
 .photo-opt { border:3px solid var(--light-gray);border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;transition:var(--transition);position:relative; }
@@ -461,6 +472,8 @@ function retakeQuiz() {
   .photo-pair { grid-template-columns:1fr; }
   .rank-grid { grid-template-columns:repeat(2, 1fr); }
   .rank-grid-4 { grid-template-columns:repeat(2, 1fr); }
+  .style-rank-grid { grid-template-columns:1fr; }
+  .style-rank-img { height:120px; }
   .results-grid { grid-template-columns:1fr; }
   .toggle-options { flex-direction:column; }
   .results-title { font-size:2rem; }

@@ -11,8 +11,8 @@
         </div>
 
         <!-- HERO IMAGE PLACEHOLDER -->
-        <div class="post-hero" :style="{background: gradientForCategory(post.category)}">
-          <div class="hero-placeholder">📷 {{ post.heroPlaceholder }}</div>
+        <div class="post-hero" :style="{background: post.heroImage ? `url(${post.heroImage}) center/cover` : gradientForCategory(post.category)}">
+          <div class="hero-placeholder" v-if="!post.heroImage">📷 {{ post.heroPlaceholder }}</div>
         </div>
 
         <!-- CONTENT -->
@@ -97,6 +97,20 @@ function gradientForCategory(cat) {
 }
 .post-content :deep(.placeholder-label) { font-size:0.88rem; color:var(--warm-gray); }
 
+.post-content :deep(.blog-gallery) {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:32px 0 8px; border-radius:var(--radius-lg); overflow:hidden;
+}
+.post-content :deep(.blog-gallery-3) { grid-template-columns:1fr 1fr 1fr; }
+.post-content :deep(.blog-gallery-4) { grid-template-columns:1fr 1fr; }
+.post-content :deep(.blog-gallery img) {
+  width:100%; height:280px; object-fit:cover; border-radius:var(--radius);
+  transition:transform 0.3s ease;
+}
+.post-content :deep(.blog-gallery img:hover) { transform:scale(1.02); }
+.post-content :deep(.blog-photo-credit) {
+  font-size:0.75rem; color:var(--warm-gray); text-align:right; margin-bottom:32px; font-style:italic;
+}
+
 .post-content :deep(.blog-cta) {
   margin:48px 0; padding:40px; background:var(--warm-white);
   border:1px solid var(--light-gray); border-radius:var(--radius-lg); text-align:center;
@@ -127,6 +141,8 @@ function gradientForCategory(cat) {
 .post-404 p { color:var(--warm-gray); margin-bottom:24px; }
 
 @media(max-width:768px) {
+  .post-content :deep(.blog-gallery) { grid-template-columns:1fr !important; }
+  .post-content :deep(.blog-gallery img) { height:220px; }
   .post-hero { height:240px; }
   .related-grid { grid-template-columns:1fr; }
 }

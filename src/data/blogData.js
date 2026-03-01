@@ -122,6 +122,7 @@ export const blogPosts = [
     date: '2026-02-22',
     readTime: '9 min',
     heroPlaceholder: 'styles-compared-hero.jpg',
+    heroImage: '/blog/styles/editorial-2.jpg',
     content: `
 <p>Beyond editing and color, the biggest choice you'll make is your photographer's shooting style — how they approach your wedding day. Here are the four main styles.</p>
 
@@ -130,36 +131,48 @@ export const blogPosts = [
 <p><strong>Best for:</strong> Couples who want a complete, organized record of their day with classic family portraits and traditional moments documented.</p>
 <p><strong>Expect:</strong> Formal family groupings, posed couple portraits, milestone-driven shot list.</p>
 
-<div class="blog-photo-placeholder" data-photo="traditional-style-example">
-  <div class="placeholder-label">📷 Photo: Traditional style — classic posed group portrait</div>
+<div class="blog-gallery">
+  <img src="/blog/styles/traditional-1.jpg" alt="Traditional wedding photography - ceremony" loading="lazy">
+  <img src="/blog/styles/traditional-2.jpg" alt="Traditional wedding photography - posed couple portrait" loading="lazy">
 </div>
+<div class="blog-photo-credit">Photos by Emma Lauren Photography</div>
 
 <h2>Editorial</h2>
 <p>Editorial (or "fashion-forward") photography treats your wedding like a magazine shoot. The photographer acts as creative director — finding dramatic lighting, striking compositions, and fashion-forward angles. Every frame is intentional. This style makes you look like a celebrity, and your wedding looks like it belongs in Vogue.</p>
 <p><strong>Best for:</strong> Couples who want jaw-dropping, artistic images. Style-conscious couples who care about aesthetics, lighting, and composition.</p>
 <p><strong>Expect:</strong> Directed posing, dramatic lighting, magazine-quality portraits, strong creative vision.</p>
 
-<div class="blog-photo-placeholder" data-photo="editorial-style-example">
-  <div class="placeholder-label">📷 Photo: Editorial style — dramatic lighting, fashion-forward composition</div>
+<div class="blog-gallery blog-gallery-3">
+  <img src="/blog/styles/editorial-1.jpg" alt="Editorial wedding photography - directed couple pose" loading="lazy">
+  <img src="/blog/styles/editorial-2.jpg" alt="Editorial wedding photography - architectural backdrop" loading="lazy">
+  <img src="/blog/styles/editorial-3.jpg" alt="Editorial wedding photography - groom portrait" loading="lazy">
 </div>
+<div class="blog-photo-credit">Photos by Emma Lauren Photography</div>
 
 <h2>Candid / Documentary</h2>
 <p>Documentary (or "photojournalistic") photographers are flies on the wall. They don't direct, they don't pose, they simply observe and capture. The result is a gallery full of real emotions — the tears during vows, the belly laughs at the reception, the quiet moments nobody else noticed.</p>
 <p><strong>Best for:</strong> Couples who want authenticity above all else. Natural, unposed, emotional storytelling.</p>
 <p><strong>Expect:</strong> Minimal direction, lots of candid moments, real emotions, storytelling narrative.</p>
 
-<div class="blog-photo-placeholder" data-photo="documentary-style-example">
-  <div class="placeholder-label">📷 Photo: Documentary style — candid, unposed, real emotion</div>
+<div class="blog-gallery blog-gallery-4">
+  <img src="/blog/styles/candid-1.jpg" alt="Candid wedding photography - first dance" loading="lazy">
+  <img src="/blog/styles/candid-2.jpg" alt="Candid wedding photography - reception toast" loading="lazy">
+  <img src="/blog/styles/candid-3.jpg" alt="Candid wedding photography - reception party" loading="lazy">
+  <img src="/blog/styles/candid-4.jpg" alt="Candid wedding photography - couple walking" loading="lazy">
 </div>
+<div class="blog-photo-credit">Photos by Emma Lauren Photography</div>
 
 <h2>Fine Art</h2>
 <p>Fine art photography is painterly, artistic, and carefully composed. Every frame looks like it could hang in a gallery. These photographers pay extraordinary attention to light, composition, and color. The images are often softer, more atmospheric, and more intentionally artistic than any other style.</p>
 <p><strong>Best for:</strong> Couples who value artistry and want their photos to feel like paintings. Often pairs well with elegant, classic weddings.</p>
 <p><strong>Expect:</strong> Artistic composition, soft natural light, film-like quality, gallery-worthy images.</p>
 
-<div class="blog-photo-placeholder" data-photo="fine-art-style-example">
-  <div class="placeholder-label">📷 Photo: Fine art style — painterly, soft light, artistic composition</div>
+<div class="blog-gallery blog-gallery-3">
+  <img src="/blog/styles/fineart-1.jpg" alt="Fine art wedding photography - veil portrait" loading="lazy">
+  <img src="/blog/styles/fineart-2.jpg" alt="Fine art wedding photography - bridal portrait" loading="lazy">
+  <img src="/blog/styles/fineart-3.jpg" alt="Fine art wedding photography - ring detail" loading="lazy">
 </div>
+<div class="blog-photo-credit">Photos by Emma Lauren Photography</div>
 
 <h2>Most Photographers Blend Styles</h2>
 <p>Here's the thing: most great photographers aren't purely one style. A documentary photographer will still create some posed portraits when asked. An editorial photographer will still catch candid reception moments. The question is where their heart lies — and that's what determines the overall feel of your gallery.</p>

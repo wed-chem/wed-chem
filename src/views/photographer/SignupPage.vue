@@ -55,12 +55,15 @@
           <div v-if="quizStep==='photoStyle'">
             <div class="quiz-q">What photo styles describe your work?</div>
             <div class="quiz-sub">Select in order of preference (pick 1–3)</div>
-            <div class="rank-grid rank-grid-4">
-              <button class="rank-card" v-for="style in photoStyles" :key="style.id"
+            <div class="style-rank-grid">
+              <button class="style-rank-card" v-for="style in photoStyles" :key="style.id"
                 :class="{selected: quiz.photoStyles.includes(style.id)}"
                 @click="toggleList(quiz.photoStyles, style.id)">
-                <div class="rank-label">{{ style.label }}</div>
-                <div class="rank-desc">{{ style.description }}</div>
+                <div class="style-rank-img" v-if="style.image" :style="{backgroundImage: 'url(' + style.image + ')'}"></div>
+                <div class="style-rank-body">
+                  <div class="rank-label">{{ style.label }}</div>
+                  <div class="rank-desc">{{ style.description }}</div>
+                </div>
                 <div class="rank-number" v-if="quiz.photoStyles.includes(style.id)">
                   {{ quiz.photoStyles.indexOf(style.id) + 1 }}
                 </div>
@@ -413,6 +416,14 @@ async function nextStep() {
 .rank-desc { font-size:0.7rem; color:var(--warm-gray); line-height:1.3; }
 .rank-number { position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; background:var(--terracotta); color:white; display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700; }
 
+/* Photo style cards with images */
+.style-rank-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:24px; }
+.style-rank-card { position:relative; border:2.5px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); text-align:left; background:var(--warm-white); }
+.style-rank-card:hover { border-color:var(--sage); transform:translateY(-2px); }
+.style-rank-card.selected { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.15); }
+.style-rank-img { height:120px; background-size:cover; background-position:center; }
+.style-rank-body { padding:12px 14px; }
+
 /* Quiz pair */
 .quiz-progress { margin-bottom:24px; }
 .qp-bar { height:4px; background:var(--light-gray); border-radius:100px; overflow:hidden; margin-bottom:8px; }
@@ -471,6 +482,8 @@ async function nextStep() {
   .quiz-pair { grid-template-columns:1fr; }
   .rank-grid { grid-template-columns:repeat(2, 1fr); }
   .rank-grid-4 { grid-template-columns:repeat(2, 1fr); }
+  .style-rank-grid { grid-template-columns:1fr; }
+  .style-rank-img { height:100px; }
   .step-bar { gap:2px; }
   .step-label { display:none; }
   .feature-options { flex-direction:column; }

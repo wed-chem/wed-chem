@@ -11,10 +11,10 @@ export const editingStyles = [
 
 // Q2: Photo Style (multi-select, rank 1-4)
 export const photoStyles = [
-  { id: 'traditional', label: 'Traditional', description: 'Classic, organized, timeless poses' },
-  { id: 'editorial', label: 'Editorial', description: 'Fashion-forward, magazine-cover quality' },
-  { id: 'documentary', label: 'Candid / Documentary', description: 'Fly-on-the-wall, unposed, authentic' },
-  { id: 'fineart', label: 'Fine Art', description: 'Painterly, artistic, carefully composed' }
+  { id: 'traditional', label: 'Traditional', description: 'Classic, organized, timeless poses', image: '/quiz/style-traditional.jpg' },
+  { id: 'editorial', label: 'Editorial', description: 'Fashion-forward, magazine-cover quality', image: '/quiz/style-editorial.jpg' },
+  { id: 'documentary', label: 'Candid / Documentary', description: 'Fly-on-the-wall, unposed, authentic', image: '/quiz/style-candid.jpg' },
+  { id: 'fineart', label: 'Fine Art', description: 'Painterly, artistic, carefully composed', image: '/quiz/style-fineart.jpg' }
 ]
 
 // Q3: Saturation preference (pick one)
