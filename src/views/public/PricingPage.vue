@@ -92,7 +92,6 @@
             <thead>
               <tr>
                 <th>Feature</th>
-                <th>Couples</th>
                 <th>Photographers (Free)</th>
                 <th>Featured</th>
               </tr>
@@ -100,7 +99,6 @@
             <tbody>
               <tr v-for="row in comparisonRows" :key="row.feature">
                 <td>{{ row.feature }}</td>
-                <td><span :class="row.couple === true ? 'check' : row.couple === false ? 'dash' : 'text'">{{ row.couple === true ? '✓' : row.couple === false ? '—' : row.couple }}</span></td>
                 <td><span :class="row.free === true ? 'check' : row.free === false ? 'dash' : 'text'">{{ row.free === true ? '✓' : row.free === false ? '—' : row.free }}</span></td>
                 <td><span :class="row.featured === true ? 'check-gold' : row.featured === false ? 'dash' : 'text'">{{ row.featured === true ? '✓' : row.featured === false ? '—' : row.featured }}</span></td>
               </tr>
@@ -141,21 +139,21 @@
 import { reactive } from 'vue'
 
 const comparisonRows = [
-  { feature: 'Style matching quiz', couple: true, free: true, featured: true },
-  { feature: 'Profile with portfolio', couple: false, free: true, featured: true },
-  { feature: 'Appear in match results', couple: false, free: true, featured: true },
-  { feature: 'Receive inquiries', couple: false, free: true, featured: true },
-  { feature: 'Send inquiries', couple: true, free: false, featured: false },
-  { feature: 'Browse directory', couple: true, free: true, featured: true },
-  { feature: 'Social media links', couple: false, free: true, featured: true },
-  { feature: 'Commission on bookings', couple: '0%', free: '0%', featured: '0%' },
-  { feature: 'Boosted in match results', couple: false, free: false, featured: true },
-  { feature: '"Featured" profile badge', couple: false, free: false, featured: true },
-  { feature: 'Priority directory placement', couple: false, free: false, featured: true },
-  { feature: 'Homepage spotlight', couple: false, free: false, featured: true },
-  { feature: 'Advanced analytics', couple: false, free: false, featured: true },
-  { feature: 'Match rate insights', couple: false, free: false, featured: true },
-  { feature: 'Priority support', couple: false, free: false, featured: true },
+  { feature: 'Style matching quiz', free: true, featured: true },
+  { feature: 'Profile with portfolio', free: true, featured: true },
+  { feature: 'Appear in match results', free: true, featured: true },
+  { feature: 'Receive inquiries', free: true, featured: true },
+  { feature: 'Send inquiries', free: false, featured: false },
+  { feature: 'Browse directory', free: true, featured: true },
+  { feature: 'Social media links', free: true, featured: true },
+  { feature: 'Commission on bookings', free: '0%', featured: '0%' },
+  { feature: 'Boosted in match results', free: false, featured: true },
+  { feature: '"Featured" profile badge', free: false, featured: true },
+  { feature: 'Priority directory placement', free: false, featured: true },
+  { feature: 'Homepage spotlight', free: false, featured: true },
+  { feature: 'Advanced analytics', free: false, featured: true },
+  { feature: 'Match rate insights', free: false, featured: true },
+  { feature: 'Priority support', free: false, featured: true },
 ]
 
 const faqs = reactive([
