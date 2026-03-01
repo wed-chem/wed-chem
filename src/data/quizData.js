@@ -1,43 +1,96 @@
-export const photoQuestions = [
-  { id:1, category:'Editing Tone', question:'Which editing style do you prefer?', a:{label:'Warm & Moody',description:'Rich tones, amber warmth, deep shadows',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #4a3f35 40%, #8B6914 100%)'}, b:{label:'Clean & Bright',description:'Light, airy, soft pastels',image:null,gradient:'linear-gradient(135deg, #e8e3dc 0%, #faf7f2 50%, #c5d4be 100%)'}},
-  { id:2, category:'Color Palette', question:'Which color feel draws you in?', a:{label:'Desaturated & Muted',description:'Faded tones, film-like subtlety',image:null,gradient:'linear-gradient(135deg, #b8a99a 0%, #c5bdb4 50%, #d4ccc3 100%)'}, b:{label:'Vibrant & True',description:'Rich, saturated, true-to-life',image:null,gradient:'linear-gradient(135deg, #6B7E62 0%, #8B9E82 40%, #C4826A 100%)'}},
-  { id:3, category:'Lighting', question:'Which lighting sets the mood?', a:{label:'Golden Hour Magic',description:'Sunset backlighting, lens flare',image:null,gradient:'linear-gradient(135deg, #c9a96e 0%, #e8d9b4 40%, #d4a574 100%)'}, b:{label:'Soft Window Light',description:'Even, gentle, flattering indoor light',image:null,gradient:'linear-gradient(135deg, #e8e3dc 0%, #faf7f2 60%, #e8d5cc 100%)'}},
-  { id:4, category:'Contrast', question:'How do you feel about contrast?', a:{label:'Bold & Dramatic',description:'Deep blacks, bright highlights',image:null,gradient:'linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 40%, #faf7f2 100%)'}, b:{label:'Soft & Hazy',description:'Lifted blacks, dreamy, low-contrast',image:null,gradient:'linear-gradient(135deg, #d4ccc3 0%, #e8e3dc 40%, #ede8e0 100%)'}},
-  { id:5, category:'Flash Usage', question:'How about flash photography?', a:{label:'Party Flash',description:'Bold on-camera flash, magazine energy',image:null,gradient:'linear-gradient(135deg, #1a1a2e 0%, #fff 50%, #1a1a2e 100%)'}, b:{label:'Natural Light Only',description:'Available light, no flash',image:null,gradient:'linear-gradient(135deg, #c5d4be 0%, #e8d5cc 50%, #faf7f2 100%)'}},
-  { id:6, category:'Couple Posing', question:'Which couple portrait style?', a:{label:'Directed & Editorial',description:'Posed, fashion-inspired',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #4a3f55 50%, #8B6914 100%)'}, b:{label:'Candid & Natural',description:'Unposed, real laughs, spontaneous',image:null,gradient:'linear-gradient(135deg, #c5d4be 0%, #e8d5cc 50%, #faf7f2 100%)'}},
-  { id:7, category:'Composition', question:'Which framing speaks to you?', a:{label:'Tight & Intimate',description:'Close-ups, emotion, facial detail',image:null,gradient:'linear-gradient(135deg, #e8d5cc 0%, #C4826A 50%, #A96B54 100%)'}, b:{label:'Wide & Environmental',description:'Full scene, venue context, scale',image:null,gradient:'linear-gradient(135deg, #8B9E82 0%, #c5d4be 40%, #e8e3dc 100%)'}},
-  { id:8, category:'Ceremony', question:'How should the ceremony feel?', a:{label:'Cinematic Wide Shots',description:'Sweeping, dramatic, full scene',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #6B7E62 50%, #c5d4be 100%)'}, b:{label:'Emotional Close-ups',description:'Tears, hand-holds, stolen glances',image:null,gradient:'linear-gradient(135deg, #e8d5cc 0%, #C4826A 40%, #d4a574 100%)'}},
-  { id:9, category:'Getting Ready', question:'Getting-ready photos should look...', a:{label:'Fly on the Wall',description:'Untouched, real, documentary',image:null,gradient:'linear-gradient(135deg, #c5d4be 0%, #e8e3dc 60%, #faf7f2 100%)'}, b:{label:'Styled & Curated',description:'Arranged details, editorial feel',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #4a3f35 50%, #c9a96e 100%)'}},
-  { id:10, category:'Detail Shots', question:'How should details be captured?', a:{label:'Minimal & Clean',description:'Simple background, breathing room',image:null,gradient:'linear-gradient(135deg, #faf7f2 0%, #e8e3dc 50%, #d4ccc3 100%)'}, b:{label:'Styled Flat Lay',description:'Arranged composition, textured surfaces',image:null,gradient:'linear-gradient(135deg, #e8d5cc 0%, #d4a574 50%, #c9a96e 100%)'}},
-  { id:11, category:'Black & White', question:'How much black & white?', a:{label:'Love B&W',description:'Timeless, classic monochrome',image:null,gradient:'linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 40%, #d4d4d4 100%)'}, b:{label:'Keep It Color',description:'Full color — that\'s what I\'m paying for',image:null,gradient:'linear-gradient(135deg, #6B7E62 0%, #c9a96e 40%, #C4826A 100%)'}},
-  { id:12, category:'Film Look', question:'Film aesthetic — yes or no?', a:{label:'Film Grain, Yes',description:'Grain, muted tones, nostalgic',image:null,gradient:'linear-gradient(135deg, #b8a99a 0%, #c5bdb4 40%, #d4a574 100%)'}, b:{label:'Sharp & Digital',description:'Clean, crisp, pixel-perfect',image:null,gradient:'linear-gradient(135deg, #e8e3dc 0%, #faf7f2 50%, #c5d4be 100%)'}},
-  { id:13, category:'Portrait Environment', question:'Where should portraits happen?', a:{label:'Epic Landscape',description:'Mountains, forests, adventure',image:null,gradient:'linear-gradient(135deg, #4a5d3f 0%, #6B7E62 40%, #8B9E82 100%)'}, b:{label:'Urban & Architectural',description:'City streets, buildings, modern lines',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 40%, #8a8a8a 100%)'}},
-  { id:14, category:'Reception Energy', question:'Reception photos should feel...', a:{label:'High Energy Party',description:'Dance floor chaos, flash, motion',image:null,gradient:'linear-gradient(135deg, #C4826A 0%, #c9a96e 50%, #e8d9b4 100%)'}, b:{label:'Warm & Atmospheric',description:'Candle-lit, intimate, ambient',image:null,gradient:'linear-gradient(135deg, #4a3f35 0%, #8B6914 40%, #c9a96e 100%)'}},
-  { id:15, category:'First Look', question:'The first look moment...', a:{label:'Pull Back, Full Scene',description:'Context, setting, anticipation',image:null,gradient:'linear-gradient(135deg, #8B9E82 0%, #c5d4be 40%, #e8e3dc 100%)'}, b:{label:'Zoom In, Raw Emotion',description:'Faces, tears, the reaction',image:null,gradient:'linear-gradient(135deg, #e8d5cc 0%, #C4826A 50%, #A96B54 100%)'}},
-  { id:16, category:'Bridal Portraits', question:'Bridal portrait style?', a:{label:'Magazine Cover',description:'High fashion, glamorous, editorial',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #4a3f55 50%, #8B6914 100%)'}, b:{label:'Relaxed & Real',description:'Natural beauty, genuine smile',image:null,gradient:'linear-gradient(135deg, #c5d4be 0%, #e8d5cc 50%, #faf7f2 100%)'}},
-  { id:17, category:'Group Photos', question:'Family & group photos should be...', a:{label:'Formal & Organized',description:'Classic formations, everyone sharp',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 40%, #8a8a8a 100%)'}, b:{label:'Loose & Joyful',description:'Laughing, walking, in motion',image:null,gradient:'linear-gradient(135deg, #c5d4be 0%, #e8d9b4 50%, #faf7f2 100%)'}},
-  { id:18, category:'White Balance', question:'Which temperature feels right?', a:{label:'Cool & Blue-Toned',description:'Crisp, clean, slightly cool',image:null,gradient:'linear-gradient(135deg, #b0c4d4 0%, #d4dfe8 50%, #e8edf2 100%)'}, b:{label:'Warm & Amber',description:'Golden, cozy, sunset warmth',image:null,gradient:'linear-gradient(135deg, #c9a96e 0%, #d4a574 50%, #e8d5cc 100%)'}},
-  { id:19, category:'Shadows', question:'How should shadows look?', a:{label:'Deep & Dramatic',description:'True blacks, high contrast',image:null,gradient:'linear-gradient(135deg, #0a0a0a 0%, #2c2c2c 50%, #4a4a4a 100%)'}, b:{label:'Lifted & Airy',description:'Open shadows, even exposure',image:null,gradient:'linear-gradient(135deg, #d4ccc3 0%, #e8e3dc 50%, #faf7f2 100%)'}},
-  { id:20, category:'Exit / Send-off', question:'The exit shot...', a:{label:'Sparkler Tunnel',description:'Dramatic, fiery, night shot',image:null,gradient:'linear-gradient(135deg, #1a1a1a 0%, #8B6914 40%, #c9a96e 100%)'}, b:{label:'Daylight Departure',description:'Confetti, petals, natural light',image:null,gradient:'linear-gradient(135deg, #e8d5cc 0%, #faf7f2 40%, #c5d4be 100%)'}},
-  { id:21, category:'Landscape Use', question:'How much venue/landscape?', a:{label:'Venue is the Star',description:'Architecture, scenery, sense of place',image:null,gradient:'linear-gradient(135deg, #4a5d3f 0%, #8B9E82 40%, #c5d4be 100%)'}, b:{label:'People are the Focus',description:'Tight crops, blurred backgrounds',image:null,gradient:'linear-gradient(135deg, #e8d5cc 0%, #C4826A 50%, #A96B54 100%)'}},
-  { id:22, category:'Candid Moments', question:'Between-moments shots...', a:{label:'Steal Every Moment',description:'Constant coverage, nothing missed',image:null,gradient:'linear-gradient(135deg, #c5d4be 0%, #e8e3dc 40%, #faf7f2 100%)'}, b:{label:'Curated Highlights',description:'Selective, only the best frames',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #4a3f55 50%, #8B6914 100%)'}},
-  { id:23, category:'Overall Mood', question:'Your gallery should feel...', a:{label:'Like a Magazine',description:'Polished, editorial, curated',image:null,gradient:'linear-gradient(135deg, #2c2c2c 0%, #4a3f35 40%, #c9a96e 100%)'}, b:{label:'Like a Memory',description:'Lived-in, emotional, personal',image:null,gradient:'linear-gradient(135deg, #e8d5cc 0%, #c5d4be 40%, #faf7f2 100%)'}},
-  { id:24, category:'Skin Tones', question:'Skin tone rendering?', a:{label:'Warm & Glowing',description:'Golden, sun-kissed, rich',image:null,gradient:'linear-gradient(135deg, #d4a574 0%, #C4826A 50%, #e8d5cc 100%)'}, b:{label:'Neutral & True',description:'Accurate, clean, no heavy cast',image:null,gradient:'linear-gradient(135deg, #e8e3dc 0%, #d4ccc3 50%, #c5bdb4 100%)'}},
-  { id:25, category:'Vignetting', question:'Edge treatment in photos?', a:{label:'Dark Edges (Vignette)',description:'Draws the eye inward, moody',image:null,gradient:'radial-gradient(circle, #c9a96e 0%, #4a3f35 70%, #1a1a1a 100%)'}, b:{label:'Even & Open',description:'No darkening, full brightness',image:null,gradient:'linear-gradient(135deg, #faf7f2 0%, #e8e3dc 50%, #faf7f2 100%)'}}
+// ═══════════ QUIZ DATA v2 ═══════════
+
+// Q1: Editing Style (multi-select, rank 1-5)
+export const editingStyles = [
+  { id: 'warm', label: 'Warm', description: 'Sepia tones, golden warmth', gradient: 'linear-gradient(135deg, #c9a96e, #d4a574, #e8d5cc)' },
+  { id: 'cool', label: 'Cool', description: 'Cold, dark, blue-toned', gradient: 'linear-gradient(135deg, #1a1a2e, #2c3e50, #b0c4d4)' },
+  { id: 'true', label: 'True to Life', description: 'Accurate, natural colors', gradient: 'linear-gradient(135deg, #8B9E82, #c5d4be, #e8e3dc)' },
+  { id: 'vibrant', label: 'Vibrant', description: 'Rich, punchy, saturated', gradient: 'linear-gradient(135deg, #C4826A, #c9a96e, #6B7E62)' },
+  { id: 'airy', label: 'Light & Airy', description: 'Bright, soft, pastel', gradient: 'linear-gradient(135deg, #e8e3dc, #faf7f2, #c5d4be)' }
 ]
 
-export const manualQuestions = [
-  { id:'location', type:'location', title:'Where is your wedding?', subtitle:"We'll match you with photographers who cover your area" },
-  { id:'date', type:'date', title:'When is your wedding?', subtitle:'Approximate date is fine' },
-  { id:'budget', type:'budget', title:'Photography budget?', subtitle:'Helps filter by price range', min:0, max:15000, step:500, default:4000 },
-  { id:'setting', type:'select', title:'Indoor, outdoor, or both?', subtitle:'Where will most of the day be?', options:['Mostly Indoor','Mostly Outdoor','Both'] },
-  { id:'film', type:'select', title:'Interested in film photography?', subtitle:'Some shoot on analog film', options:['Yes','Open to it','Digital only'] },
-  { id:'guests', type:'select', title:'Approximate guest count?', subtitle:'Helps match experience level', options:['Under 50','50–100','100–200','200+'] }
+// Q2: Photo Style (multi-select, rank 1-4)
+export const photoStyles = [
+  { id: 'traditional', label: 'Traditional', description: 'Classic, organized, timeless poses' },
+  { id: 'editorial', label: 'Editorial', description: 'Fashion-forward, magazine-cover quality' },
+  { id: 'documentary', label: 'Candid / Documentary', description: 'Fly-on-the-wall, unposed, authentic' },
+  { id: 'fineart', label: 'Fine Art', description: 'Painterly, artistic, carefully composed' }
 ]
 
-export const styleTags = ['Light & Airy','Moody & Dark','Documentary','Editorial','Classic / Timeless','Film / Analog','Cinematic','Fine Art','Bold & Vibrant','Adventurous','Photojournalistic','Fashion-Forward']
-export const specialtyTags = ['Elopements','Destination Weddings','Cultural Ceremonies','LGBTQ+ Weddings','Micro Weddings','Large Events (200+)','Engagement Sessions','Drone / Aerial']
-export const addOnServices = ['Second Shooter','Engagement Session','Photo Album','Prints & Wall Art','Video / Hybrid','Photo Booth','Day-After Session','Rehearsal Coverage']
+// Q3: Saturation preference (pick one)
+export const saturationQuestion = {
+  id: 'saturation',
+  question: 'Which feels more like you?',
+  a: { label: 'Saturated', description: 'Bold, rich, full color', gradient: 'linear-gradient(135deg, #6B7E62 0%, #C4826A 50%, #c9a96e 100%)' },
+  b: { label: 'Desaturated', description: 'Muted, faded, film-like', gradient: 'linear-gradient(135deg, #b8a99a 0%, #c5bdb4 50%, #d4ccc3 100%)' }
+}
+
+// Q4-10: A/B photo pairs (will use real photos later, gradients for now)
+export const abPairs = [
+  { id: 4, category: 'Tone', question: 'Which portrait edit do you prefer?',
+    a: { label: 'Dark & Moody', image: null, gradient: 'linear-gradient(135deg, #2c2c2c 0%, #4a3f35 40%, #8B6914 100%)' },
+    b: { label: 'Light & Bright', image: null, gradient: 'linear-gradient(135deg, #e8e3dc 0%, #faf7f2 50%, #c5d4be 100%)' }
+  },
+  { id: 5, category: 'Temperature', question: 'Which color tone draws you in?',
+    a: { label: 'Cool Blue Tones', image: null, gradient: 'linear-gradient(135deg, #b0c4d4 0%, #d4dfe8 50%, #e8edf2 100%)' },
+    b: { label: 'Warm Amber Tones', image: null, gradient: 'linear-gradient(135deg, #c9a96e 0%, #d4a574 50%, #e8d5cc 100%)' }
+  },
+  { id: 6, category: 'Contrast', question: 'Which contrast level?',
+    a: { label: 'Bold & Dramatic', image: null, gradient: 'linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 40%, #faf7f2 100%)' },
+    b: { label: 'Soft & Dreamy', image: null, gradient: 'linear-gradient(135deg, #d4ccc3 0%, #e8e3dc 40%, #ede8e0 100%)' }
+  },
+  { id: 7, category: 'Film vs Digital', question: 'Which look do you prefer?',
+    a: { label: 'Film Grain', image: null, gradient: 'linear-gradient(135deg, #b8a99a 0%, #c5bdb4 40%, #d4a574 100%)' },
+    b: { label: 'Clean Digital', image: null, gradient: 'linear-gradient(135deg, #e8e3dc 0%, #faf7f2 50%, #c5d4be 100%)' }
+  },
+  { id: 8, category: 'Shadows', question: 'How should shadows look?',
+    a: { label: 'Deep & Crushed', image: null, gradient: 'linear-gradient(135deg, #0a0a0a 0%, #2c2c2c 50%, #4a4a4a 100%)' },
+    b: { label: 'Lifted & Open', image: null, gradient: 'linear-gradient(135deg, #d4ccc3 0%, #e8e3dc 50%, #faf7f2 100%)' }
+  },
+  { id: 9, category: 'Black & White', question: 'Black & white or color?',
+    a: { label: 'Love B&W', image: null, gradient: 'linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 40%, #d4d4d4 100%)' },
+    b: { label: 'Keep It Color', image: null, gradient: 'linear-gradient(135deg, #6B7E62 0%, #c9a96e 40%, #C4826A 100%)' }
+  },
+  { id: 10, category: 'Palette', question: 'Which overall palette?',
+    a: { label: 'Earth Tones', image: null, gradient: 'linear-gradient(135deg, #8B6914 0%, #C4826A 40%, #4a5d3f 100%)' },
+    b: { label: 'Soft Pastels', image: null, gradient: 'linear-gradient(135deg, #e8d5cc 0%, #d4dfe8 40%, #e8e3dc 100%)' }
+  }
+]
+
+// Q11-15: Feature questions
+export const featureQuestions = [
+  { id: 'aerial', question: 'Do you want aerial / drone photography?', type: 'yesno',
+    options: ['Yes, definitely', "No, don't need it"] },
+  { id: 'film', question: 'Do you want a film photography option?', type: 'yesno',
+    options: ['Yes, I love film', 'No, digital is fine'] },
+  { id: 'secondShooter', question: 'Do you want a second shooter?', type: 'select',
+    options: ['Yes', 'No', "Don't know yet"] },
+  { id: 'personality', question: 'What kind of photographer personality do you want?', type: 'select',
+    options: ['Very hands-on and directive', 'Calm and unobtrusive', 'Hype / high-energy', 'Organized and structured', 'Fly-on-the-wall documentary'] },
+  { id: 'hours', question: 'How many hours of coverage do you need?', type: 'select',
+    options: ['4–6 hours', '6–8 hours', '8+ hours', 'Multiple days'] }
+]
+
+// Logistical questions (hard filters)
+export const logisticalQuestions = [
+  { id: 'location', type: 'location', title: 'Where is your wedding?', subtitle: "We'll match you with photographers who cover your area" },
+  { id: 'date', type: 'date', title: 'When is your wedding?', subtitle: 'Approximate date is fine' },
+  { id: 'budget', type: 'budget', title: "What's your photography budget?", subtitle: 'Approximate is fine — we filter by range', min: 1000, max: 15000, step: 500 },
+  { id: 'guests', type: 'select', title: 'How many guests?', subtitle: 'This helps photographers prepare', options: ['Under 50', '50–100', '100–200', '200+'] }
+]
+
+// Style tags for photographer profiles (aligned with couple quiz)
+export const styleTags = ['Traditional', 'Editorial', 'Candid / Documentary', 'Fine Art', 'Dark & Moody']
+
+export const editingStyleTags = ['Warm', 'Cool', 'True to Life', 'Vibrant', 'Light & Airy']
+
+export const specialtyTags = ['Elopements', 'Destination Weddings', 'Cultural Ceremonies', 'LGBTQ+ Weddings', 'Micro Weddings', 'Large Events (200+)', 'Engagement Sessions', 'Drone / Aerial']
+
+export const addOnServices = ['Second Shooter', 'Engagement Session', 'Photo Album', 'Prints & Wall Art', 'Video / Hybrid', 'Photo Booth', 'Day-After Session', 'Rehearsal Coverage']
+
+export const personalityTypes = ['Very hands-on and directive', 'Calm and unobtrusive', 'Hype / high-energy', 'Organized and structured', 'Fly-on-the-wall documentary']
+
+export const coverageOptions = ['4–6 hours', '6–8 hours', '8+ hours', 'Multiple days']
 
 export const travelRadiusOptions = [
   { value: '25', label: 'Local (25 mi / 40 km)' },
@@ -48,4 +101,10 @@ export const travelRadiusOptions = [
   { value: '500', label: '500 miles / 800 km' },
   { value: 'nationwide', label: 'Nationwide' },
   { value: 'anywhere', label: 'Anywhere / Worldwide' }
+]
+
+// Thinking break messages shown between sections
+export const thinkingMessages = [
+  { after: 3, lines: ['Analyzing your editing preferences...', 'You lean toward {editingSummary} tones'] },
+  { after: 10, lines: ['Your style profile is taking shape...', 'Scanning photographer portfolios...', 'Refining your matches...'] }
 ]

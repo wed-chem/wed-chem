@@ -30,15 +30,15 @@
           <h2 class="step-title">Define your style</h2>
           <p class="step-sub">Complete the visual profile so our algorithm can match you with the right couples. Pick the option that better represents your work.</p>
           <div class="quiz-progress"><div class="qp-bar"><div class="qp-fill" :style="{width: ((quizIndex+1)/25*100)+'%'}"></div></div><div class="qp-text">{{ quizIndex+1 }} of 25</div></div>
-          <div class="quiz-q">{{ photoQuestions[quizIndex].question }}</div>
+          <div class="quiz-q">{{ abPairs[quizIndex].question }}</div>
           <div class="quiz-pair">
             <div class="quiz-opt" :class="{sel:quizAnswers[quizIndex]==='a'}" @click="quizAnswers[quizIndex]='a'">
-              <div class="quiz-img" :style="{background:photoQuestions[quizIndex].a.gradient}"></div>
-              <div class="quiz-lbl">{{ photoQuestions[quizIndex].a.label }}</div>
+              <div class="quiz-img" :style="{background:abPairs[quizIndex].a.gradient}"></div>
+              <div class="quiz-lbl">{{ abPairs[quizIndex].a.label }}</div>
             </div>
             <div class="quiz-opt" :class="{sel:quizAnswers[quizIndex]==='b'}" @click="quizAnswers[quizIndex]='b'">
-              <div class="quiz-img" :style="{background:photoQuestions[quizIndex].b.gradient}"></div>
-              <div class="quiz-lbl">{{ photoQuestions[quizIndex].b.label }}</div>
+              <div class="quiz-img" :style="{background:abPairs[quizIndex].b.gradient}"></div>
+              <div class="quiz-lbl">{{ abPairs[quizIndex].b.label }}</div>
             </div>
           </div>
           <div class="quiz-nav">
@@ -156,7 +156,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { photoQuestions, styleTags, specialtyTags, addOnServices, travelRadiusOptions } from '@/data/quizData'
+import { abPairs, styleTags, specialtyTags, addOnServices, travelRadiusOptions } from '@/data/quizData'
 
 const router = useRouter()
 const step = ref(1)

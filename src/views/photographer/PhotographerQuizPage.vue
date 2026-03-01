@@ -24,7 +24,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { photoQuestions } from '@/data/quizData'
+import { abPairs as photoQuestions } from '@/data/quizData'
 const router = useRouter(); const authStore = useAuthStore()
 const idx = ref(0); const answers = reactive({})
 async function saveQuiz() {
