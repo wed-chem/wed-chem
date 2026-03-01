@@ -1,18 +1,30 @@
 <template>
   <div class="profile-page">
-    <div class="container">
+    <div class="container" v-if="loading" style="text-align:center;padding:200px 0;">
+      <div style="font-size:1.2rem;color:var(--warm-gray);">Loading profile...</div>
+    </div>
+
+    <div class="container" v-else-if="!photographer">
+      <div style="text-align:center;padding:200px 0;">
+        <h2 style="font-family:var(--font-display);margin-bottom:12px;">Photographer not found</h2>
+        <p style="color:var(--warm-gray);margin-bottom:24px;">This profile doesn't exist or hasn't been published yet.</p>
+        <router-link to="/directory" class="btn-primary">Browse Photographers →</router-link>
+      </div>
+    </div>
+
+    <div class="container" v-else>
 
       <!-- HERO / COVER -->
       <div class="profile-hero">
-        <div class="profile-cover" :style="{background: photographer.coverPhoto ? `url(${photographer.coverPhoto}) center/cover` : photographer.gradient}"></div>
+        <div class="profile-cover" :style="{background: photographer.coverPhoto ? `url(${photographer.coverPhoto}) center/cover` : 'linear-gradient(135deg, var(--sage-light), var(--blush))'}"></div>
         <div class="profile-header">
           <div class="profile-avatar" :style="{background: photographer.avatar ? `url(${photographer.avatar}) center/cover` : 'linear-gradient(135deg, var(--sage-light), var(--blush))'}">
-            <span v-if="!photographer.avatar">{{ photographer.initials }}</span>
+            <span v-if="!photographer.avatar">{{ initials }}</span>
           </div>
           <div class="profile-header-info">
             <div class="profile-badges">
               <span class="badge-featured" v-if="photographer.tier === 'featured'">⭐ Featured</span>
-              <span class="badge-verified">✓ Verified</span>
+              <span class="badge-verified" v-if="photographer.status === 'approved'">✓ Verified</span>
             </div>
             <h1 class="profile-name">{{ photographer.businessName }}</h1>
             <div class="profile-location">{{ photographer.city }}<span v-if="photographer.state">, {{ photographer.state }}</span><span v-if="photographer.country"> · {{ photographer.country }}</span></div>
@@ -31,17 +43,17 @@
         <div class="profile-main">
 
           <!-- PORTFOLIO -->
-          <section class="profile-section">
+          <section class="profile-section" v-if="portfolio.length">
             <h2 class="ps-title">Portfolio</h2>
             <div class="portfolio-grid">
-              <div class="portfolio-item" v-for="(photo, i) in photographer.portfolio" :key="i" @click="openLightbox(i)">
-                <div class="portfolio-img" :style="{background: (typeof photo === 'string' ? photo : photo.url) ? `url(${typeof photo === 'string' ? photo : photo.url}) center/cover` : (photo.gradient || 'var(--light-gray)')}"></div>
+              <div class="portfolio-item" v-for="(photo, i) in portfolio" :key="i" @click="openLightbox(i)">
+                <div class="portfolio-img" :style="{backgroundImage: `url(${photo})`}"></div>
               </div>
             </div>
           </section>
 
           <!-- ABOUT -->
-          <section class="profile-section">
+          <section class="profile-section" v-if="photographer.about">
             <h2 class="ps-title">About</h2>
             <div class="about-text">{{ photographer.about }}</div>
           </section>
@@ -70,31 +82,33 @@
           <!-- QUICK INFO CARD -->
           <div class="sidebar-card">
             <h3 class="sc-title">Quick Info</h3>
-            <div class="sc-row">
+            <div class="sc-row" v-if="priceDisplay">
               <div class="sc-label">Starting at</div>
-              <div class="sc-value">{{ photographer.priceRange }}</div>
+              <div class="sc-value">{{ priceDisplay }}</div>
             </div>
-            <div class="sc-row">
+            <div class="sc-row" v-if="photographer.yearsExperience">
               <div class="sc-label">Experience</div>
               <div class="sc-value">{{ photographer.yearsExperience }}</div>
             </div>
-            <div class="sc-row">
+            <div class="sc-row" v-if="photographer.turnaround">
               <div class="sc-label">Turnaround</div>
               <div class="sc-value">{{ photographer.turnaround }}</div>
             </div>
-            <div class="sc-row">
+            <div class="sc-row" v-if="photographer.travelRadius">
               <div class="sc-label">Travel</div>
-              <div class="sc-value">{{ photographer.travelRadius }}</div>
+              <div class="sc-value">{{ travelDisplay }}</div>
+            </div>
+            <div class="sc-row" v-if="photographer.coverageHours && photographer.coverageHours.length">
+              <div class="sc-label">Coverage</div>
+              <div class="sc-value">{{ photographer.coverageHours.join(', ') }}</div>
             </div>
             <button class="btn-primary" style="width:100%;justify-content:center;margin-top:20px;" @click="handleInquiryClick">Get in Touch →</button>
           </div>
 
-          <!-- PACKAGE -->
-          <div class="sidebar-card">
+          <!-- BASE PACKAGE (free text from signup) -->
+          <div class="sidebar-card" v-if="photographer.basePackage">
             <h3 class="sc-title">Base Package Includes</h3>
-            <ul class="package-list">
-              <li v-for="item in photographer.packageIncludes" :key="item">{{ item }}</li>
-            </ul>
+            <div class="package-text">{{ photographer.basePackage }}</div>
           </div>
 
           <!-- ADD-ONS -->
@@ -106,7 +120,7 @@
           </div>
 
           <!-- SOCIAL / LINKS -->
-          <div class="sidebar-card">
+          <div class="sidebar-card" v-if="photographer.website || photographer.instagram || photographer.tiktok">
             <h3 class="sc-title">Connect</h3>
             <div class="social-links">
               <a v-if="photographer.website" :href="photographer.website" target="_blank" class="social-link">
@@ -120,14 +134,6 @@
               <a v-if="photographer.tiktok" :href="'https://tiktok.com/@' + photographer.tiktok.replace('@','')" target="_blank" class="social-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
                 {{ photographer.tiktok }}
-              </a>
-              <a v-if="photographer.facebook" :href="photographer.facebook" target="_blank" class="social-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                Facebook
-              </a>
-              <a v-if="photographer.pinterest" :href="photographer.pinterest" target="_blank" class="social-link">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.5 2 2 6.5 2 12c0 4 2.5 7.5 6 9l1.5-5.5A4.5 4.5 0 0 1 8 12a4 4 0 1 1 8 0c0 2.5-1 5-3 5-1 0-1.5-.5-1.3-1.5l1-4"/></svg>
-                Pinterest
               </a>
             </div>
           </div>
@@ -149,10 +155,39 @@
         </div>
       </div>
 
+      <!-- AUTH GATE MODAL -->
+      <div class="modal-overlay" v-if="showAuthGate" @click.self="showAuthGate = false">
+        <div class="modal-card" style="max-width:420px;">
+          <button class="modal-close" @click="showAuthGate = false">✕</button>
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-size:2rem;margin-bottom:8px;">🧪</div>
+            <h3 style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:4px;">{{ authMode === 'signup' ? 'Create a free account' : 'Welcome back' }}</h3>
+            <p style="font-size:0.88rem;color:var(--warm-gray);">Sign in to send your inquiry to {{ photographer?.businessName }}</p>
+          </div>
+          <button class="google-btn" @click="authWithGoogle" :disabled="authLoading">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2a10 10 0 0 0-.164-1.84H9v3.48h4.844A4.14 4.14 0 0 1 12.05 13l2.634 2.04c1.53-1.41 2.426-3.49 2.426-5.96z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18L12.32 13.78A5.39 5.39 0 0 1 9 14.78c-2.087 0-3.86-1.41-4.492-3.31L1.79 13.58A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M4.508 11.47A5.36 5.36 0 0 1 4.23 10c0-.51.1-1.01.27-1.47V6.42H1.79A9 9 0 0 0 .82 10c0 1.45.348 2.83.97 4.06l2.72-2.06z"/><path fill="#EA4335" d="M9 3.58c1.62 0 3.06.56 4.21 1.64l3.15-3.15C13.46.891 11.426 0 9 0A9 9 0 0 0 1.79 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continue with Google
+          </button>
+          <div class="auth-divider"><span>or</span></div>
+          <div v-if="authMode === 'signup'">
+            <div class="form-row"><input type="text" class="form-input" placeholder="Your name (e.g. Jane & John)" v-model="authForm.name"></div>
+          </div>
+          <div class="form-row"><input type="email" class="form-input" placeholder="Email" v-model="authForm.email"></div>
+          <div class="form-row"><input type="password" class="form-input" placeholder="Password" v-model="authForm.password" @keyup.enter="handleAuthSubmit"></div>
+          <div v-if="authError" style="color:var(--terracotta);font-size:0.85rem;margin-bottom:12px;">{{ authError }}</div>
+          <button class="btn-primary" style="width:100%;justify-content:center;" @click="handleAuthSubmit" :disabled="authLoading">
+            {{ authLoading ? 'Loading...' : authMode === 'signup' ? 'Create Account & Continue' : 'Log In & Continue' }}
+          </button>
+          <div style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--warm-gray);">
+            <span v-if="authMode === 'signup'">Already have an account? <a href="#" @click.prevent="authMode = 'login'" style="color:var(--terracotta);">Log in</a></span>
+            <span v-else>Don't have an account? <a href="#" @click.prevent="authMode = 'signup'" style="color:var(--terracotta);">Sign up free</a></span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Lightbox -->
-    <PhotoLightbox :show="lbShow" :photos="lbPhotos" :startIndex="lbIndex" @close="lbShow=false" />
+    <PhotoLightbox v-if="photographer" :show="lbShow" :photos="lbPhotos" :startIndex="lbIndex" @close="lbShow=false" />
   </div>
 </template>
 
@@ -160,91 +195,75 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRoute } from 'vue-router'
+import { db } from '@/services/firebase'
+import { doc, getDoc, updateDoc, increment } from 'firebase/firestore'
 import PhotoLightbox from '@/components/ui/PhotoLightbox.vue'
 
 const authStore = useAuthStore()
 const route = useRoute()
+const loading = ref(true)
 const saved = ref(false)
 const showInquiry = ref(false)
 const showAuthGate = ref(false)
-const authMode = ref('signup') // 'signup' or 'login'
+const authMode = ref('signup')
 const authForm = ref({ name: '', email: '', password: '' })
 const authError = ref('')
 const authLoading = ref(false)
 const inquiry = ref({ name: '', email: '', date: '', message: '' })
 const lbShow = ref(false)
 const lbIndex = ref(0)
-const lbPhotos = computed(() => photographer.value.portfolio.map(p => typeof p === 'string' ? p : (p.url || p.gradient)).filter(Boolean))
 
-// Mock photographer data — will be replaced with Firestore fetch
-const photographer = ref({
-  id: route.params.id,
-  businessName: 'Ava Chen Photography',
-  initials: 'AC',
-  avatar: null,
-  city: 'Portland',
-  state: 'OR',
-  country: 'United States',
-  tagline: 'Telling love stories through light, laughter, and stolen glances',
-  tier: 'featured',
-  gradient: 'linear-gradient(135deg, #e8d5cc 0%, #faf7f2 50%, #c5d4be 100%)',
-  coverPhoto: null,
-  about: "Hi! I'm Ava — a Portland-based wedding photographer who believes the best moments are the ones you don't plan. I gravitate toward natural light, candid emotion, and the in-between moments that make your story yours.\n\nI've been shooting weddings for 7 years and my approach is simple: I want you to forget I'm there. When you're laughing so hard you're crying, when you're sneaking a quiet moment together, when your dad sees you in your dress for the first time — those are the photos that matter.\n\nMy editing style leans warm and organic with soft tones. I deliver a mix of color and black & white, and I always prioritize genuine expression over perfect posing.",
-  styles: ['Light & Airy', 'Documentary', 'Romantic', 'Film / Analog'],
-  specialties: ['Elopements', 'Outdoor Weddings', 'Engagement Sessions', 'Destination Weddings'],
-  priceRange: '$3,200 – $5,500',
-  yearsExperience: '7 years',
-  turnaround: '4–6 weeks',
-  travelRadius: 'Up to 250 miles · Destinations',
-  packageIncludes: [
-    '8 hours of coverage',
-    'Second shooter included',
-    'Online gallery with download',
-    '500+ edited images',
-    'Engagement session',
-    'Timeline planning assistance'
-  ],
-  addOns: ['Photo Album', 'Prints & Wall Art', 'Day-After Session', 'Rehearsal Coverage'],
-  website: 'https://avachenphotography.com',
-  instagram: '@avachenphoto',
-  tiktok: '@avachenphoto',
-  facebook: null,
-  pinterest: 'https://pinterest.com/avachenphoto',
-  portfolio: [
-    { url: null, gradient: 'linear-gradient(135deg, #e8d5cc, #c5d4be)' },
-    { url: null, gradient: 'linear-gradient(135deg, #c9a96e, #e8d9b4)' },
-    { url: null, gradient: 'linear-gradient(135deg, #c5d4be, #faf7f2)' },
-    { url: null, gradient: 'linear-gradient(135deg, #d4a574, #e8d5cc)' },
-    { url: null, gradient: 'linear-gradient(135deg, #8B9E82, #c5d4be)' },
-    { url: null, gradient: 'linear-gradient(135deg, #e8d5cc, #faf7f2)' },
-    { url: null, gradient: 'linear-gradient(135deg, #2c2c2c, #4a3f35)' },
-    { url: null, gradient: 'linear-gradient(135deg, #c9a96e, #d4a574)' },
-    { url: null, gradient: 'linear-gradient(135deg, #c5d4be, #e8e3dc)' },
-    { url: null, gradient: 'linear-gradient(135deg, #e8d5cc, #c9a96e)' },
-    { url: null, gradient: 'linear-gradient(135deg, #faf7f2, #e8e3dc)' },
-    { url: null, gradient: 'linear-gradient(135deg, #d4a574, #8B9E82)' },
-  ]
+const photographer = ref(null)
+
+const initials = computed(() => {
+  if (!photographer.value?.businessName) return '?'
+  return photographer.value.businessName.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase()
+})
+
+const portfolio = computed(() => {
+  if (!photographer.value?.portfolio) return []
+  return photographer.value.portfolio
+    .map(p => typeof p === 'string' ? p : p?.url)
+    .filter(Boolean)
+})
+
+const lbPhotos = computed(() => portfolio.value)
+
+const priceDisplay = computed(() => {
+  const p = photographer.value
+  if (!p) return ''
+  if (p.priceMin && p.priceMax) return `$${Number(p.priceMin).toLocaleString()} – $${Number(p.priceMax).toLocaleString()}`
+  if (p.priceMin) return `$${Number(p.priceMin).toLocaleString()}`
+  return ''
+})
+
+const travelDisplay = computed(() => {
+  const r = photographer.value?.travelRadius
+  if (!r) return ''
+  if (r === 'anywhere') return 'Worldwide'
+  if (r === 'nationwide') return 'Nationwide'
+  return `${r} miles`
 })
 
 onMounted(async () => {
-  // Try to fetch real data from Firestore
+  const id = route.params.id
   try {
-    const { getPhotographer } = await import('@/services/photographer')
-    const data = await getPhotographer(route.params.id)
-    if (data) photographer.value = { ...photographer.value, ...data }
+    const snap = await getDoc(doc(db, 'photographers', id))
+    if (snap.exists()) {
+      photographer.value = { id: snap.id, ...snap.data() }
+      // Track profile view
+      try { await updateDoc(doc(db, 'photographers', id), { profileViews: increment(1) }) } catch(e) {}
+    }
   } catch (e) {
-    // Use mock data
+    console.error('Error loading photographer:', e)
   }
+  loading.value = false
 })
 
-function openLightbox(index) {
-  lbIndex.value = index
-  lbShow.value = true
-}
+function openLightbox(index) { lbIndex.value = index; lbShow.value = true }
 
 function handleInquiryClick() {
   if (authStore.isLoggedIn) {
-    // Pre-fill from auth
     if (authStore.user?.displayName && !inquiry.value.name) inquiry.value.name = authStore.user.displayName
     if (authStore.user?.email && !inquiry.value.email) inquiry.value.email = authStore.user.email
     showInquiry.value = true
@@ -254,39 +273,33 @@ function handleInquiryClick() {
 }
 
 async function handleAuthSubmit() {
-  authError.value = ''
-  authLoading.value = true
+  authError.value = ''; authLoading.value = true
   try {
     if (authMode.value === 'signup') {
       const { registerCouple } = await import('@/services/auth')
       await registerCouple(authForm.value.email, authForm.value.password, authForm.value.name)
-      inquiry.value.name = authForm.value.name
-      inquiry.value.email = authForm.value.email
+      inquiry.value.name = authForm.value.name; inquiry.value.email = authForm.value.email
     } else {
       const { login } = await import('@/services/auth')
       await login(authForm.value.email, authForm.value.password)
     }
-    showAuthGate.value = false
-    showInquiry.value = true
+    showAuthGate.value = false; showInquiry.value = true
   } catch (e) {
-    authError.value = e.code === 'auth/email-already-in-use' ? 'Email already registered. Try logging in.' 
-      : e.code === 'auth/wrong-password' ? 'Wrong password.' 
-      : e.code === 'auth/user-not-found' ? 'No account with that email.' 
+    authError.value = e.code === 'auth/email-already-in-use' ? 'Email already registered. Try logging in.'
+      : e.code === 'auth/wrong-password' ? 'Wrong password.'
+      : e.code === 'auth/user-not-found' ? 'No account with that email.'
       : 'Something went wrong. Please try again.'
   }
   authLoading.value = false
 }
 
 async function authWithGoogle() {
-  authError.value = ''
-  authLoading.value = true
+  authError.value = ''; authLoading.value = true
   try {
     const { signInWithGoogle } = await import('@/services/auth')
     const user = await signInWithGoogle()
-    inquiry.value.name = user.displayName || ''
-    inquiry.value.email = user.email || ''
-    showAuthGate.value = false
-    showInquiry.value = true
+    inquiry.value.name = user.displayName || ''; inquiry.value.email = user.email || ''
+    showAuthGate.value = false; showInquiry.value = true
   } catch (e) { authError.value = 'Google sign-in failed.' }
   authLoading.value = false
 }
@@ -299,13 +312,13 @@ async function submitInquiry() {
       name: inquiry.value.name,
       email: inquiry.value.email,
       weddingDate: inquiry.value.date,
-      message: inquiry.value.message
+      message: inquiry.value.message,
+      matchScore: null
     })
     alert('Inquiry sent! ' + photographer.value.businessName + ' will get back to you soon.')
     showInquiry.value = false
   } catch (e) {
-    alert('Inquiry sent! (Demo mode)')
-    showInquiry.value = false
+    alert('Something went wrong. Please try again.')
   }
 }
 </script>
@@ -313,19 +326,10 @@ async function submitInquiry() {
 <style scoped>
 .profile-page { padding:100px 0 80px; background:var(--cream); min-height:100vh; }
 
-/* HERO */
 .profile-hero { margin-bottom:48px; }
 .profile-cover { height:320px; border-radius:var(--radius-lg); overflow:hidden; margin-bottom:-60px; position:relative; }
-.profile-header {
-  display:flex; align-items:flex-end; gap:24px; padding:0 32px;
-  position:relative; z-index:2; flex-wrap:wrap;
-}
-.profile-avatar {
-  width:120px; height:120px; border-radius:50%; border:4px solid var(--warm-white);
-  box-shadow:var(--shadow-md); display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-display); font-size:2.5rem; font-weight:500; color:var(--charcoal);
-  flex-shrink:0; overflow:hidden; background-size:cover;
-}
+.profile-header { display:flex; align-items:flex-end; gap:24px; padding:0 32px; position:relative; z-index:2; flex-wrap:wrap; }
+.profile-avatar { width:120px; height:120px; border-radius:50%; border:4px solid var(--warm-white); box-shadow:var(--shadow-md); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:2.5rem; font-weight:500; color:var(--charcoal); flex-shrink:0; overflow:hidden; background-size:cover; }
 .profile-header-info { flex:1; min-width:200px; padding-bottom:8px; }
 .profile-badges { display:flex; gap:8px; margin-bottom:8px; }
 .badge-featured { padding:4px 12px; background:var(--gold); color:white; border-radius:100px; font-size:0.72rem; font-weight:600; }
@@ -335,14 +339,11 @@ async function submitInquiry() {
 .profile-tagline { font-size:0.95rem; color:var(--warm-gray); font-style:italic; }
 .profile-header-actions { display:flex; gap:12px; padding-bottom:8px; flex-shrink:0; }
 
-/* LAYOUT */
 .profile-layout { display:grid; grid-template-columns:1fr 360px; gap:48px; }
 
-/* SECTIONS */
 .profile-section { margin-bottom:48px; }
 .ps-title { font-family:var(--font-display); font-size:1.5rem; font-weight:500; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--light-gray); }
 
-/* PORTFOLIO */
 .portfolio-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; }
 .portfolio-item { border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:var(--transition); }
 .portfolio-item:hover { transform:scale(1.03); box-shadow:var(--shadow-md); }
@@ -350,58 +351,40 @@ async function submitInquiry() {
 .portfolio-img { aspect-ratio:4/3; background-size:cover; background-position:center; }
 .portfolio-item:nth-child(1) .portfolio-img { aspect-ratio:auto; height:100%; }
 
-/* ABOUT */
 .about-text { font-size:0.95rem; color:var(--warm-gray); line-height:1.8; white-space:pre-line; }
 
-/* TAGS */
 .profile-tags { display:flex; flex-wrap:wrap; gap:8px; }
 .profile-tag { padding:6px 16px; background:rgba(139,158,130,0.1); border:1px solid rgba(139,158,130,0.2); border-radius:100px; font-size:0.82rem; color:var(--sage-dark); font-weight:500; }
 .tag-alt { background:rgba(196,130,106,0.08); border-color:rgba(196,130,106,0.15); color:var(--terracotta-dark); }
 .tag-sm { padding:4px 12px; font-size:0.78rem; }
 
-/* SIDEBAR */
 .profile-sidebar { display:flex; flex-direction:column; gap:20px; }
 .sidebar-card { background:var(--warm-white); border:1px solid var(--light-gray); border-radius:var(--radius-lg); padding:28px; }
 .sc-title { font-family:var(--font-display); font-size:1.2rem; font-weight:500; margin-bottom:16px; }
 .sc-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--light-gray); }
 .sc-row:last-of-type { border-bottom:none; }
 .sc-label { font-size:0.85rem; color:var(--warm-gray); }
-.sc-value { font-size:0.85rem; font-weight:500; }
+.sc-value { font-size:0.85rem; font-weight:500; text-align:right; max-width:60%; }
 
-.package-list { list-style:none; }
-.package-list li { padding:8px 0; font-size:0.88rem; color:var(--warm-gray); display:flex; align-items:center; gap:10px; }
-.package-list li::before { content:'✓'; color:var(--sage); font-weight:600; font-size:0.8rem; }
+.package-text { font-size:0.88rem; color:var(--warm-gray); line-height:1.8; white-space:pre-line; }
 
-/* SOCIAL LINKS */
 .social-links { display:flex; flex-direction:column; gap:8px; }
-.social-link {
-  display:flex; align-items:center; gap:12px; padding:10px 14px;
-  border:1px solid var(--light-gray); border-radius:var(--radius);
-  font-size:0.88rem; color:var(--charcoal); transition:var(--transition);
-}
+.social-link { display:flex; align-items:center; gap:12px; padding:10px 14px; border:1px solid var(--light-gray); border-radius:var(--radius); font-size:0.88rem; color:var(--charcoal); transition:var(--transition); }
 .social-link:hover { border-color:var(--sage); background:rgba(139,158,130,0.04); }
 .social-link svg { color:var(--warm-gray); flex-shrink:0; }
 
-/* MODAL */
-.modal-overlay {
-  position:fixed; top:0; left:0; right:0; bottom:0; z-index:2000;
-  background:rgba(44,44,44,0.5); backdrop-filter:blur(4px);
-  display:flex; align-items:center; justify-content:center; padding:24px;
-}
-.modal-card {
-  background:var(--warm-white); border-radius:var(--radius-lg); padding:40px;
-  max-width:520px; width:100%; max-height:90vh; overflow-y:auto;
-  box-shadow:var(--shadow-lg); position:relative;
-}
+.modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; z-index:2000; background:rgba(44,44,44,0.5); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:24px; }
+.modal-card { background:var(--warm-white); border-radius:var(--radius-lg); padding:40px; max-width:520px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-lg); position:relative; }
 .modal-close { position:absolute; top:16px; right:16px; font-size:1.2rem; color:var(--warm-gray); padding:8px; }
 .modal-title { font-family:var(--font-display); font-size:1.5rem; font-weight:500; margin-bottom:4px; }
 .modal-sub { font-size:0.88rem; color:var(--warm-gray); margin-bottom:24px; }
 
-/* RESPONSIVE */
-@media (max-width:1024px) {
-  .profile-layout { grid-template-columns:1fr; }
-  .profile-sidebar { order:-1; }
-}
+.google-btn { width:100%; padding:12px; border-radius:100px; border:1.5px solid var(--light-gray); display:flex; align-items:center; justify-content:center; gap:10px; font-size:0.9rem; font-weight:500; cursor:pointer; transition:var(--transition); background:var(--warm-white); }
+.google-btn:hover { border-color:var(--charcoal); background:var(--cream); }
+.auth-divider { display:flex; align-items:center; gap:12px; margin:20px 0; color:var(--warm-gray); font-size:0.8rem; }
+.auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background:var(--light-gray); }
+
+@media (max-width:1024px) { .profile-layout { grid-template-columns:1fr; } .profile-sidebar { order:-1; } }
 @media (max-width:768px) {
   .profile-header { flex-direction:column; align-items:center; text-align:center; padding:0 16px; }
   .profile-header-actions { justify-content:center; }
@@ -409,19 +392,5 @@ async function submitInquiry() {
   .portfolio-item:nth-child(1) { grid-column:span 2; grid-row:span 1; }
   .profile-cover { height:200px; }
   .profile-avatar { width:100px; height:100px; }
-}
-.google-btn {
-  width:100%; padding:12px; border-radius:100px; border:1.5px solid var(--light-gray);
-  display:flex; align-items:center; justify-content:center; gap:10px;
-  font-size:0.9rem; font-weight:500; cursor:pointer; transition:var(--transition);
-  background:var(--warm-white);
-}
-.google-btn:hover { border-color:var(--charcoal); background:var(--cream); }
-.auth-divider {
-  display:flex; align-items:center; gap:12px; margin:20px 0;
-  color:var(--warm-gray); font-size:0.8rem;
-}
-.auth-divider::before, .auth-divider::after {
-  content:''; flex:1; height:1px; background:var(--light-gray);
 }
 </style>
