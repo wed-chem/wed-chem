@@ -16,9 +16,19 @@
 
         <!-- ═══════════ THINKING BREAK ═══════════ -->
         <div v-if="quizStore.showThinking" class="thinking-break">
-          <div class="thinking-dots"><span></span><span></span><span></span></div>
+          <div class="mini-beaker">
+            <div class="mini-beaker-body">
+              <div class="mini-beaker-liquid" :class="'fill-' + quizStore.beakerFill">
+                <div class="mini-bubble mb1"></div>
+                <div class="mini-bubble mb2"></div>
+                <div class="mini-bubble mb3"></div>
+              </div>
+            </div>
+            <div class="mini-beaker-neck"></div>
+            <div class="mini-beaker-rim"></div>
+          </div>
           <div class="thinking-line" v-for="(line, i) in quizStore.thinkingText" :key="i"
-            :style="{'animation-delay': (i * 0.8) + 's'}">{{ line }}</div>
+            :style="{'animation-delay': (i * 1.2) + 's'}">{{ line }}</div>
         </div>
 
         <!-- ═══════════ Q1: EDITING STYLE RANK ═══════════ -->
@@ -355,14 +365,44 @@ function retakeQuiz() {
 .budget-labels { display:flex;justify-content:space-between;margin-top:8px;font-size:0.78rem;color:var(--warm-gray); }
 
 /* ═══════════ THINKING BREAK ═══════════ */
-.thinking-break { text-align:center; padding:80px 0; }
-.thinking-dots { display:flex; justify-content:center; gap:8px; margin-bottom:32px; }
-.thinking-dots span { width:10px; height:10px; border-radius:50%; background:var(--terracotta); animation:pulse 1.2s ease-in-out infinite; }
-.thinking-dots span:nth-child(2) { animation-delay:0.2s; }
-.thinking-dots span:nth-child(3) { animation-delay:0.4s; }
-@keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
-.thinking-line { font-family:var(--font-display); font-size:1.2rem; color:var(--warm-gray); opacity:0; animation:fadeUp 0.6s ease forwards; margin-bottom:8px; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.thinking-break { text-align:center; padding:60px 0 80px; }
+
+.mini-beaker { display:inline-block; position:relative; width:60px; height:90px; margin-bottom:32px; }
+.mini-beaker-body {
+  position:absolute; bottom:0; width:60px; height:68px;
+  border:2.5px solid var(--sage); border-top:none;
+  border-radius:0 0 10px 10px; overflow:hidden; background:rgba(139,158,130,0.05);
+}
+.mini-beaker-liquid {
+  position:absolute; bottom:0; left:0; right:0; height:0;
+  background:linear-gradient(to top, var(--terracotta), var(--gold));
+  border-radius:0 0 7px 7px; transition:height 3s cubic-bezier(0.25,0.46,0.45,0.94);
+  overflow:hidden;
+}
+.mini-beaker-liquid.fill-1 { height:33%; }
+.mini-beaker-liquid.fill-2 { height:66%; }
+.mini-beaker-liquid.fill-3 { height:90%; }
+
+.mini-bubble { position:absolute; border-radius:50%; background:rgba(255,255,255,0.4); animation:minirise 1.4s ease-in infinite; }
+.mb1 { width:4px; height:4px; left:25%; bottom:-8px; animation-delay:0s; }
+.mb2 { width:3px; height:3px; left:55%; bottom:-8px; animation-delay:0.4s; }
+.mb3 { width:5px; height:5px; left:70%; bottom:-8px; animation-delay:0.8s; }
+@keyframes minirise { 0%{transform:translateY(0) scale(1);opacity:.7} 100%{transform:translateY(-60px) scale(.3);opacity:0} }
+
+.mini-beaker-neck {
+  position:absolute; top:8px; left:50%; transform:translateX(-50%);
+  width:38px; height:14px; border:2.5px solid var(--sage); border-bottom:none;
+  border-radius:3px 3px 0 0; background:var(--warm-white);
+}
+.mini-beaker-rim {
+  position:absolute; top:3px; left:50%; transform:translateX(-50%);
+  width:46px; height:7px; border:2.5px solid var(--sage);
+  border-radius:3px 3px 0 0;
+}
+
+.thinking-line { font-family:var(--font-display); font-size:1.15rem; color:var(--warm-gray); opacity:0; animation:fadeUp 0.8s ease forwards; margin-bottom:10px; line-height:1.6; }
+.thinking-line:last-child { color:var(--sage-dark); }
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
 /* ═══════════ NAVIGATION ═══════════ */
 .qz-nav { display:flex;justify-content:space-between;align-items:center; }

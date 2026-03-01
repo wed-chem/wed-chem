@@ -10,6 +10,7 @@ export const useQuizStore = defineStore('quiz', () => {
   const matches = ref([])
   const showThinking = ref(false)
   const thinkingText = ref([])
+  const beakerFill = ref(0)
 
   // Q1: Editing style rankings (ordered array of style ids)
   const editingRanking = ref([])
@@ -57,7 +58,7 @@ export const useQuizStore = defineStore('quiz', () => {
   const isLogistical = computed(() => currentQuestion.value?.type === 'logistical')
 
   // Thinking break indices (after Q3 = index 2, after Q10 = index 9)
-  const thinkingBreaks = [2, 9]
+  const thinkingBreaks = { 2: 1, 6: 2, 9: 3 } // index -> break number (1/3, 2/3, 3/3)
 
   function reset(m = 'couple') {
     editingRanking.value = []
@@ -97,14 +98,20 @@ export const useQuizStore = defineStore('quiz', () => {
   async function next() {
     if (currentIndex.value < totalQuestions.value - 1) {
       // Check if we should show a thinking break
-      if (thinkingBreaks.includes(currentIndex.value)) {
+      const breakNum = thinkingBreaks[currentIndex.value]
+      if (breakNum) {
         showThinking.value = true
-        const msgs = currentIndex.value === 2
-          ? getEditingSummaryMessages()
-          : ['Your style profile is taking shape...', 'Scanning photographer portfolios...', 'Refining your matches...']
-        thinkingText.value = msgs
-        // Wait then continue
-        await new Promise(r => setTimeout(r, 2500))
+        beakerFill.value = breakNum
+        if (breakNum === 1) {
+          thinkingText.value = getEditingSummaryMessages()
+          await new Promise(r => setTimeout(r, 5500))
+        } else if (breakNum === 2) {
+          thinkingText.value = ['Your style profile is taking shape...', 'Cross-referencing with photographer portfolios...']
+          await new Promise(r => setTimeout(r, 5000))
+        } else {
+          thinkingText.value = ['Almost there...', 'Fine-tuning your compatibility scores...', 'Preparing your personalized matches...']
+          await new Promise(r => setTimeout(r, 6000))
+        }
         showThinking.value = false
       }
       currentIndex.value++
@@ -135,7 +142,7 @@ export const useQuizStore = defineStore('quiz', () => {
   }
 
   return {
-    currentIndex, mode, completed, matches, showThinking, thinkingText,
+    currentIndex, mode, completed, matches, showThinking, thinkingText, beakerFill,
     editingRanking, photoStyleRanking, saturationPick, abAnswers, featureAnswers, manualAnswers,
     totalQuestions, progress, currentQuestion, isLastQuestion,
     isEditingRank, isPhotoStyleRank, isABPair, isFeature, isLogistical,
