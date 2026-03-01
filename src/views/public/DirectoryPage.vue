@@ -1,5 +1,12 @@
 <template>
   <div class="dir-page">
+    <!-- Photographer CTA banner -->
+    <div class="photog-banner">
+      <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <span style="font-size:0.88rem;color:var(--cream);">Are you a wedding photographer? Get matched with couples who love your style.</span>
+        <router-link to="/signup/photographer" class="banner-btn">Get Listed Free →</router-link>
+      </div>
+    </div>
     <div class="container">
       <div class="dir-header">
         <div class="section-eyebrow">Directory</div>
@@ -184,6 +191,8 @@ function clearFilters() { filters.value = { city:'', country:'', style:'', budge
 
 @media(max-width:1024px) { .grid { grid-template-columns:repeat(2,1fr); } }
 @media(max-width:768px) { .grid { grid-template-columns:1fr; } .filter-row { flex-direction:column; } }
-.photog-banner { background:var(--charcoal); padding:12px 0; }
+.photog-banner { background:var(--charcoal); padding:14px 0; }
+.banner-btn { color:var(--cream); font-size:0.85rem; font-weight:600; padding:8px 20px; border:1.5px solid rgba(250,247,242,0.4); border-radius:100px; transition:var(--transition); white-space:nowrap; }
+.banner-btn:hover { background:rgba(250,247,242,0.1); border-color:var(--cream); }
 @media(max-width:768px) { .photog-banner .container { flex-direction:column; text-align:center; } }
 </style>

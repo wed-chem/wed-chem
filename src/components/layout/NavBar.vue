@@ -7,7 +7,6 @@
         <li><router-link to="/directory" @click="menuOpen = false">Photographers</router-link></li>
         <li><router-link to="/pricing" @click="menuOpen = false">Pricing</router-link></li>
         <li><router-link to="/blog" @click="menuOpen = false">Blog</router-link></li>
-        <li v-if="!authStore.isPhotographer"><router-link to="/signup/photographer" @click="menuOpen = false" class="nav-photog-link">For Photographers</router-link></li>
         <li v-if="authStore.isAdmin">
           <router-link to="/admin" @click="menuOpen = false">Admin</router-link>
         </li>
