@@ -204,6 +204,7 @@ export async function sendInquiry({ photographerId, name, email, weddingDate, me
       message,
       matchScore: matchScore || null,
       status: 'new',
+      followUpSent: false,
       createdAt: serverTimestamp()
     })
   } catch (e) {

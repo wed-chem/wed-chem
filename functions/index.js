@@ -236,3 +236,57 @@ exports.onNewInquiry = functions.firestore
 
 // Export Express app as Cloud Function
 exports.app = functions.https.onRequest(app);
+
+// ─── SCHEDULED: 48-HOUR FOLLOW-UP EMAIL TO COUPLE ───
+exports.inquiryFollowUp = functions.pubsub
+  .schedule("every 6 hours")
+  .onRun(async () => {
+    const now = new Date();
+    const cutoff = new Date(now.getTime() - 48 * 60 * 60 * 1000); // 48h ago
+    const tooOld = new Date(now.getTime() - 96 * 60 * 60 * 1000); // don't re-nag after 96h
+
+    try {
+      const snap = await db.collection("inquiries")
+        .where("status", "in", ["new", "read"])
+        .where("followUpSent", "==", false)
+        .get();
+
+      const client = getPostmarkClient();
+
+      for (const docSnap of snap.docs) {
+        const inq = docSnap.data();
+        const created = inq.createdAt?.toDate ? inq.createdAt.toDate() : new Date(inq.createdAt);
+        
+        // Only send if created 48h+ ago and less than 96h
+        if (created > cutoff || created < tooOld) continue;
+        if (!inq.coupleEmail) continue;
+
+        // Get photographer name
+        let photogName = "your photographer match";
+        try {
+          const pDoc = await db.collection("photographers").doc(inq.photographerId).get();
+          if (pDoc.exists) photogName = pDoc.data().businessName || photogName;
+        } catch (e) {}
+
+        await client.sendEmail({
+          From: FROM_EMAIL,
+          To: inq.coupleEmail,
+          Subject: `Did you hear back from ${photogName}?`,
+          HtmlBody: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;">
+            <h1 style="font-size:24px;color:#2c2c2c;">Quick check-in</h1>
+            <p style="font-size:16px;line-height:1.6;color:#6b6b6b;">You reached out to <strong>${photogName}</strong> through WedChem a couple days ago. We wanted to check — have you heard back?</p>
+            <p style="font-size:16px;line-height:1.6;color:#6b6b6b;">If not, don't worry — photographers can be busy during wedding season. You can always browse more matches or try reaching out to another photographer.</p>
+            <div style="margin:32px 0;">
+              <a href="https://wedchem.com/directory" style="display:inline-block;padding:14px 28px;background:#2c2c2c;color:#faf7f2;border-radius:100px;text-decoration:none;font-weight:500;">Browse More Photographers →</a>
+            </div>
+            <p style="font-size:14px;color:#999;">— The WedChem Team</p>
+          </div>`,
+          MessageStream: "outbound",
+        });
+
+        await docSnap.ref.update({ followUpSent: true, followUpSentAt: admin.firestore.FieldValue.serverTimestamp() });
+      }
+    } catch (e) {
+      console.error("Follow-up email job failed:", e);
+    }
+  });
