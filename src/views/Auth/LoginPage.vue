@@ -46,9 +46,13 @@ const loading = ref(false)
 async function handleLogin() {
   error.value = ''; loading.value = true
   try {
-    const { login } = await import('@/services/auth')
-    await login(email.value, password.value)
-    const redirect = route.query.redirect || (authStore.isPhotographer ? '/dashboard' : '/')
+    const { login, getUserRole } = await import('@/services/auth')
+    const user = await login(email.value, password.value)
+    // Fetch role immediately instead of waiting for onAuth
+    const role = await getUserRole(user.uid)
+    authStore.role = role
+    if (role === 'photographer') await authStore.refreshPhotographerProfile()
+    const redirect = route.query.redirect || (role === 'photographer' ? '/dashboard' : '/')
     router.push(redirect)
   } catch (e) {
     error.value = e.code === 'auth/invalid-credential' ? 'Invalid email or password.' : 'Something went wrong. Please try again.'

@@ -226,6 +226,7 @@ import { useRouter } from 'vue-router'
 import { editingStyles, photoStyles, saturationQuestion, abPairs, specialtyTags, addOnServices, travelRadiusOptions, personalityTypes, coverageOptions } from '@/data/quizData'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const step = ref(1)
 const error = ref('')
 const loading = ref(false)
@@ -378,6 +379,9 @@ async function nextStep() {
       await updateStyleTags(user.uid, styleTags, form.specialties)
       await publishProfile(user.uid)
       try { const { sendWelcomeEmail } = await import('@/services/email'); await sendWelcomeEmail({ email: form.email, businessName: form.businessName, firstName: form.firstName }) } catch(e) {}
+      // Force auth store to recognize photographer role immediately
+      authStore.role = 'photographer'
+      await authStore.refreshPhotographerProfile()
       router.push('/dashboard')
     } catch(e) {
       error.value = e.code === 'auth/email-already-in-use' ? 'Email already registered. Try logging in.' : 'Something went wrong: ' + e.message
