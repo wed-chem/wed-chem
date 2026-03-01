@@ -20,12 +20,12 @@
           <img v-if="photographer.coverPhoto" :src="photographer.coverPhoto" :alt="photographer.businessName" class="cover-img">
           <div v-else class="cover-placeholder"></div>
         </div>
-        <div class="profile-header">
+        <div class="profile-info-bar">
           <div class="profile-avatar" :style="{background: photographer.avatar ? `url(${photographer.avatar}) center/cover` : 'linear-gradient(135deg, var(--sage-light), var(--blush))'}">
             <span v-if="!photographer.avatar">{{ initials }}</span>
           </div>
           <div class="profile-header-info">
-            <div class="profile-badges" style="margin-top:4px;">
+            <div class="profile-badges">
               <span class="badge-featured" v-if="photographer.tier === 'featured'">⭐ Featured</span>
               <span class="badge-verified" v-if="photographer.status === 'approved'">✓ Verified</span>
             </div>
@@ -330,19 +330,19 @@ async function submitInquiry() {
 .profile-page { padding:100px 0 80px; background:var(--cream); min-height:100vh; }
 
 .profile-hero { margin-bottom:48px; }
-.profile-cover { height:320px; border-radius:var(--radius-lg); overflow:hidden; margin-bottom:-60px; position:relative; background:var(--light-gray); }
+.profile-cover { height:300px; border-radius:var(--radius-lg); overflow:hidden; position:relative; background:var(--light-gray); }
 .cover-img { width:100%; height:100%; object-fit:cover; display:block; }
 .cover-placeholder { width:100%; height:100%; background:linear-gradient(135deg, var(--sage-light), var(--blush)); }
-.profile-header { display:flex; align-items:flex-end; gap:24px; padding:0 32px; position:relative; z-index:2; flex-wrap:wrap; }
+.profile-header { display:flex; align-items:flex-start; gap:24px; padding:0 32px; position:relative; z-index:2; margin-top:-60px; flex-wrap:wrap; }
 .profile-avatar { width:120px; height:120px; border-radius:50%; border:4px solid var(--warm-white); box-shadow:var(--shadow-md); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:2.5rem; font-weight:500; color:var(--charcoal); flex-shrink:0; overflow:hidden; background-size:cover; }
-.profile-header-info { flex:1; min-width:200px; padding-bottom:8px; }
+.profile-header-info { flex:1; min-width:200px; padding-top:68px; }
 .profile-badges { display:flex; gap:8px; margin-bottom:8px; }
 .badge-featured { padding:4px 12px; background:var(--gold); color:white; border-radius:100px; font-size:0.72rem; font-weight:600; }
 .badge-verified { padding:4px 12px; background:var(--sage-light); color:var(--sage-dark); border-radius:100px; font-size:0.72rem; font-weight:600; }
-.profile-name { font-family:var(--font-display); font-size:2rem; font-weight:500; margin-bottom:4px; text-shadow:0 1px 8px rgba(255,255,255,0.7); }
+.profile-name { font-family:var(--font-display); font-size:2rem; font-weight:500; margin-bottom:4px; }
 .profile-location { font-size:0.92rem; color:var(--warm-gray); margin-bottom:4px; }
 .profile-tagline { font-size:0.95rem; color:var(--warm-gray); font-style:italic; }
-.profile-header-actions { display:flex; gap:12px; padding-bottom:8px; flex-shrink:0; }
+.profile-header-actions { display:flex; gap:12px; padding-top:68px; flex-shrink:0; }
 
 .profile-layout { display:grid; grid-template-columns:1fr 360px; gap:48px; }
 
@@ -392,10 +392,11 @@ async function submitInquiry() {
 @media (max-width:1024px) { .profile-layout { grid-template-columns:1fr; } .profile-sidebar { order:-1; } }
 @media (max-width:768px) {
   .profile-header { flex-direction:column; align-items:center; text-align:center; padding:0 16px; }
-  .profile-header-actions { justify-content:center; }
+  .profile-header-info { padding-top:12px; }
+  .profile-header-actions { justify-content:center; padding-top:0; }
   .portfolio-grid { grid-template-columns:repeat(2, 1fr); }
   .portfolio-item:nth-child(1) { grid-column:span 2; grid-row:span 1; }
-  .profile-cover { height:180px; }
-  .profile-avatar { width:100px; height:100px; }
+  .profile-cover { height:160px; }
+  .profile-avatar { width:64px; height:64px; font-size:1.4rem; }
 }
 </style>

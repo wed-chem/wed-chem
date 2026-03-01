@@ -105,7 +105,7 @@
 
       <!-- SAVE -->
       <div class="save-bar">
-        <div class="save-status" v-if="saveMsg">{{ saveMsg }}</div>
+        <div class="save-status" :style="{color: saveMsg.includes('Error') || saveMsg.includes('Could not') ? '#c44' : 'var(--sage-dark)'}">{{ saveMsg }}</div>
         <button class="btn-primary" @click="save" :disabled="saving">{{ saving ? 'Saving...' : 'Save All Changes →' }}</button>
       </div>
     </div>
@@ -202,11 +202,14 @@ async function save() {
   saving.value = true; saveMsg.value = ''
   try {
     if (form.city) {
-      try {
-        const { validateAndGeocode } = await import('@/services/geocoding')
-        const geo = await validateAndGeocode(form.city, form.state, form.country)
-        if (geo.valid) { form.lat = geo.lat; form.lng = geo.lng }
-      } catch (e) {}
+      const { validateAndGeocode } = await import('@/services/geocoding')
+      const geo = await validateAndGeocode(form.city, form.state, form.country)
+      if (!geo.valid) {
+        saveMsg.value = 'Could not verify location. Please check city, state, and country.'
+        saving.value = false
+        return
+      }
+      form.lat = geo.lat; form.lng = geo.lng
     }
     const { updatePhotographer } = await import('@/services/photographer')
     await updatePhotographer(authStore.uid, { ...form })
@@ -257,7 +260,7 @@ async function save() {
 
 /* Save bar */
 .save-bar { display:flex; align-items:center; justify-content:flex-end; gap:16px; padding:24px 0; border-top:1px solid var(--light-gray); position:sticky; bottom:0; background:var(--cream); z-index:10; }
-.save-status { font-size:0.88rem; color:var(--sage-dark); font-weight:500; }
+.save-status { font-size:0.88rem; font-weight:500; }
 
 @media(max-width:768px) {
   .portfolio-edit-grid { grid-template-columns:repeat(3, 1fr); }
