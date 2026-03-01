@@ -16,13 +16,16 @@
 
       <!-- HERO / COVER -->
       <div class="profile-hero">
-        <div class="profile-cover" :style="{background: photographer.coverPhoto ? `url(${photographer.coverPhoto}) center/cover` : 'linear-gradient(135deg, var(--sage-light), var(--blush))'}"></div>
+        <div class="profile-cover">
+          <img v-if="photographer.coverPhoto" :src="photographer.coverPhoto" :alt="photographer.businessName" class="cover-img">
+          <div v-else class="cover-placeholder"></div>
+        </div>
         <div class="profile-header">
           <div class="profile-avatar" :style="{background: photographer.avatar ? `url(${photographer.avatar}) center/cover` : 'linear-gradient(135deg, var(--sage-light), var(--blush))'}">
             <span v-if="!photographer.avatar">{{ initials }}</span>
           </div>
           <div class="profile-header-info">
-            <div class="profile-badges">
+            <div class="profile-badges" style="margin-top:4px;">
               <span class="badge-featured" v-if="photographer.tier === 'featured'">⭐ Featured</span>
               <span class="badge-verified" v-if="photographer.status === 'approved'">✓ Verified</span>
             </div>
@@ -47,7 +50,7 @@
             <h2 class="ps-title">Portfolio</h2>
             <div class="portfolio-grid">
               <div class="portfolio-item" v-for="(photo, i) in portfolio" :key="i" @click="openLightbox(i)">
-                <div class="portfolio-img" :style="{backgroundImage: `url(${photo})`}"></div>
+                <img :src="photo" :alt="'Portfolio photo ' + (i+1)" class="portfolio-img">
               </div>
             </div>
           </section>
@@ -327,14 +330,16 @@ async function submitInquiry() {
 .profile-page { padding:100px 0 80px; background:var(--cream); min-height:100vh; }
 
 .profile-hero { margin-bottom:48px; }
-.profile-cover { height:320px; border-radius:var(--radius-lg); overflow:hidden; margin-bottom:-60px; position:relative; }
+.profile-cover { height:320px; border-radius:var(--radius-lg); overflow:hidden; margin-bottom:-60px; position:relative; background:var(--light-gray); }
+.cover-img { width:100%; height:100%; object-fit:cover; display:block; }
+.cover-placeholder { width:100%; height:100%; background:linear-gradient(135deg, var(--sage-light), var(--blush)); }
 .profile-header { display:flex; align-items:flex-end; gap:24px; padding:0 32px; position:relative; z-index:2; flex-wrap:wrap; }
 .profile-avatar { width:120px; height:120px; border-radius:50%; border:4px solid var(--warm-white); box-shadow:var(--shadow-md); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:2.5rem; font-weight:500; color:var(--charcoal); flex-shrink:0; overflow:hidden; background-size:cover; }
 .profile-header-info { flex:1; min-width:200px; padding-bottom:8px; }
 .profile-badges { display:flex; gap:8px; margin-bottom:8px; }
 .badge-featured { padding:4px 12px; background:var(--gold); color:white; border-radius:100px; font-size:0.72rem; font-weight:600; }
 .badge-verified { padding:4px 12px; background:var(--sage-light); color:var(--sage-dark); border-radius:100px; font-size:0.72rem; font-weight:600; }
-.profile-name { font-family:var(--font-display); font-size:2rem; font-weight:500; margin-bottom:4px; }
+.profile-name { font-family:var(--font-display); font-size:2rem; font-weight:500; margin-bottom:4px; text-shadow:0 1px 8px rgba(255,255,255,0.7); }
 .profile-location { font-size:0.92rem; color:var(--warm-gray); margin-bottom:4px; }
 .profile-tagline { font-size:0.95rem; color:var(--warm-gray); font-style:italic; }
 .profile-header-actions { display:flex; gap:12px; padding-bottom:8px; flex-shrink:0; }
@@ -348,8 +353,8 @@ async function submitInquiry() {
 .portfolio-item { border-radius:var(--radius); overflow:hidden; cursor:pointer; transition:var(--transition); }
 .portfolio-item:hover { transform:scale(1.03); box-shadow:var(--shadow-md); }
 .portfolio-item:nth-child(1) { grid-column:span 2; grid-row:span 2; }
-.portfolio-img { aspect-ratio:4/3; background-size:cover; background-position:center; }
-.portfolio-item:nth-child(1) .portfolio-img { aspect-ratio:auto; height:100%; }
+.portfolio-img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; border-radius:var(--radius); }
+.portfolio-item:nth-child(1) .portfolio-img { aspect-ratio:1/1; }
 
 .about-text { font-size:0.95rem; color:var(--warm-gray); line-height:1.8; white-space:pre-line; }
 
@@ -390,7 +395,7 @@ async function submitInquiry() {
   .profile-header-actions { justify-content:center; }
   .portfolio-grid { grid-template-columns:repeat(2, 1fr); }
   .portfolio-item:nth-child(1) { grid-column:span 2; grid-row:span 1; }
-  .profile-cover { height:200px; }
+  .profile-cover { height:180px; }
   .profile-avatar { width:100px; height:100px; }
 }
 </style>

@@ -146,6 +146,18 @@
         <div v-if="step===4" class="step-content">
           <h2 class="step-title">Show your best work</h2>
           <p class="step-sub">Upload 8–20 photos. Mix of couples, details, ceremony, reception.</p>
+          <div class="form-row"><label class="form-label">Profile Photo (headshot)</label>
+            <div class="headshot-upload" @click="$refs.headshotInput.click()">
+              <input type="file" ref="headshotInput" accept="image/*" @change="handleHeadshot" hidden>
+              <div class="headshot-preview" v-if="headshotPreview">
+                <img :src="headshotPreview" class="headshot-img">
+              </div>
+              <div class="headshot-empty" v-else>
+                <span style="font-size:1.5rem;">📷</span>
+                <span style="font-size:0.82rem;color:var(--warm-gray);">Upload headshot</span>
+              </div>
+            </div>
+          </div>
           <div class="form-row"><label class="form-label">Cover Photo</label>
             <div class="upload-zone" @click="$refs.coverInput.click()">
               <input type="file" ref="coverInput" accept="image/*" @change="handleCover" hidden>
@@ -240,6 +252,8 @@ const step = ref(1)
 const error = ref('')
 const loading = ref(false)
 const coverPreview = ref(null)
+const headshotFile = ref(null)
+const headshotPreview = ref(null)
 const coverFile = ref(null)
 const portfolioPreviews = ref([])
 const portfolioFiles = ref([])
@@ -331,6 +345,11 @@ function quizPrev() {
 function editingStyleLabel(id) { return editingStyles.find(s => s.id === id)?.label || id }
 function photoStyleLabel(id) { return photoStyles.find(s => s.id === id)?.label || id }
 
+function handleHeadshot(e) {
+  const f = e.target.files[0]; if (!f) return
+  headshotFile.value = f; headshotPreview.value = URL.createObjectURL(f)
+}
+
 function handleCover(e) {
   const f = e.target.files[0]; if (!f) return
   coverFile.value = f; coverPreview.value = URL.createObjectURL(f)
@@ -392,6 +411,14 @@ async function nextStep() {
         personality: quiz.features.personality ? [quiz.features.personality] : [],
         coverageHours: Array.isArray(quiz.features.hours) ? quiz.features.hours : (quiz.features.hours ? [quiz.features.hours] : [])
       })
+      // Upload headshot
+      if (headshotFile.value) {
+        try {
+          const { uploadHeadshot } = await import('@/services/photographer')
+          await uploadHeadshot(user.uid, headshotFile.value)
+        } catch (e) { console.error('Headshot upload failed:', e) }
+      }
+
       // Upload cover photo
       if (coverFile.value) {
         try {
@@ -530,5 +557,11 @@ async function nextStep() {
   .step-label { display:none; }
   .feature-options { flex-direction:column; }
 }
+.headshot-upload { display:inline-flex; cursor:pointer; }
+.headshot-preview { width:100px; height:100px; border-radius:50%; overflow:hidden; border:3px solid var(--light-gray); }
+.headshot-img { width:100%; height:100%; object-fit:cover; }
+.headshot-empty { width:100px; height:100px; border-radius:50%; border:2px dashed var(--light-gray); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; transition:var(--transition); }
+.headshot-upload:hover .headshot-empty { border-color:var(--sage); background:rgba(139,158,130,0.04); }
+
 .quiz-sub-hint { font-size:0.85rem; color:var(--warm-gray); margin-bottom:16px; text-align:center; }
 </style>

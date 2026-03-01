@@ -8,6 +8,14 @@ export async function savePhotographerQuiz(uid, answers) { await updateDoc(doc(d
 export async function updateStyleTags(uid, styles, specialties) { await updateDoc(doc(db, 'photographers', uid), { styles, specialties, updatedAt: serverTimestamp() }) }
 export async function publishProfile(uid) { await updateDoc(doc(db, 'photographers', uid), { status: 'pending', published: false, profileComplete: true, submittedAt: serverTimestamp(), updatedAt: serverTimestamp() }) }
 
+export async function uploadHeadshot(uid, file) {
+  const r = ref(storage, `photographers/${uid}/headshot/${file.name}`)
+  const s = await uploadBytes(r, file)
+  const url = await getDownloadURL(s.ref)
+  await updateDoc(doc(db, 'photographers', uid), { avatar: url, updatedAt: serverTimestamp() })
+  return url
+}
+
 export async function uploadCoverPhoto(uid, file) {
   const r = ref(storage, `photographers/${uid}/cover/${file.name}`)
   const s = await uploadBytes(r, file)
