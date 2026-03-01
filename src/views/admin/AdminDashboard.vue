@@ -104,7 +104,7 @@ async function approvePhotographer(p) {
     await updateDoc(doc(db, 'photographers', p.id), {
       status: 'approved',
       published: true,
-      approvedAt: serverTimestamp()
+      approvedAt: serverTimestamp(), publishedAt: serverTimestamp()
     })
     // Trigger email via Cloud Function or direct API
     await sendStatusEmail(p, 'approved')
