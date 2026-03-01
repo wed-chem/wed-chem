@@ -184,4 +184,6 @@ function clearFilters() { filters.value = { city:'', country:'', style:'', budge
 
 @media(max-width:1024px) { .grid { grid-template-columns:repeat(2,1fr); } }
 @media(max-width:768px) { .grid { grid-template-columns:1fr; } .filter-row { flex-direction:column; } }
+.photog-banner { background:var(--charcoal); padding:12px 0; }
+@media(max-width:768px) { .photog-banner .container { flex-direction:column; text-align:center; } }
 </style>

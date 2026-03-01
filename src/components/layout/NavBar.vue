@@ -7,6 +7,7 @@
         <li><router-link to="/directory" @click="menuOpen = false">Photographers</router-link></li>
         <li><router-link to="/pricing" @click="menuOpen = false">Pricing</router-link></li>
         <li><router-link to="/blog" @click="menuOpen = false">Blog</router-link></li>
+        <li v-if="!authStore.isPhotographer"><router-link to="/signup/photographer" @click="menuOpen = false" class="nav-photog-link">For Photographers</router-link></li>
         <li v-if="authStore.isAdmin">
           <router-link to="/admin" @click="menuOpen = false">Admin</router-link>
         </li>
@@ -65,4 +66,5 @@ nav .container { display:flex; justify-content:space-between; align-items:center
   .nav-links.open { display:flex; flex-direction:column; position:absolute; top:100%; left:0; right:0; background:var(--cream); padding:24px; gap:20px; box-shadow:var(--shadow-md); }
   .mobile-toggle { display:block; }
 }
+.nav-photog-link { color:var(--terracotta) !important; font-weight:500 !important; }
 </style>

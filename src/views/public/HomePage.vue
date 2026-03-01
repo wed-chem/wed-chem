@@ -45,7 +45,7 @@
           <div class="quiz-text">
             <div class="section-eyebrow">The Chemistry Test</div>
             <h2 class="section-title">You pick what you love. We do the rest.</h2>
-            <p style="color:var(--warm-gray);margin-bottom:24px;line-height:1.7;">Our proprietary matching algorithm analyzes your visual preferences across 25 dimensions — editing style, lighting, composition, mood, and more — to find photographers whose work you'll love.</p>
+            <p style="color:var(--warm-gray);margin-bottom:24px;line-height:1.7;">Our matching algorithm analyzes your visual preferences across editing style, photo approach, color tones, lighting, composition, and personality — then scores photographers on how well they align with what you're drawn to.</p>
             <p style="font-size:0.92rem;color:var(--warm-gray);margin-bottom:32px;line-height:1.7;">Takes about 3 minutes. No account needed. Just pick what you love.</p>
             <router-link to="/quiz" class="btn-primary">Start the Quiz →</router-link>
           </div>
@@ -61,8 +61,8 @@
               </div>
             </div>
             <div class="qd-progress">
-              <div class="qd-bar"><div class="qd-fill" style="width:12%"></div></div>
-              <span class="qd-text">3 of 25</span>
+              <div class="qd-bar"><div class="qd-fill" style="width:21%"></div></div>
+              <span class="qd-text">4 of 19</span>
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@
             <div class="pc-desc">Everything you need to find your match</div>
             <div class="pc-price"><span class="pc-val" style="color:var(--sage)">Free</span><span class="pc-period">forever</span></div>
             <ul class="pc-features">
-              <li>25-photo style matching quiz</li>
+              <li>19-question style matching quiz</li>
               <li>Personalized photographer matches</li>
               <li>Full directory access</li>
               <li>Direct messaging</li>
@@ -188,9 +188,9 @@ import { ref } from 'vue'
 const demoChoice = ref('a')
 
 const howSteps = [
-  { title: 'Pick Photos You Love', desc: 'We show you 25 side-by-side photo comparisons. Just pick the one that speaks to you each time. No jargon — just "this one or that one."' },
-  { title: 'We Find Your Match', desc: 'Our algorithm analyzes your visual preferences and matches you with photographers whose style aligns with what you\'re naturally drawn to.' },
-  { title: 'Connect Directly', desc: 'Browse your matches, view portfolios, and reach out. No middleman fees for couples — ever.' }
+  { title: 'Take the Style Quiz', desc: 'Rank your favorite editing styles, choose between photo aesthetics, and tell us what matters to you. Takes about 3 minutes — no account needed.' },
+  { title: 'See Your Matches', desc: 'Our algorithm scores photographers across 15+ style dimensions — editing tone, shooting approach, personality, and more — to surface the ones whose work fits your vision.' },
+  { title: 'Connect Directly', desc: 'Browse profiles, view portfolios, and send a message. No booking fees, no middlemen — just you and the photographer.' }
 ]
 
 const benefits = [
