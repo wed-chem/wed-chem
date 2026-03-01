@@ -30,7 +30,7 @@
           <div class="cover-wrap" @click="$refs.coverInput.click()">
             <input type="file" ref="coverInput" accept="image/*" @change="uploadCoverFile" hidden>
             <img v-if="profile?.coverPhoto" :src="profile.coverPhoto" class="cover-current">
-            <div v-else class="cover-empty">Click to upload cover photo</div>
+            <div v-else class="cover-empty">Click to upload cover photo<br><span style="font-size:0.78rem;">Landscape photo recommended (e.g. 1600×600)</span></div>
             <div class="photo-overlay"><span>Change</span></div>
           </div>
         </div>

@@ -161,7 +161,7 @@
           <div class="form-row"><label class="form-label">Cover Photo</label>
             <div class="upload-zone" @click="$refs.coverInput.click()">
               <input type="file" ref="coverInput" accept="image/*" @change="handleCover" hidden>
-              <div v-if="!coverPreview" class="upload-placeholder">Click to upload your cover image</div>
+              <div v-if="!coverPreview" class="upload-placeholder">Click to upload cover image<br><span style="font-size:0.78rem;color:var(--warm-gray);">Landscape photo recommended (e.g. 1600×600)</span></div>
               <img v-else :src="coverPreview" class="upload-preview">
             </div>
           </div>
