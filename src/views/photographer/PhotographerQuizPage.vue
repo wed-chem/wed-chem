@@ -113,7 +113,7 @@ const featureSteps = [
   { id: 'film', question: 'Do you offer film photography?', options: ['Yes, I shoot film', 'No, digital only'] },
   { id: 'secondShooter', question: 'Do you have second shooters available?', options: ['Yes', 'No'] },
   { id: 'personality', question: 'How would clients describe your personality?', options: personalityTypes },
-  { id: 'hours', question: 'What coverage do you typically offer?', options: coverageOptions }
+  { id: 'hours', question: 'What coverage can you offer?', options: coverageOptions, multi: true }
 ]
 
 const answers = reactive({
@@ -234,4 +234,5 @@ async function saveQuiz() {
   .style-rank-img { max-height:180px; }
   .feature-options { flex-direction:column; }
 }
+.quiz-sub-hint { font-size:0.85rem; color:var(--warm-gray); margin-bottom:16px; text-align:center; }
 </style>

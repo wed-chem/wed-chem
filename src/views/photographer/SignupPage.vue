@@ -106,10 +106,18 @@
           <!-- 2e: Features -->
           <div v-if="quizStep==='features'">
             <div class="quiz-q">{{ featureSteps[featureIndex].question }}</div>
+            <div class="quiz-sub-hint" v-if="featureSteps[featureIndex].id === 'hours'">Select all that apply</div>
             <div class="feature-options" :class="{'feature-col': featureSteps[featureIndex].options.length > 3}">
-              <button v-for="opt in featureSteps[featureIndex].options" :key="opt" class="toggle-opt"
-                :class="{selected: quiz.features[featureSteps[featureIndex].id] === opt}"
-                @click="quiz.features[featureSteps[featureIndex].id] = opt">{{ opt }}</button>
+              <template v-if="featureSteps[featureIndex].multi">
+                <button v-for="opt in featureSteps[featureIndex].options" :key="opt" class="toggle-opt"
+                  :class="{selected: (quiz.features[featureSteps[featureIndex].id] || []).includes(opt)}"
+                  @click="toggleMultiFeature(featureSteps[featureIndex].id, opt)">{{ opt }}</button>
+              </template>
+              <template v-else>
+                <button v-for="opt in featureSteps[featureIndex].options" :key="opt" class="toggle-opt"
+                  :class="{selected: quiz.features[featureSteps[featureIndex].id] === opt}"
+                  @click="quiz.features[featureSteps[featureIndex].id] = opt">{{ opt }}</button>
+              </template>
             </div>
           </div>
 
@@ -373,7 +381,7 @@ async function nextStep() {
         hasFilm: quiz.features.film === 'Yes, I shoot film',
         hasSecondShooter: quiz.features.secondShooter === 'Yes',
         personality: quiz.features.personality ? [quiz.features.personality] : [],
-        coverageHours: quiz.features.hours ? [quiz.features.hours] : []
+        coverageHours: Array.isArray(quiz.features.hours) ? quiz.features.hours : (quiz.features.hours ? [quiz.features.hours] : [])
       })
       await savePhotographerQuiz(user.uid, quiz)
       await updateStyleTags(user.uid, styleTags, form.specialties)
@@ -492,4 +500,5 @@ async function nextStep() {
   .step-label { display:none; }
   .feature-options { flex-direction:column; }
 }
+.quiz-sub-hint { font-size:0.85rem; color:var(--warm-gray); margin-bottom:16px; text-align:center; }
 </style>
