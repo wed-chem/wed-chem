@@ -28,35 +28,99 @@
         <!-- STEP 2: STYLE QUIZ -->
         <div v-if="step===2" class="step-content">
           <h2 class="step-title">Define your style</h2>
-          <p class="step-sub">Complete the visual profile so our algorithm can match you with the right couples. Pick the option that better represents your work.</p>
-          <div class="quiz-progress"><div class="qp-bar"><div class="qp-fill" :style="{width: ((quizIndex+1)/25*100)+'%'}"></div></div><div class="qp-text">{{ quizIndex+1 }} of 25</div></div>
-          <div class="quiz-q">{{ abPairs[quizIndex].question }}</div>
-          <div class="quiz-pair">
-            <div class="quiz-opt" :class="{sel:quizAnswers[quizIndex]==='a'}" @click="quizAnswers[quizIndex]='a'">
-              <div class="quiz-img" :style="{background:abPairs[quizIndex].a.gradient}"></div>
-              <div class="quiz-lbl">{{ abPairs[quizIndex].a.label }}</div>
-            </div>
-            <div class="quiz-opt" :class="{sel:quizAnswers[quizIndex]==='b'}" @click="quizAnswers[quizIndex]='b'">
-              <div class="quiz-img" :style="{background:abPairs[quizIndex].b.gradient}"></div>
-              <div class="quiz-lbl">{{ abPairs[quizIndex].b.label }}</div>
+          <p class="step-sub">Complete your visual profile so our algorithm can match you with the right couples.</p>
+
+          <!-- Sub-step progress -->
+          <div class="quiz-progress"><div class="qp-bar"><div class="qp-fill" :style="{width: quizProgress + '%'}"></div></div><div class="qp-text">{{ quizStepLabel }}</div></div>
+
+          <!-- 2a: Editing Styles -->
+          <div v-if="quizStep==='editing'">
+            <div class="quiz-q">What editing styles describe your work?</div>
+            <div class="quiz-sub">Select in order of preference (first = primary style)</div>
+            <div class="rank-grid">
+              <button class="rank-card" v-for="style in editingStyles" :key="style.id"
+                :class="{selected: quiz.editingStyles.includes(style.id)}"
+                @click="toggleList(quiz.editingStyles, style.id)">
+                <div class="rank-preview" :style="{background: style.gradient}"></div>
+                <div class="rank-label">{{ style.label }}</div>
+                <div class="rank-desc">{{ style.description }}</div>
+                <div class="rank-number" v-if="quiz.editingStyles.includes(style.id)">
+                  {{ quiz.editingStyles.indexOf(style.id) + 1 }}
+                </div>
+              </button>
             </div>
           </div>
+
+          <!-- 2b: Photo Styles -->
+          <div v-if="quizStep==='photoStyle'">
+            <div class="quiz-q">What photo styles describe your work?</div>
+            <div class="quiz-sub">Select in order of preference (pick 1–3)</div>
+            <div class="rank-grid rank-grid-4">
+              <button class="rank-card" v-for="style in photoStyles" :key="style.id"
+                :class="{selected: quiz.photoStyles.includes(style.id)}"
+                @click="toggleList(quiz.photoStyles, style.id)">
+                <div class="rank-label">{{ style.label }}</div>
+                <div class="rank-desc">{{ style.description }}</div>
+                <div class="rank-number" v-if="quiz.photoStyles.includes(style.id)">
+                  {{ quiz.photoStyles.indexOf(style.id) + 1 }}
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2c: Saturation -->
+          <div v-if="quizStep==='saturation'">
+            <div class="quiz-q">{{ saturationQuestion.question }}</div>
+            <div class="quiz-sub">Pick the one that best represents your editing</div>
+            <div class="quiz-pair">
+              <div class="quiz-opt" :class="{sel:quiz.saturation==='a'}" @click="quiz.saturation='a'">
+                <div class="quiz-img" :style="{background:saturationQuestion.a.gradient}"></div>
+                <div class="quiz-lbl">{{ saturationQuestion.a.label }}</div>
+              </div>
+              <div class="quiz-opt" :class="{sel:quiz.saturation==='b'}" @click="quiz.saturation='b'">
+                <div class="quiz-img" :style="{background:saturationQuestion.b.gradient}"></div>
+                <div class="quiz-lbl">{{ saturationQuestion.b.label }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2d: A/B Pairs -->
+          <div v-if="quizStep==='ab'">
+            <div class="quiz-q">{{ abPairs[abIndex].question }}</div>
+            <div class="quiz-sub">Pick the one that best represents your work</div>
+            <div class="quiz-pair">
+              <div class="quiz-opt" :class="{sel:quiz.abAnswers[abPairs[abIndex].id]==='a'}" @click="quiz.abAnswers[abPairs[abIndex].id]='a'">
+                <div class="quiz-img" :style="{background: abPairs[abIndex].a.image ? `url(${abPairs[abIndex].a.image}) center/cover` : abPairs[abIndex].a.gradient}"></div>
+                <div class="quiz-lbl">{{ abPairs[abIndex].a.label }}</div>
+              </div>
+              <div class="quiz-opt" :class="{sel:quiz.abAnswers[abPairs[abIndex].id]==='b'}" @click="quiz.abAnswers[abPairs[abIndex].id]='b'">
+                <div class="quiz-img" :style="{background: abPairs[abIndex].b.image ? `url(${abPairs[abIndex].b.image}) center/cover` : abPairs[abIndex].b.gradient}"></div>
+                <div class="quiz-lbl">{{ abPairs[abIndex].b.label }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2e: Features -->
+          <div v-if="quizStep==='features'">
+            <div class="quiz-q">{{ featureSteps[featureIndex].question }}</div>
+            <div class="feature-options" :class="{'feature-col': featureSteps[featureIndex].options.length > 3}">
+              <button v-for="opt in featureSteps[featureIndex].options" :key="opt" class="toggle-opt"
+                :class="{selected: quiz.features[featureSteps[featureIndex].id] === opt}"
+                @click="quiz.features[featureSteps[featureIndex].id] = opt">{{ opt }}</button>
+            </div>
+          </div>
+
+          <!-- Quiz sub-nav -->
           <div class="quiz-nav">
-            <button class="qn-back" @click="quizIndex > 0 ? quizIndex-- : null" :style="{visibility:quizIndex===0?'hidden':'visible'}">← Back</button>
-            <button class="qn-next" @click="quizIndex < 24 ? quizIndex++ : step++">{{ quizIndex===24 ? 'Next Step →' : 'Next →' }}</button>
+            <button class="qn-back" @click="quizPrev" :style="{visibility: quizStep==='editing' ? 'hidden' : 'visible'}">← Back</button>
+            <button class="qn-next" @click="quizNext">{{ isLastQuizStep ? 'Next Step →' : 'Next →' }}</button>
           </div>
         </div>
 
-        <!-- STEP 3: STYLE TAGS -->
+        <!-- STEP 3: STYLE TAGS & BIO -->
         <div v-if="step===3" class="step-content">
           <h2 class="step-title">Describe your style</h2>
-          <p class="step-sub">Select tags that describe your photography (pick 2–5)</p>
-          <label class="form-label">Photography Style</label>
-          <div class="tag-group" style="margin-bottom:28px;">
-            <label class="tag-chip" v-for="s in styleTags" :key="s" :class="{active:form.styles.includes(s)}">
-              <input type="checkbox" :value="s" v-model="form.styles">{{ s }}
-            </label>
-          </div>
+          <p class="step-sub">Select tags and write your bio</p>
           <label class="form-label">Specialties</label>
           <div class="tag-group" style="margin-bottom:28px;">
             <label class="tag-chip" v-for="s in specialtyTags" :key="s" :class="{active:form.specialties.includes(s)}">
@@ -124,8 +188,12 @@
             <div class="review-value">{{ form.businessName }} — {{ form.city }}<span v-if="form.state">, {{ form.state }}</span><span v-if="form.country"> · {{ form.country }}</span></div>
           </div>
           <div class="review-section">
-            <div class="review-label">Style</div>
-            <div class="review-tags"><span class="review-tag" v-for="s in form.styles" :key="s">{{ s }}</span></div>
+            <div class="review-label">Editing Styles</div>
+            <div class="review-tags"><span class="review-tag" v-for="s in quiz.editingStyles" :key="s">{{ editingStyleLabel(s) }}</span></div>
+          </div>
+          <div class="review-section">
+            <div class="review-label">Photo Styles</div>
+            <div class="review-tags"><span class="review-tag" v-for="s in quiz.photoStyles" :key="s">{{ photoStyleLabel(s) }}</span></div>
           </div>
           <div class="review-section">
             <div class="review-label">Pricing</div>
@@ -135,11 +203,7 @@
             <div class="review-label">Portfolio</div>
             <div class="review-value">{{ portfolioPreviews.length }} photos uploaded</div>
           </div>
-          <div class="review-section">
-            <div class="review-label">Quiz</div>
-            <div class="review-value">{{ Object.keys(quizAnswers).length }}/25 questions answered</div>
-          </div>
-          <div class="publish-note">You can always edit your profile later from the dashboard.</div>
+          <div class="publish-note">Your profile will be reviewed before going live. You can edit everything later from your dashboard.</div>
         </div>
 
         <!-- NAV -->
@@ -154,28 +218,97 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { abPairs, styleTags, specialtyTags, addOnServices, travelRadiusOptions } from '@/data/quizData'
+import { editingStyles, photoStyles, saturationQuestion, abPairs, specialtyTags, addOnServices, travelRadiusOptions, personalityTypes, coverageOptions } from '@/data/quizData'
 
 const router = useRouter()
 const step = ref(1)
 const error = ref('')
 const loading = ref(false)
-const quizIndex = ref(0)
-const quizAnswers = reactive({})
 const coverPreview = ref(null)
 const coverFile = ref(null)
 const portfolioPreviews = ref([])
 const portfolioFiles = ref([])
 
+const stepLabels = ['Basics', 'Style Quiz', 'Profile', 'Portfolio', 'Services', 'Review']
+
 const form = reactive({
   firstName:'', lastName:'', businessName:'', email:'', password:'',
   phone:'', city:'', state:'', country:'', travelRadius:'150', website:'', lat:null, lng:null, geoDisplayName:'',
-  styles:[], specialties:[], tagline:'', about:'',
+  specialties:[], tagline:'', about:'',
   instagram:'', tiktok:'',
   priceMin:null, priceMax:null, basePackage:'', addOns:[], turnaround:'4–6 weeks', yearsExperience:'3–5 years'
 })
+
+// ═══════ QUIZ STATE ═══════
+const quiz = reactive({
+  editingStyles: [],    // ordered array of style ids
+  photoStyles: [],      // ordered array of style ids
+  saturation: null,     // 'a' or 'b'
+  abAnswers: {},        // { 4: 'a', 5: 'b', ... }
+  features: {}          // { aerial: 'Yes', film: 'Yes, I shoot film', ... }
+})
+
+// Photographer-specific feature questions
+const featureSteps = [
+  { id: 'aerial', question: 'Do you offer aerial / drone photography?', options: ['Yes', 'No'] },
+  { id: 'film', question: 'Do you offer film photography?', options: ['Yes, I shoot film', 'No, digital only'] },
+  { id: 'secondShooter', question: 'Do you have second shooters available?', options: ['Yes', 'No'] },
+  { id: 'personality', question: 'How would clients describe your personality on the job?', options: personalityTypes },
+  { id: 'hours', question: 'What coverage do you typically offer?', options: coverageOptions }
+]
+
+// Quiz sub-navigation
+const quizStep = ref('editing') // editing, photoStyle, saturation, ab, features
+const abIndex = ref(0)
+const featureIndex = ref(0)
+
+const quizSteps = ['editing', 'photoStyle', 'saturation', 'ab', 'features']
+const totalQuizSteps = computed(() => 2 + 1 + abPairs.length + featureSteps.length) // editing + photoStyle + saturation + 7 AB + 5 features = 15
+const currentQuizStep = computed(() => {
+  if (quizStep.value === 'editing') return 1
+  if (quizStep.value === 'photoStyle') return 2
+  if (quizStep.value === 'saturation') return 3
+  if (quizStep.value === 'ab') return 4 + abIndex.value
+  if (quizStep.value === 'features') return 4 + abPairs.length + featureIndex.value
+  return 1
+})
+const quizProgress = computed(() => (currentQuizStep.value / totalQuizSteps.value) * 100)
+const quizStepLabel = computed(() => `${currentQuizStep.value} of ${totalQuizSteps.value}`)
+const isLastQuizStep = computed(() => quizStep.value === 'features' && featureIndex.value >= featureSteps.length - 1)
+
+function toggleList(list, id) {
+  const idx = list.indexOf(id)
+  if (idx >= 0) list.splice(idx, 1)
+  else list.push(id)
+}
+
+function quizNext() {
+  if (quizStep.value === 'editing') { quizStep.value = 'photoStyle'; return }
+  if (quizStep.value === 'photoStyle') { quizStep.value = 'saturation'; return }
+  if (quizStep.value === 'saturation') { quizStep.value = 'ab'; abIndex.value = 0; return }
+  if (quizStep.value === 'ab') {
+    if (abIndex.value < abPairs.length - 1) { abIndex.value++; return }
+    quizStep.value = 'features'; featureIndex.value = 0; return
+  }
+  if (quizStep.value === 'features') {
+    if (featureIndex.value < featureSteps.length - 1) { featureIndex.value++; return }
+    step.value++ // move to step 3
+  }
+}
+
+function quizPrev() {
+  if (quizStep.value === 'features' && featureIndex.value > 0) { featureIndex.value--; return }
+  if (quizStep.value === 'features') { quizStep.value = 'ab'; abIndex.value = abPairs.length - 1; return }
+  if (quizStep.value === 'ab' && abIndex.value > 0) { abIndex.value--; return }
+  if (quizStep.value === 'ab') { quizStep.value = 'saturation'; return }
+  if (quizStep.value === 'saturation') { quizStep.value = 'photoStyle'; return }
+  if (quizStep.value === 'photoStyle') { quizStep.value = 'editing'; return }
+}
+
+function editingStyleLabel(id) { return editingStyles.find(s => s.id === id)?.label || id }
+function photoStyleLabel(id) { return photoStyles.find(s => s.id === id)?.label || id }
 
 function handleCover(e) {
   const f = e.target.files[0]; if (!f) return
@@ -202,21 +335,23 @@ async function nextStep() {
         const { validateAndGeocode } = await import('@/services/geocoding')
         const geo = await validateAndGeocode(form.city, form.state, form.country)
         if (!geo.valid) { error.value = geo.error; return }
-        form.lat = geo.lat
-        form.lng = geo.lng
-        form.geoDisplayName = geo.displayName
-        error.value = ''
-      } catch (e) {
-        error.value = ''
-        // Continue without geocoding if service unavailable
-      }
+        form.lat = geo.lat; form.lng = geo.lng; form.geoDisplayName = geo.displayName; error.value = ''
+      } catch (e) { error.value = '' }
     }
+  }
+  if (step.value === 2) {
+    // Step 2 nav is handled by quizNext, this button is just "Continue" for non-quiz steps
+    return
   }
   if (step.value === 6) {
     loading.value = true
     try {
       const { registerPhotographer } = await import('@/services/auth')
       const { savePhotographerQuiz, updateStyleTags, publishProfile } = await import('@/services/photographer')
+
+      // Map quiz styles to string tags for backward compat
+      const styleTags = quiz.photoStyles.map(id => photoStyleLabel(id))
+
       const user = await registerPhotographer(form.email, form.password, {
         firstName:form.firstName, lastName:form.lastName, businessName:form.businessName,
         phone:form.phone, city:form.city, state:form.state, country:form.country, travelRadius:form.travelRadius,
@@ -224,12 +359,21 @@ async function nextStep() {
         website:form.website, tagline:form.tagline, about:form.about,
         instagram:form.instagram, tiktok:form.tiktok,
         priceMin:form.priceMin, priceMax:form.priceMax, basePackage:form.basePackage,
-        addOns:form.addOns, turnaround:form.turnaround, yearsExperience:form.yearsExperience
+        addOns:form.addOns, turnaround:form.turnaround, yearsExperience:form.yearsExperience,
+        // New quiz v2 fields
+        editingStyles: quiz.editingStyles,
+        photoStyles: quiz.photoStyles,
+        saturation: quiz.saturation,
+        abAnswers: quiz.abAnswers,
+        hasAerial: quiz.features.aerial === 'Yes',
+        hasFilm: quiz.features.film === 'Yes, I shoot film',
+        hasSecondShooter: quiz.features.secondShooter === 'Yes',
+        personality: quiz.features.personality ? [quiz.features.personality] : [],
+        coverageHours: quiz.features.hours ? [quiz.features.hours] : []
       })
-      await savePhotographerQuiz(user.uid, quizAnswers)
-      await updateStyleTags(user.uid, form.styles, form.specialties)
+      await savePhotographerQuiz(user.uid, quiz)
+      await updateStyleTags(user.uid, styleTags, form.specialties)
       await publishProfile(user.uid)
-      // Send welcome email
       try { const { sendWelcomeEmail } = await import('@/services/email'); await sendWelcomeEmail({ email: form.email, businessName: form.businessName, firstName: form.firstName }) } catch(e) {}
       router.push('/dashboard')
     } catch(e) {
@@ -258,6 +402,42 @@ async function nextStep() {
 .step-title { font-family:var(--font-display); font-size:1.8rem; font-weight:400; margin-bottom:8px; }
 .step-sub { color:var(--warm-gray); font-size:0.92rem; margin-bottom:32px; line-height:1.6; }
 
+/* Ranking cards */
+.rank-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-bottom:24px; }
+.rank-grid-4 { grid-template-columns:repeat(4, 1fr); }
+.rank-card { position:relative; padding:14px 10px; border:2px solid var(--light-gray); border-radius:var(--radius); cursor:pointer; transition:var(--transition); text-align:center; background:var(--warm-white); }
+.rank-card:hover { border-color:var(--sage); transform:translateY(-2px); }
+.rank-card.selected { border-color:var(--terracotta); background:rgba(196,130,106,0.04); }
+.rank-preview { height:40px; border-radius:6px; margin-bottom:8px; }
+.rank-label { font-weight:500; font-size:0.82rem; margin-bottom:2px; }
+.rank-desc { font-size:0.7rem; color:var(--warm-gray); line-height:1.3; }
+.rank-number { position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; background:var(--terracotta); color:white; display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700; }
+
+/* Quiz pair */
+.quiz-progress { margin-bottom:24px; }
+.qp-bar { height:4px; background:var(--light-gray); border-radius:100px; overflow:hidden; margin-bottom:8px; }
+.qp-fill { height:100%; background:var(--terracotta); border-radius:100px; transition:width 0.4s ease; }
+.qp-text { font-size:0.78rem; color:var(--warm-gray); text-align:center; }
+.quiz-q { font-family:var(--font-display); font-size:1.4rem; text-align:center; margin-bottom:8px; }
+.quiz-sub { text-align:center; font-size:0.88rem; color:var(--warm-gray); margin-bottom:24px; }
+.quiz-pair { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+.quiz-opt { border:3px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); }
+.quiz-opt:hover { border-color:var(--sage); }
+.quiz-opt.sel { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.2); }
+.quiz-img { aspect-ratio:4/3; }
+.quiz-lbl { padding:12px; text-align:center; font-size:0.88rem; font-weight:500; }
+.quiz-nav { display:flex; justify-content:space-between; }
+.qn-back { padding:10px 20px; color:var(--warm-gray); font-size:0.85rem; }
+.qn-next { padding:12px 28px; background:var(--charcoal); color:var(--cream); border-radius:100px; font-size:0.85rem; font-weight:500; transition:var(--transition); }
+.qn-next:hover { background:var(--terracotta); }
+
+/* Feature options */
+.feature-options { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px; }
+.feature-col { flex-direction:column; }
+.toggle-opt { flex:1; min-width:120px; padding:14px; border:1.5px solid var(--light-gray); border-radius:var(--radius); background:transparent; font-size:0.88rem; color:var(--warm-gray); text-align:center; transition:var(--transition); cursor:pointer; }
+.toggle-opt:hover { border-color:var(--sage); color:var(--charcoal); }
+.toggle-opt.selected { border-color:var(--terracotta); background:rgba(196,130,106,0.06); color:var(--charcoal); font-weight:500; }
+
 .tag-group { display:flex; flex-wrap:wrap; gap:8px; }
 .tag-chip { display:inline-flex; padding:8px 18px; border:1.5px solid var(--light-gray); border-radius:100px; font-size:0.82rem; color:var(--warm-gray); cursor:pointer; transition:var(--transition); }
 .tag-chip:hover { border-color:var(--sage); }
@@ -275,23 +455,6 @@ async function nextStep() {
 .portfolio-thumb-img { width:100%; height:100%; object-fit:cover; }
 .portfolio-remove { position:absolute; top:4px; right:4px; width:24px; height:24px; border-radius:50%; background:rgba(44,44,44,0.7); color:white; font-size:0.7rem; display:flex; align-items:center; justify-content:center; }
 
-/* Quiz within signup */
-.quiz-progress { margin-bottom:24px; }
-.qp-bar { height:4px; background:var(--light-gray); border-radius:100px; overflow:hidden; margin-bottom:8px; }
-.qp-fill { height:100%; background:var(--terracotta); border-radius:100px; transition:width 0.4s ease; }
-.qp-text { font-size:0.78rem; color:var(--warm-gray); text-align:center; }
-.quiz-q { font-family:var(--font-display); font-size:1.4rem; text-align:center; margin-bottom:24px; }
-.quiz-pair { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
-.quiz-opt { border:3px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); }
-.quiz-opt:hover { border-color:var(--sage); }
-.quiz-opt.sel { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.2); }
-.quiz-img { aspect-ratio:4/3; }
-.quiz-lbl { padding:12px; text-align:center; font-size:0.88rem; font-weight:500; }
-.quiz-nav { display:flex; justify-content:space-between; }
-.qn-back { padding:10px 20px; color:var(--warm-gray); font-size:0.85rem; }
-.qn-next { padding:12px 28px; background:var(--charcoal); color:var(--cream); border-radius:100px; font-size:0.85rem; font-weight:500; }
-
-/* Review */
 .review-section { padding:16px 0; border-bottom:1px solid var(--light-gray); }
 .review-label { font-size:0.78rem; font-weight:500; text-transform:uppercase; letter-spacing:0.04em; color:var(--warm-gray); margin-bottom:4px; }
 .review-value { font-size:0.95rem; }
@@ -306,7 +469,10 @@ async function nextStep() {
   .signup-card { padding:32px 24px; }
   .portfolio-upload-grid { grid-template-columns:repeat(3,1fr); }
   .quiz-pair { grid-template-columns:1fr; }
+  .rank-grid { grid-template-columns:repeat(2, 1fr); }
+  .rank-grid-4 { grid-template-columns:repeat(2, 1fr); }
   .step-bar { gap:2px; }
   .step-label { display:none; }
+  .feature-options { flex-direction:column; }
 }
 </style>
