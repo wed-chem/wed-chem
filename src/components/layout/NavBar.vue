@@ -13,7 +13,7 @@
           <router-link to="/dashboard" class="nav-btn" @click="menuOpen = false">Dashboard</router-link>
         </li>
         <li v-if="authStore.isLoggedIn && !authStore.isPhotographer">
-          <router-link to="/quiz" class="nav-btn" @click="menuOpen = false">Take the Quiz</router-link>
+          <router-link to="/quiz" class="nav-btn" @click="menuOpen = false">Get Matched</router-link>
         </li>
         <li v-if="authStore.isLoggedIn">
           <button class="nav-link-btn" @click="authStore.logout(); menuOpen = false">Logout</button>
@@ -22,7 +22,7 @@
           <router-link to="/login" @click="menuOpen = false">Log In</router-link>
         </li>
         <li v-if="!authStore.isLoggedIn">
-          <router-link to="/quiz" class="nav-btn" @click="menuOpen = false">Take the Quiz</router-link>
+          <router-link to="/quiz" class="nav-btn" @click="menuOpen = false">Get Matched</router-link>
         </li>
       </ul>
       <button class="mobile-toggle" @click="menuOpen = !menuOpen">
