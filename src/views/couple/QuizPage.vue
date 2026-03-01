@@ -226,9 +226,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useQuizStore } from '@/stores/quiz'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 import { editingStyles, photoStyles } from '@/data/quizData'
 
 const quizStore = useQuizStore()
+const router = useRouter()
 const validationMsg = ref('')
 const authStore = useAuthStore()
 
@@ -242,7 +244,13 @@ const beakerFilling = ref(false)
 const beakerStage = ref(0)
 const revealDone = ref(false)
 
-onMounted(() => { quizStore.reset('couple') })
+onMounted(() => {
+  if (authStore.isPhotographer) {
+    router.replace('/dashboard')
+    return
+  }
+  quizStore.reset('couple')
+})
 
 const currentABAnswer = computed(() => {
   const q = quizStore.currentQuestion?.data

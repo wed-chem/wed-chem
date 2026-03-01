@@ -9,7 +9,8 @@
             <h1>The <em>chemistry</em> between you and your photographer matters</h1>
             <p class="hero-sub">Pick photos you love. Our algorithm matches you with wedding photographers whose style aligns with what you're naturally drawn to. Free for couples. Always.</p>
             <div class="hero-actions">
-              <router-link to="/quiz" class="btn-primary">Find Your Match →</router-link>
+              <router-link v-if="authStore.isPhotographer" to="/dashboard" class="btn-primary">Go to Dashboard →</router-link>
+              <router-link v-else to="/quiz" class="btn-primary">Find Your Match →</router-link>
               <router-link to="/directory" class="btn-secondary">Browse Photographers</router-link>
             </div>
           </div>
@@ -183,6 +184,8 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
 import { ref } from 'vue'
 
 const demoChoice = ref('a')
