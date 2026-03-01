@@ -231,6 +231,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import { editingStyles, photoStyles, saturationQuestion, abPairs, specialtyTags, addOnServices, travelRadiusOptions, personalityTypes, coverageOptions } from '@/data/quizData'
 
 const router = useRouter()
