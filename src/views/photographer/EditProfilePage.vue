@@ -23,10 +23,23 @@ import { reactive, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { travelRadiusOptions } from '@/data/quizData'
 const authStore = useAuthStore()
-const form = reactive({ businessName:'', tagline:'', city:'', state:'', country:'', travelRadius:'150', about:'', website:'', instagram:'', tiktok:'', phone:'', priceMin:null, priceMax:null, basePackage:'' })
+const form = reactive({ businessName:'', tagline:'', city:'', state:'', country:'', travelRadius:'150', about:'', website:'', instagram:'', tiktok:'', phone:'', priceMin:null, priceMax:null, basePackage:'', lat:null, lng:null })
 onMounted(() => { const p = authStore.photographerProfile; if(p) Object.keys(form).forEach(k => { if(p[k]) form[k] = p[k] }) })
 async function save() {
-  try { const { updatePhotographer } = await import('@/services/photographer'); await updatePhotographer(authStore.uid, {...form}); await authStore.refreshPhotographerProfile(); alert('Profile saved!') }
+  try {
+    // Geocode if location changed
+    if (form.city) {
+      try {
+        const { validateAndGeocode } = await import('@/services/geocoding')
+        const geo = await validateAndGeocode(form.city, form.state, form.country)
+        if (geo.valid) { form.lat = geo.lat; form.lng = geo.lng }
+      } catch(e) {}
+    }
+    const { updatePhotographer } = await import('@/services/photographer')
+    await updatePhotographer(authStore.uid, {...form})
+    await authStore.refreshPhotographerProfile()
+    alert('Profile saved!')
+  }
   catch(e) { alert('Saved! (Demo)') }
 }
 </script>

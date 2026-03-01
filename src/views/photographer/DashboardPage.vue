@@ -12,6 +12,24 @@
         </div>
       </div>
 
+      <!-- PENDING REVIEW BANNER -->
+      <div class="pending-banner" v-if="profile?.status === 'pending'">
+        <div class="pending-icon">⏳</div>
+        <div class="pending-text">
+          <div class="pending-title">Your profile is under review</div>
+          <div class="pending-sub">We typically review new profiles within 24 hours. You'll get an email once approved.</div>
+        </div>
+      </div>
+
+      <!-- REJECTED BANNER -->
+      <div class="rejected-banner" v-if="profile?.status === 'rejected'">
+        <div class="pending-icon">⚠️</div>
+        <div class="pending-text">
+          <div class="pending-title">Your profile was not approved</div>
+          <div class="pending-sub">{{ profile?.rejectionReason || 'Please update your profile and portfolio, then contact us to reapply.' }}</div>
+        </div>
+      </div>
+
       <!-- STATS -->
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-num">{{ stats.views }}</div><div class="stat-label">Profile Views</div><div class="stat-trend">↑ 12% this week</div></div>
@@ -92,6 +110,12 @@ const recentInquiries = ref([
 .dash-title { font-family:var(--font-display); font-size:2rem; font-weight:400; margin-bottom:4px; }
 .dash-sub { color:var(--warm-gray); font-size:0.92rem; }
 .dash-actions { display:flex; gap:12px; }
+
+.pending-banner { display:flex; gap:16px; padding:24px; background:rgba(201,169,110,0.1); border:1px solid rgba(201,169,110,0.3); border-radius:var(--radius-lg); margin-bottom:24px; align-items:center; }
+.rejected-banner { display:flex; gap:16px; padding:24px; background:rgba(196,130,106,0.1); border:1px solid rgba(196,130,106,0.3); border-radius:var(--radius-lg); margin-bottom:24px; align-items:center; }
+.pending-icon { font-size:2rem; flex-shrink:0; }
+.pending-title { font-weight:500; margin-bottom:2px; }
+.pending-sub { font-size:0.88rem; color:var(--warm-gray); }
 
 .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
 .stat-card { background:var(--warm-white); border:1px solid var(--light-gray); border-radius:var(--radius-lg); padding:24px; }

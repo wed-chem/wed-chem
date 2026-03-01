@@ -171,7 +171,7 @@ const portfolioFiles = ref([])
 
 const form = reactive({
   firstName:'', lastName:'', businessName:'', email:'', password:'',
-  phone:'', city:'', state:'', country:'', travelRadius:'150', website:'',
+  phone:'', city:'', state:'', country:'', travelRadius:'150', website:'', lat:null, lng:null, geoDisplayName:'',
   styles:[], specialties:[], tagline:'', about:'',
   instagram:'', tiktok:'',
   priceMin:null, priceMax:null, basePackage:'', addOns:[], turnaround:'4–6 weeks', yearsExperience:'3–5 years'
@@ -196,6 +196,21 @@ async function nextStep() {
   if (step.value === 1) {
     if (!form.firstName || !form.businessName || !form.email || !form.password) { error.value = 'Please fill in required fields.'; return }
     if (form.password.length < 8) { error.value = 'Password must be 8+ characters.'; return }
+    if (form.city) {
+      error.value = 'Verifying location...'
+      try {
+        const { validateAndGeocode } = await import('@/services/geocoding')
+        const geo = await validateAndGeocode(form.city, form.state, form.country)
+        if (!geo.valid) { error.value = geo.error; return }
+        form.lat = geo.lat
+        form.lng = geo.lng
+        form.geoDisplayName = geo.displayName
+        error.value = ''
+      } catch (e) {
+        error.value = ''
+        // Continue without geocoding if service unavailable
+      }
+    }
   }
   if (step.value === 6) {
     loading.value = true
@@ -205,6 +220,7 @@ async function nextStep() {
       const user = await registerPhotographer(form.email, form.password, {
         firstName:form.firstName, lastName:form.lastName, businessName:form.businessName,
         phone:form.phone, city:form.city, state:form.state, country:form.country, travelRadius:form.travelRadius,
+        lat:form.lat, lng:form.lng,
         website:form.website, tagline:form.tagline, about:form.about,
         instagram:form.instagram, tiktok:form.tiktok,
         priceMin:form.priceMin, priceMax:form.priceMax, basePackage:form.basePackage,
@@ -213,6 +229,8 @@ async function nextStep() {
       await savePhotographerQuiz(user.uid, quizAnswers)
       await updateStyleTags(user.uid, form.styles, form.specialties)
       await publishProfile(user.uid)
+      // Send welcome email
+      try { const { sendWelcomeEmail } = await import('@/services/email'); await sendWelcomeEmail({ email: form.email, businessName: form.businessName, firstName: form.firstName }) } catch(e) {}
       router.push('/dashboard')
     } catch(e) {
       error.value = e.code === 'auth/email-already-in-use' ? 'Email already registered. Try logging in.' : 'Something went wrong: ' + e.message

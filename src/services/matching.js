@@ -1,3 +1,4 @@
+import { calculateDistance } from "./geocoding"
 import { db } from './firebase'
 import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore'
 
@@ -28,25 +29,37 @@ export async function getMatches(photoAnswers, manualAnswers) {
 
       let bonus = 0
 
-      // Location matching — same country gets a bonus, same state/region gets more
+      // Location matching with real distance calculation
       if (manualAnswers.location) {
-        const coupleCountry = (manualAnswers.location.country || '').toLowerCase().trim()
-        const coupleState = (manualAnswers.location.state || '').toLowerCase().trim()
-        const coupleCity = (manualAnswers.location.city || '').toLowerCase().trim()
-        const pCountry = (p.country || '').toLowerCase().trim()
-        const pState = (p.state || '').toLowerCase().trim()
-        const pCity = (p.city || '').toLowerCase().trim()
-
-        // Travel radius matching
+        const coupleLat = manualAnswers.location.lat
+        const coupleLng = manualAnswers.location.lng
+        const pLat = p.lat
+        const pLng = p.lng
         const radius = p.travelRadius || '150'
+
         if (radius === 'anywhere') {
           bonus += 3 // worldwide photographers always relevant
-        } else if (radius === 'nationwide' && coupleCountry === pCountry) {
-          bonus += 4
-        } else if (coupleCountry === pCountry) {
-          bonus += 2
-          if (coupleState === pState) bonus += 3
-          if (coupleCity === pCity) bonus += 2
+        } else if (radius === 'nationwide') {
+          const coupleCountry = (manualAnswers.location.country || '').toLowerCase().trim()
+          const pCountry = (p.country || '').toLowerCase().trim()
+          if (coupleCountry === pCountry) bonus += 4
+        } else if (coupleLat && coupleLng && pLat && pLng) {
+          // Calculate actual distance
+          
+          const dist = calculateDistance(coupleLat, coupleLng, pLat, pLng)
+          const maxMiles = parseInt(radius) || 150
+
+          if (dist <= maxMiles) {
+            bonus += 5 // within travel radius
+            if (dist <= 50) bonus += 2 // extra bonus for very close
+          }
+        } else {
+          // Fallback to text matching if no coordinates
+          const coupleCountry = (manualAnswers.location.country || '').toLowerCase().trim()
+          const coupleState = (manualAnswers.location.state || '').toLowerCase().trim()
+          const pCountry = (p.country || '').toLowerCase().trim()
+          const pState = (p.state || '').toLowerCase().trim()
+          if (coupleCountry === pCountry) { bonus += 2; if (coupleState === pState) bonus += 3 }
         }
       }
 

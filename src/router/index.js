@@ -15,6 +15,7 @@ const routes = [
   { path: '/dashboard/quiz', name: 'PhotographerQuiz', component: () => import('@/views/photographer/PhotographerQuizPage.vue'), meta: { requiresAuth: true, role: 'photographer' } },
   { path: '/dashboard/inquiries', name: 'Inquiries', component: () => import('@/views/photographer/InquiriesPage.vue'), meta: { requiresAuth: true, role: 'photographer' } },
   { path: '/dashboard/upgrade', name: 'Upgrade', component: () => import('@/views/photographer/UpgradePage.vue'), meta: { requiresAuth: true, role: 'photographer' } },
+  { path: '/admin', name: 'Admin', component: () => import('@/views/admin/AdminDashboard.vue'), meta: { requiresAuth: true, role: 'admin' } },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('@/views/public/NotFoundPage.vue') }
 ]
 
@@ -25,7 +26,7 @@ router.beforeEach(async (to) => {
     const { useAuthStore } = await import('@/stores/auth')
     const auth = useAuthStore()
     if (!auth.isLoggedIn) return { name: 'Login', query: { redirect: to.fullPath } }
-    if (to.meta.role && auth.role !== to.meta.role) return { name: 'Home' }
+    if (to.meta.role && auth.role !== to.meta.role && auth.role !== 'admin') return { name: 'Home' }
   }
 })
 

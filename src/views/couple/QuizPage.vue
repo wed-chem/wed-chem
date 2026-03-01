@@ -171,11 +171,19 @@ const revealDone = ref(false)
 
 onMounted(() => { quizStore.reset('couple') })
 
-function saveCurrentManual() {
+async function saveCurrentManual() {
   const q = quizStore.currentQuestion
   if (q.type !== 'manual') return
   const id = q.data.id
-  if (q.data.type === 'location') quizStore.setManualAnswer(id, { city: locCity.value, state: locState.value, country: locCountry.value })
+  if (q.data.type === 'location') {
+    const locData = { city: locCity.value, state: locState.value, country: locCountry.value }
+    try {
+      const { validateAndGeocode } = await import('@/services/geocoding')
+      const geo = await validateAndGeocode(locCity.value, locState.value, locCountry.value)
+      if (geo.valid) { locData.lat = geo.lat; locData.lng = geo.lng }
+    } catch (e) {}
+    quizStore.setManualAnswer(id, locData)
+  }
   if (q.data.type === 'date') quizStore.setManualAnswer(id, weddingDate.value)
   if (q.data.type === 'budget') quizStore.setManualAnswer(id, budgetVal.value)
 }

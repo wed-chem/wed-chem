@@ -6,7 +6,7 @@ export async function getPhotographer(uid) { const s = await getDoc(doc(db, 'pho
 export async function updatePhotographer(uid, data) { await updateDoc(doc(db, 'photographers', uid), { ...data, updatedAt: serverTimestamp() }) }
 export async function savePhotographerQuiz(uid, answers) { await updateDoc(doc(db, 'photographers', uid), { quizAnswers: answers, quizCompleted: true, updatedAt: serverTimestamp() }) }
 export async function updateStyleTags(uid, styles, specialties) { await updateDoc(doc(db, 'photographers', uid), { styles, specialties, updatedAt: serverTimestamp() }) }
-export async function publishProfile(uid) { await updateDoc(doc(db, 'photographers', uid), { published: true, profileComplete: true, publishedAt: serverTimestamp(), updatedAt: serverTimestamp() }) }
+export async function publishProfile(uid) { await updateDoc(doc(db, 'photographers', uid), { status: 'pending', published: false, profileComplete: true, submittedAt: serverTimestamp(), updatedAt: serverTimestamp() }) }
 
 export async function uploadCoverPhoto(uid, file) {
   const r = ref(storage, `photographers/${uid}/cover/${file.name}`)

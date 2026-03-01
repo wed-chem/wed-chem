@@ -2,37 +2,35 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Users collection
+    // Users - owner can read/write own doc
     match /users/{userId} {
-      allow read: if request.auth != null;
+      allow read: if request.auth != null && request.auth.uid == userId;
       allow write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Photographers — public read, owner write
+    // Photographers - public read for approved, owner write, admin full access
     match /photographers/{photographerId} {
       allow read: if true;
       allow create: if request.auth != null && request.auth.uid == photographerId;
-      allow update: if request.auth != null && request.auth.uid == photographerId;
-    }
-
-    // Quiz sessions — anyone can create (anonymous), owner can read
-    match /quizSessions/{sessionId} {
-      allow create: if true;
-      allow read: if request.auth != null && (
-        resource.data.userId == request.auth.uid || resource.data.userId == null
+      allow update: if request.auth != null && (
+        request.auth.uid == photographerId ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
       );
     }
 
-    // Match results — created by system, readable by owner
-    match /matchResults/{resultId} {
-      allow read: if request.auth != null;
+    // Quiz sessions - anyone can create, owner can read
+    match /quizSessions/{sessionId} {
       allow create: if true;
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
     }
 
-    // Inquiries — couples create, photographers read their own
+    // Inquiries - anyone can create, photographer reads own
     match /inquiries/{inquiryId} {
       allow create: if true;
-      allow read: if request.auth != null && resource.data.photographerId == request.auth.uid;
+      allow read: if request.auth != null && (
+        resource.data.photographerId == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
       allow update: if request.auth != null && resource.data.photographerId == request.auth.uid;
     }
   }

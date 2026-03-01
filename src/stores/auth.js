@@ -10,7 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
   const loading = ref(true)
   const initialized = ref(false)
   const isLoggedIn = computed(() => !!user.value && !user.value.isAnonymous)
-  const isPhotographer = computed(() => role.value === 'photographer')
+  const isPhotographer = computed(() => role.value === 'photographer' || role.value === 'admin')
+  const isAdmin = computed(() => role.value === 'admin')
   const uid = computed(() => user.value?.uid || null)
 
   function init() {
@@ -29,5 +30,5 @@ export const useAuthStore = defineStore('auth', () => {
   async function logout() { await authLogout(); user.value = null; role.value = null; photographerProfile.value = null }
   async function refreshPhotographerProfile() { if (uid.value && role.value === 'photographer') photographerProfile.value = await getPhotographer(uid.value) }
 
-  return { user, role, photographerProfile, loading, initialized, isLoggedIn, isPhotographer, uid, init, logout, refreshPhotographerProfile }
+  return { user, role, photographerProfile, loading, initialized, isLoggedIn, isPhotographer, isAdmin, uid, init, logout, refreshPhotographerProfile }
 })

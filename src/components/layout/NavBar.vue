@@ -6,15 +6,18 @@
         <li><router-link to="/#how-it-works" @click="menuOpen = false">How It Works</router-link></li>
         <li><router-link to="/directory" @click="menuOpen = false">Browse</router-link></li>
         <li><router-link to="/pricing" @click="menuOpen = false">Pricing</router-link></li>
-        <li><router-link to="/quiz" @click="menuOpen = false">Take the Quiz</router-link></li>
+        <li v-if="!authStore.isPhotographer"><router-link to="/quiz" @click="menuOpen = false">Take the Quiz</router-link></li>
+        <li v-if="authStore.isAdmin">
+          <router-link to="/admin" @click="menuOpen = false">Admin</router-link>
+        </li>
         <li v-if="authStore.isPhotographer">
           <router-link to="/dashboard" class="nav-btn" @click="menuOpen = false">Dashboard</router-link>
         </li>
-        <li v-else-if="authStore.isLoggedIn">
-          <button class="nav-btn" @click="authStore.logout(); menuOpen = false">Logout</button>
+        <li v-if="authStore.isLoggedIn">
+          <button class="nav-link-btn" @click="authStore.logout(); menuOpen = false">Logout</button>
         </li>
-        <li v-else>
-          <router-link to="/signup/photographer" class="nav-btn" @click="menuOpen = false">For Photographers</router-link>
+        <li v-if="!authStore.isLoggedIn">
+          <router-link to="/quiz" class="nav-btn" @click="menuOpen = false">Take the Quiz</router-link>
         </li>
       </ul>
       <button class="mobile-toggle" @click="menuOpen = !menuOpen">
@@ -67,6 +70,8 @@ nav .container { display: flex; justify-content: space-between; align-items: cen
   font-size: 0.83rem !important; font-weight: 500; transition: var(--transition);
 }
 .nav-btn:hover { background: var(--terracotta); transform: translateY(-1px); }
+
+.nav-link-btn { background: none; border: none; cursor: pointer; font-family: inherit; }
 
 .mobile-toggle { display: none; padding: 8px; }
 .mobile-toggle span { display: block; width: 24px; height: 2px; background: var(--charcoal); margin: 5px 0; border-radius: 2px; }
