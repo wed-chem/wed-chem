@@ -3,8 +3,8 @@
     <div class="container">
       <div class="dir-header">
         <div class="section-eyebrow">Directory</div>
-        <h1 class="dir-title">Browse Wedding Photographers</h1>
-        <p class="dir-sub">Explore our worldwide network or <router-link to="/quiz" style="color:var(--terracotta);font-weight:500;">take the quiz</router-link> for personalized matches.</p>
+        <h1 class="dir-title">Find Your Photographer</h1>
+        <p class="dir-sub">Explore our worldwide network or <router-link to="/quiz" style="color:var(--terracotta);font-weight:500;">get matched</router-link> for personalized results.</p>
       </div>
 
       <!-- FILTERS -->
@@ -43,15 +43,15 @@
         <span>{{ filtered.length }} photographer{{ filtered.length!==1?'s':'' }}</span>
         <select class="f-select f-select-sm" v-model="sortBy">
           <option value="featured">Featured first</option>
-          <option value="price-low">Price: Low → High</option>
-          <option value="price-high">Price: High → Low</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
         </select>
       </div>
 
       <div class="grid" v-if="filtered.length">
         <div class="card" v-for="p in filtered" :key="p.id" @click="$router.push('/photographer/'+p.id)">
-          <div class="card-cover" :style="{background:p.gradient}">
-            <span class="card-badge" v-if="p.tier==='featured'">⭐ Featured</span>
+          <div class="card-cover" :style="{background: p.coverPhoto ? 'url('+p.coverPhoto+') center/cover' : p.gradient}">
+            <span class="card-badge" v-if="p.tier==='featured'">Featured</span>
             <div class="card-tags">
               <span class="card-tag" v-for="s in (p.styles||[]).slice(0,2)" :key="s">{{ s }}</span>
             </div>
@@ -60,7 +60,7 @@
             <div class="card-name">{{ p.businessName }}</div>
             <div class="card-loc">{{ p.city }}<span v-if="p.state">, {{ p.state }}</span><span v-if="p.country && p.country !== 'United States' && p.country !== 'USA'"> · {{ p.country }}</span></div>
             <div class="card-excerpt">{{ p.tagline }}</div>
-            <div class="card-travel" v-if="p.travelRadius">✈ {{ p.travelRadiusLabel || p.travelRadius }}</div>
+            <div class="card-travel" v-if="p.travelRadiusLabel">✈ {{ p.travelRadiusLabel }}</div>
             <div class="card-meta">
               <span class="card-price">{{ p.priceRange }}</span>
               <span class="card-cta">View Profile →</span>
@@ -72,19 +72,21 @@
       <div class="empty" v-else>
         <div class="empty-icon">📷</div>
         <div class="empty-title">No photographers found</div>
-        <div class="empty-sub">Try adjusting your filters or <router-link to="/quiz" style="color:var(--terracotta)">take the quiz</router-link> for personalized matches.</div>
+        <div class="empty-sub">Try adjusting your filters or <router-link to="/quiz" style="color:var(--terracotta)">get matched</router-link> for personalized results.</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { styleTags } from '@/data/quizData'
+import { browsePhotographers } from '@/services/photographer'
 
 const styles = styleTags
 const filters = ref({ city:'', country:'', style:'', budget:'', travel:'' })
 const sortBy = ref('featured')
+const realPhotographers = ref([])
 
 const mockPhotographers = [
   { id:'demo1', businessName:'Ava Chen Photography', city:'Portland', state:'OR', country:'USA', styles:['Light & Airy','Documentary'], tagline:'Natural light, real moments, organic warmth', priceRange:'$3,200–$5,500', priceMin:3200, tier:'featured', travelRadius:'250', travelRadiusLabel:'Up to 250 mi', gradient:'linear-gradient(135deg,#e8d5cc,#faf7f2,#c5d4be)' },
@@ -93,27 +95,42 @@ const mockPhotographers = [
   { id:'demo4', businessName:'Sage & Cellulose', city:'Denver', state:'CO', country:'USA', styles:['Film / Analog','Fine Art'], tagline:'Medium format film with analog soul', priceRange:'$4,500–$8,000', priceMin:4500, tier:'free', travelRadius:'nationwide', travelRadiusLabel:'Nationwide', gradient:'linear-gradient(135deg,#d4a574,#b8866a,#c9a96e)' },
   { id:'demo5', businessName:'Hannah Leigh Photo', city:'Nashville', state:'TN', country:'USA', styles:['Classic / Timeless','Light & Airy'], tagline:'Timeless images, genuine emotion, clean editing', priceRange:'$2,500–$4,000', priceMin:2500, tier:'free', travelRadius:'100', travelRadiusLabel:'Up to 100 mi', gradient:'linear-gradient(135deg,#e8d5cc,#f5ebe3,#c5d4be)' },
   { id:'demo6', businessName:'Noir Collective', city:'Los Angeles', state:'CA', country:'USA', styles:['Editorial','Fashion-Forward'], tagline:'Magazine-worthy wedding photography', priceRange:'$5,000–$10,000', priceMin:5000, tier:'featured', travelRadius:'anywhere', travelRadiusLabel:'Travels Worldwide', gradient:'linear-gradient(135deg,#2c2c2c,#4a3f35,#c9a96e)' },
-  { id:'demo7', businessName:'Luna y Sol Fotografía', city:'Mexico City', state:'CDMX', country:'Mexico', styles:['Documentary','Bold & Vibrant'], tagline:'Bodas con alma, luz natural, momentos reales', priceRange:'$1,800–$3,500', priceMin:1800, tier:'free', travelRadius:'anywhere', travelRadiusLabel:'Travels Worldwide', gradient:'linear-gradient(135deg,#C4826A,#c9a96e,#e8d9b4)' },
-  { id:'demo8', businessName:'Atelier Lumière', city:'Paris', state:'Île-de-France', country:'France', styles:['Fine Art','Editorial'], tagline:'Fine art wedding photography across Europe', priceRange:'€4,000–€8,000', priceMin:4000, tier:'featured', travelRadius:'anywhere', travelRadiusLabel:'Travels Worldwide', gradient:'linear-gradient(135deg,#e8e3dc,#d4ccc3,#c5bdb4)' },
-  { id:'demo9', businessName:'Olive & Oak', city:'Tuscany', state:'', country:'Italy', styles:['Cinematic','Light & Airy'], tagline:'Destination weddings in the Italian countryside', priceRange:'€3,500–€6,000', priceMin:3500, tier:'free', travelRadius:'anywhere', travelRadiusLabel:'Travels Worldwide', gradient:'linear-gradient(135deg,#4a5d3f,#8B9E82,#c5d4be)' },
 ]
+
+onMounted(async () => {
+  try {
+    const { photographers } = await browsePhotographers({ pageSize: 50 })
+    realPhotographers.value = photographers.map(p => ({
+      ...p,
+      priceRange: p.priceMin && p.priceMax ? '$'+p.priceMin.toLocaleString()+'–$'+p.priceMax.toLocaleString() : '',
+      travelRadiusLabel: p.travelRadius === 'anywhere' ? 'Travels Worldwide' : p.travelRadius === 'nationwide' ? 'Nationwide' : p.travelRadius ? 'Up to '+p.travelRadius+' mi' : '',
+      gradient: p.gradient || 'linear-gradient(135deg,var(--sage-light),var(--blush))'
+    }))
+  } catch(e) { console.warn('Could not load photographers:', e) }
+})
+
+const allPhotographers = computed(() => {
+  const realIds = realPhotographers.value.map(p => p.id)
+  const mocks = mockPhotographers.filter(m => !realIds.includes(m.id))
+  return [...realPhotographers.value, ...mocks]
+})
 
 const hasFilters = computed(() => filters.value.city || filters.value.country || filters.value.style || filters.value.budget || filters.value.travel)
 
 const filtered = computed(() => {
-  let list = [...mockPhotographers]
+  let list = [...allPhotographers.value]
   const f = filters.value
-  if (f.city) list = list.filter(p => p.city.toLowerCase().includes(f.city.toLowerCase()) || (p.state && p.state.toLowerCase().includes(f.city.toLowerCase())))
+  if (f.city) list = list.filter(p => (p.city||'').toLowerCase().includes(f.city.toLowerCase()) || (p.state && p.state.toLowerCase().includes(f.city.toLowerCase())))
   if (f.country) list = list.filter(p => p.country && p.country.toLowerCase().includes(f.country.toLowerCase()))
   if (f.style) list = list.filter(p => p.styles && p.styles.includes(f.style))
-  if (f.budget) list = list.filter(p => p.priceMin <= parseInt(f.budget))
+  if (f.budget) list = list.filter(p => (p.priceMin||0) <= parseInt(f.budget))
   if (f.travel === 'local') list = list.filter(p => ['25','50','100'].includes(p.travelRadius))
   if (f.travel === 'nationwide') list = list.filter(p => ['nationwide','anywhere'].includes(p.travelRadius))
   if (f.travel === 'anywhere') list = list.filter(p => p.travelRadius === 'anywhere')
 
   if (sortBy.value === 'featured') list.sort((a,b) => (b.tier==='featured'?1:0)-(a.tier==='featured'?1:0))
-  if (sortBy.value === 'price-low') list.sort((a,b) => a.priceMin - b.priceMin)
-  if (sortBy.value === 'price-high') list.sort((a,b) => b.priceMin - a.priceMin)
+  if (sortBy.value === 'price-low') list.sort((a,b) => (a.priceMin||0) - (b.priceMin||0))
+  if (sortBy.value === 'price-high') list.sort((a,b) => (b.priceMin||0) - (a.priceMin||0))
   return list
 })
 

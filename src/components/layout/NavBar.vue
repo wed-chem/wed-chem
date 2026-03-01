@@ -4,7 +4,7 @@
       <router-link to="/" class="nav-logo">Wed<span>Chem</span></router-link>
       <ul class="nav-links" :class="{ open: menuOpen }">
         <li><router-link to="/#how-it-works" @click="menuOpen = false">How It Works</router-link></li>
-        <li><router-link to="/directory" @click="menuOpen = false">Browse</router-link></li>
+        <li><router-link to="/directory" @click="menuOpen = false">Photographers</router-link></li>
         <li><router-link to="/pricing" @click="menuOpen = false">Pricing</router-link></li>
         <li v-if="authStore.isAdmin">
           <router-link to="/admin" @click="menuOpen = false">Admin</router-link>
@@ -46,47 +46,22 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 </script>
 
 <style scoped>
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  padding: 20px 0; transition: var(--transition); background: transparent;
-}
-nav.scrolled {
-  background: rgba(250,247,242,0.95); backdrop-filter: blur(20px);
-  padding: 14px 0; box-shadow: 0 1px 10px rgba(44,44,44,0.06);
-}
-nav .container { display: flex; justify-content: space-between; align-items: center; }
-
-.nav-logo {
-  font-family: var(--font-display); font-size: 1.7rem; font-weight: 500;
-  color: var(--charcoal); letter-spacing: -0.02em;
-}
-.nav-logo span { color: var(--terracotta); font-style: italic; }
-
-.nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
-.nav-links a, .nav-links button {
-  color: var(--warm-gray); font-size: 0.86rem; font-weight: 400;
-  letter-spacing: 0.04em; text-transform: uppercase; transition: var(--transition);
-}
-.nav-links a:hover, .nav-links button:hover { color: var(--charcoal); }
-
-.nav-btn {
-  display: inline-flex; align-items: center; padding: 10px 24px;
-  background: var(--charcoal); color: var(--cream) !important; border-radius: 100px;
-  font-size: 0.83rem !important; font-weight: 500; transition: var(--transition);
-}
-.nav-btn:hover { background: var(--terracotta); transform: translateY(-1px); }
-
-.nav-link-btn { background: none; border: none; cursor: pointer; font-family: inherit; }
-
-.mobile-toggle { display: none; padding: 8px; }
-.mobile-toggle span { display: block; width: 24px; height: 2px; background: var(--charcoal); margin: 5px 0; border-radius: 2px; }
-
-@media (max-width: 768px) {
-  .nav-links { display: none; }
-  .nav-links.open {
-    display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
-    background: var(--cream); padding: 24px; gap: 20px; box-shadow: var(--shadow-md);
-  }
-  .mobile-toggle { display: block; }
+nav { position:fixed; top:0; left:0; right:0; z-index:1000; padding:20px 0; transition:var(--transition); background:transparent; }
+nav.scrolled { background:rgba(250,247,242,0.95); backdrop-filter:blur(20px); padding:14px 0; box-shadow:0 1px 10px rgba(44,44,44,0.06); }
+nav .container { display:flex; justify-content:space-between; align-items:center; }
+.nav-logo { font-family:var(--font-display); font-size:1.7rem; font-weight:500; color:var(--charcoal); letter-spacing:-0.02em; }
+.nav-logo span { color:var(--terracotta); font-style:italic; }
+.nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+.nav-links a, .nav-links button { color:var(--warm-gray); font-size:0.86rem; font-weight:400; letter-spacing:0.04em; text-transform:uppercase; transition:var(--transition); }
+.nav-links a:hover, .nav-links button:hover { color:var(--charcoal); }
+.nav-btn { display:inline-flex; align-items:center; padding:10px 24px; background:var(--charcoal); color:var(--cream) !important; border-radius:100px; font-size:0.83rem !important; font-weight:500; transition:var(--transition); }
+.nav-btn:hover { background:var(--terracotta); transform:translateY(-1px); }
+.nav-link-btn { background:none; border:none; cursor:pointer; font-family:inherit; }
+.mobile-toggle { display:none; padding:8px; }
+.mobile-toggle span { display:block; width:24px; height:2px; background:var(--charcoal); margin:5px 0; border-radius:2px; }
+@media(max-width:768px) {
+  .nav-links { display:none; }
+  .nav-links.open { display:flex; flex-direction:column; position:absolute; top:100%; left:0; right:0; background:var(--cream); padding:24px; gap:20px; box-shadow:var(--shadow-md); }
+  .mobile-toggle { display:block; }
 }
 </style>
