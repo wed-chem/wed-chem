@@ -27,9 +27,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 const name = ref(''); const email = ref(''); const password = ref('')
 const error = ref(''); const loading = ref(false)
 
@@ -38,13 +39,13 @@ async function handleSignup() {
   try {
     const { registerCouple } = await import('@/services/auth')
     await registerCouple(email.value, password.value, name.value)
-    router.push('/quiz')
+    router.push(route.query.redirect || '/quiz')
   } catch(e) { error.value = e.code==='auth/email-already-in-use' ? 'Email already registered.' : 'Something went wrong.' }
   loading.value=false
 }
 
 async function handleGoogle() {
-  try { const { signInWithGoogle } = await import('@/services/auth'); await signInWithGoogle(); router.push('/quiz') }
+  try { const { signInWithGoogle } = await import('@/services/auth'); await signInWithGoogle(); router.push(route.query.redirect || '/quiz') }
   catch(e) { error.value='Google sign-up failed.' }
 }
 </script>

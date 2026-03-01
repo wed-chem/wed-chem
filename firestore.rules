@@ -14,7 +14,9 @@ service cloud.firestore {
       allow create: if request.auth != null && request.auth.uid == photographerId;
       allow update: if request.auth != null && (
         request.auth.uid == photographerId ||
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        // Allow anyone authed to increment profileViews only
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['profileViews']))
       );
     }
 

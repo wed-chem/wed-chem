@@ -19,7 +19,7 @@
             <div class="profile-tagline" v-if="photographer.tagline">{{ photographer.tagline }}</div>
           </div>
           <div class="profile-header-actions">
-            <button class="btn-primary" @click="showInquiry = true">Get in Touch →</button>
+            <button class="btn-primary" @click="handleInquiryClick">Get in Touch →</button>
             <button class="btn-secondary btn-sm" @click="saved = !saved">{{ saved ? '♥ Saved' : '♡ Save' }}</button>
           </div>
         </div>
@@ -86,7 +86,7 @@
               <div class="sc-label">Travel</div>
               <div class="sc-value">{{ photographer.travelRadius }}</div>
             </div>
-            <button class="btn-primary" style="width:100%;justify-content:center;margin-top:20px;" @click="showInquiry = true">Get in Touch →</button>
+            <button class="btn-primary" style="width:100%;justify-content:center;margin-top:20px;" @click="handleInquiryClick">Get in Touch →</button>
           </div>
 
           <!-- PACKAGE -->
@@ -158,12 +158,19 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 import { useRoute } from 'vue-router'
 import PhotoLightbox from '@/components/ui/PhotoLightbox.vue'
 
+const authStore = useAuthStore()
 const route = useRoute()
 const saved = ref(false)
 const showInquiry = ref(false)
+const showAuthGate = ref(false)
+const authMode = ref('signup') // 'signup' or 'login'
+const authForm = ref({ name: '', email: '', password: '' })
+const authError = ref('')
+const authLoading = ref(false)
 const inquiry = ref({ name: '', email: '', date: '', message: '' })
 const lbShow = ref(false)
 const lbIndex = ref(0)
@@ -233,6 +240,55 @@ onMounted(async () => {
 function openLightbox(index) {
   lbIndex.value = index
   lbShow.value = true
+}
+
+function handleInquiryClick() {
+  if (authStore.isLoggedIn) {
+    // Pre-fill from auth
+    if (authStore.user?.displayName && !inquiry.value.name) inquiry.value.name = authStore.user.displayName
+    if (authStore.user?.email && !inquiry.value.email) inquiry.value.email = authStore.user.email
+    showInquiry.value = true
+  } else {
+    showAuthGate.value = true
+  }
+}
+
+async function handleAuthSubmit() {
+  authError.value = ''
+  authLoading.value = true
+  try {
+    if (authMode.value === 'signup') {
+      const { registerCouple } = await import('@/services/auth')
+      await registerCouple(authForm.value.email, authForm.value.password, authForm.value.name)
+      inquiry.value.name = authForm.value.name
+      inquiry.value.email = authForm.value.email
+    } else {
+      const { login } = await import('@/services/auth')
+      await login(authForm.value.email, authForm.value.password)
+    }
+    showAuthGate.value = false
+    showInquiry.value = true
+  } catch (e) {
+    authError.value = e.code === 'auth/email-already-in-use' ? 'Email already registered. Try logging in.' 
+      : e.code === 'auth/wrong-password' ? 'Wrong password.' 
+      : e.code === 'auth/user-not-found' ? 'No account with that email.' 
+      : 'Something went wrong. Please try again.'
+  }
+  authLoading.value = false
+}
+
+async function authWithGoogle() {
+  authError.value = ''
+  authLoading.value = true
+  try {
+    const { signInWithGoogle } = await import('@/services/auth')
+    const user = await signInWithGoogle()
+    inquiry.value.name = user.displayName || ''
+    inquiry.value.email = user.email || ''
+    showAuthGate.value = false
+    showInquiry.value = true
+  } catch (e) { authError.value = 'Google sign-in failed.' }
+  authLoading.value = false
 }
 
 async function submitInquiry() {
@@ -353,5 +409,19 @@ async function submitInquiry() {
   .portfolio-item:nth-child(1) { grid-column:span 2; grid-row:span 1; }
   .profile-cover { height:200px; }
   .profile-avatar { width:100px; height:100px; }
+}
+.google-btn {
+  width:100%; padding:12px; border-radius:100px; border:1.5px solid var(--light-gray);
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  font-size:0.9rem; font-weight:500; cursor:pointer; transition:var(--transition);
+  background:var(--warm-white);
+}
+.google-btn:hover { border-color:var(--charcoal); background:var(--cream); }
+.auth-divider {
+  display:flex; align-items:center; gap:12px; margin:20px 0;
+  color:var(--warm-gray); font-size:0.8rem;
+}
+.auth-divider::before, .auth-divider::after {
+  content:''; flex:1; height:1px; background:var(--light-gray);
 }
 </style>

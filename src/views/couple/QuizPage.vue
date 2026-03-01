@@ -201,7 +201,17 @@
               </div>
             </div>
 
-            <div style="text-align:center;margin-top:48px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+            <!-- Save results prompt for non-logged-in users -->
+            <div v-if="!authStore.isLoggedIn" class="save-results-card">
+              <div class="save-icon">💾</div>
+              <div class="save-text">
+                <div class="save-title">Save your results</div>
+                <div class="save-sub">Create a free account to save your matches and send inquiries to photographers.</div>
+              </div>
+              <router-link to="/signup/couple" class="btn-primary btn-sm">Create Free Account →</router-link>
+            </div>
+
+            <div style="text-align:center;margin-top:32px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
               <router-link to="/directory" class="btn-primary">Browse All Photographers →</router-link>
               <button class="btn-secondary" @click="retakeQuiz">Retake Quiz</button>
             </div>
@@ -291,25 +301,25 @@ function validateAndNext() {
   }
   if (q.isABPair) {
     const currentQ = q.phases[q.currentIndex]
-    if (currentQ.id === 'saturation' && !q.saturationPick) {
+    if (currentQ.data.id === 'saturation' && !q.saturationPick) {
       validationMsg.value = 'Pick one — this helps us understand your color preferences.'
       return
     }
-    if (currentQ.id !== 'saturation' && !q.abAnswers[currentQ.id]) {
+    if (currentQ.data.id !== 'saturation' && !q.abAnswers[currentQ.data.id]) {
       validationMsg.value = 'Pick the one that speaks to you — there\'s no wrong answer!'
       return
     }
   }
   if (q.isFeature) {
     const currentQ = q.phases[q.currentIndex]
-    if (!q.featureAnswers[currentQ.id]) {
+    if (!q.featureAnswers[currentQ.data.id]) {
       validationMsg.value = 'Please select an option to continue.'
       return
     }
   }
   if (q.isLogistical) {
     const currentQ = q.phases[q.currentIndex]
-    if (currentQ.id === 'budget' && !q.manualAnswers.budget) {
+    if (currentQ.data.id === 'budget' && !q.manualAnswers.budget) {
       validationMsg.value = 'A budget range helps us filter to photographers in your price range.'
       return
     }
@@ -386,6 +396,20 @@ function retakeQuiz() {
 .rank-label { font-weight:500; font-size:0.88rem; margin-bottom:4px; }
 .rank-desc { font-size:0.75rem; color:var(--warm-gray); line-height:1.4; }
 .rank-number { position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--terracotta); color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; }
+
+/* ═══════════ SAVE RESULTS ═══════════ */
+.save-results-card {
+  display:flex; align-items:center; gap:20px; padding:24px;
+  background:var(--warm-white); border:1.5px solid var(--sage-light);
+  border-radius:var(--radius-lg); margin-top:40px;
+}
+.save-icon { font-size:1.8rem; flex-shrink:0; }
+.save-text { flex:1; }
+.save-title { font-weight:500; margin-bottom:2px; }
+.save-sub { font-size:0.85rem; color:var(--warm-gray); }
+@media(max-width:768px) {
+  .save-results-card { flex-direction:column; text-align:center; }
+}
 
 /* ═══════════ VALIDATION ═══════════ */
 .validation-msg {
