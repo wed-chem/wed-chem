@@ -144,6 +144,9 @@
           </div>
         </template>
 
+        <!-- VALIDATION -->
+        <div class="validation-msg" v-if="validationMsg && !quizStore.completed && !quizStore.showThinking">{{ validationMsg }}</div>
+
         <!-- NAVIGATION -->
         <div v-if="!quizStore.completed && !quizStore.showThinking" class="qz-nav">
           <button class="qz-back" @click="goPrev" :style="{visibility: quizStore.currentIndex === 0 ? 'hidden' : 'visible'}">← Back</button>
@@ -397,7 +400,7 @@ function retakeQuiz() {
 .style-rank-card { position:relative; border:2.5px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); text-align:left; background:var(--warm-white); }
 .style-rank-card:hover { border-color:var(--sage); transform:translateY(-2px); box-shadow:var(--shadow-md); }
 .style-rank-card.selected { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.15); }
-.style-rank-img { height:200px; background-size:cover; background-position:center top; }
+.style-rank-img { height:160px; background-size:cover; background-position:center 30%; }
 .style-rank-body { padding:14px 16px; }
 
 /* ═══════════ A/B PAIRS ═══════════ */
@@ -523,7 +526,7 @@ function retakeQuiz() {
   .rank-grid { grid-template-columns:repeat(2, 1fr); }
   .rank-grid-4 { grid-template-columns:repeat(2, 1fr); }
   .style-rank-grid { grid-template-columns:1fr; }
-  .style-rank-img { height:160px; }
+  .style-rank-img { height:130px; }
   .results-grid { grid-template-columns:1fr; }
   .toggle-options { flex-direction:column; }
   .results-title { font-size:2rem; }
