@@ -33,7 +33,7 @@
               <button class="style-rank-card" v-for="style in photoStyles" :key="style.id"
                 :class="{selected: answers.photoStyles.includes(style.id)}"
                 @click="toggleList(answers.photoStyles, style.id)">
-                <div class="style-rank-img" v-if="style.image" :style="{backgroundImage: 'url(' + style.image + ')'}"></div>
+                <img class="style-rank-img" v-if="style.image" :src="style.image" :alt="style.label">
                 <div class="style-rank-body">
                   <div class="rank-label">{{ style.label }}</div>
                   <div class="rank-desc">{{ style.description }}</div>
@@ -206,7 +206,7 @@ async function saveQuiz() {
 .style-rank-card { position:relative; border:2.5px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); text-align:left; background:var(--warm-white); }
 .style-rank-card:hover { border-color:var(--sage); transform:translateY(-2px); }
 .style-rank-card.selected { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.15); }
-.style-rank-img { height:160px; background-size:cover; background-position:center 30%; }
+.style-rank-img { width:100%; height:auto; max-height:220px; object-fit:cover; display:block; }
 .style-rank-body { padding:12px 14px; }
 
 .rank-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-bottom:24px; }
@@ -231,7 +231,7 @@ async function saveQuiz() {
   .rank-grid { grid-template-columns:repeat(2, 1fr); }
   .rank-grid-4 { grid-template-columns:repeat(2, 1fr); }
   .style-rank-grid { grid-template-columns:1fr; }
-  .style-rank-img { height:130px; }
+  .style-rank-img { max-height:180px; }
   .feature-options { flex-direction:column; }
 }
 </style>
