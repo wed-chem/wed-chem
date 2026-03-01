@@ -35,7 +35,7 @@
             <h2 class="ps-title">Portfolio</h2>
             <div class="portfolio-grid">
               <div class="portfolio-item" v-for="(photo, i) in photographer.portfolio" :key="i" @click="openLightbox(i)">
-                <div class="portfolio-img" :style="{background: photo.url ? `url(${photo.url}) center/cover` : photo.gradient}"></div>
+                <div class="portfolio-img" :style="{background: (typeof photo === 'string' ? photo : photo.url) ? `url(${typeof photo === 'string' ? photo : photo.url}) center/cover` : (photo.gradient || 'var(--light-gray)')}"></div>
               </div>
             </div>
           </section>
@@ -174,7 +174,7 @@ const authLoading = ref(false)
 const inquiry = ref({ name: '', email: '', date: '', message: '' })
 const lbShow = ref(false)
 const lbIndex = ref(0)
-const lbPhotos = computed(() => photographer.value.portfolio.map(p => p.url || p.gradient).filter(Boolean))
+const lbPhotos = computed(() => photographer.value.portfolio.map(p => typeof p === 'string' ? p : (p.url || p.gradient)).filter(Boolean))
 
 // Mock photographer data — will be replaced with Firestore fetch
 const photographer = ref({

@@ -383,6 +383,27 @@ async function nextStep() {
         personality: quiz.features.personality ? [quiz.features.personality] : [],
         coverageHours: Array.isArray(quiz.features.hours) ? quiz.features.hours : (quiz.features.hours ? [quiz.features.hours] : [])
       })
+      // Upload cover photo
+      if (coverFile.value) {
+        try {
+          const { uploadCoverPhoto } = await import('@/services/photographer')
+          await uploadCoverPhoto(user.uid, coverFile.value)
+        } catch (e) { console.error('Cover upload failed:', e) }
+      }
+
+      // Upload portfolio photos
+      if (portfolioFiles.value.length) {
+        try {
+          const { uploadPortfolioPhoto, savePortfolio } = await import('@/services/photographer')
+          const portfolio = []
+          for (let i = 0; i < portfolioFiles.value.length; i++) {
+            const url = await uploadPortfolioPhoto(user.uid, portfolioFiles.value[i], i)
+            portfolio.push({ url })
+          }
+          await savePortfolio(user.uid, portfolio)
+        } catch (e) { console.error('Portfolio upload failed:', e) }
+      }
+
       await savePhotographerQuiz(user.uid, quiz)
       await updateStyleTags(user.uid, styleTags, form.specialties)
       await publishProfile(user.uid)
