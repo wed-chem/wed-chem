@@ -30,6 +30,17 @@ router.beforeEach(async (to) => {
   if (to.meta.requiresAuth) {
     const { useAuthStore } = await import('@/stores/auth')
     const auth = useAuthStore()
+    auth.init()
+    // Wait for Firebase Auth to resolve on cold load
+    if (auth.loading) {
+      await new Promise(resolve => {
+        const unwatch = auth.$subscribe((mutation, state) => {
+          if (!state.loading) { unwatch(); resolve() }
+        })
+        // Safety timeout - don't block forever
+        setTimeout(() => { unwatch(); resolve() }, 3000)
+      })
+    }
     if (!auth.isLoggedIn) return { name: 'Login', query: { redirect: to.fullPath } }
     if (to.meta.role && auth.role !== to.meta.role && auth.role !== 'admin') return { name: 'Home' }
   }
