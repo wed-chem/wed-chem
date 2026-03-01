@@ -370,6 +370,9 @@ async function nextStep() {
     if (!form.firstName || !form.businessName || !form.email || !form.password) { error.value = 'Please fill in required fields.'; return }
     if (form.password.length < 8) { error.value = 'Password must be 8+ characters.'; return }
     if (form.city) {
+      form.city = form.city.trim().toLowerCase()
+      form.state = form.state.trim().toLowerCase()
+      form.country = form.country.trim().toLowerCase()
       error.value = 'Verifying location...'
       try {
         const { validateAndGeocode } = await import('@/services/geocoding')

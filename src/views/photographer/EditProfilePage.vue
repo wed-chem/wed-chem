@@ -202,6 +202,9 @@ async function save() {
   saving.value = true; saveMsg.value = ''
   try {
     if (form.city) {
+      form.city = form.city.trim().toLowerCase()
+      form.state = form.state.trim().toLowerCase()
+      form.country = form.country.trim().toLowerCase()
       const { validateAndGeocode } = await import('@/services/geocoding')
       const geo = await validateAndGeocode(form.city, form.state, form.country)
       if (!geo.valid) {
