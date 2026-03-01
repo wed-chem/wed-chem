@@ -1,0 +1,294 @@
+<template>
+  <div class="signup-page">
+    <div class="container">
+      <div class="signup-card">
+        <!-- PROGRESS -->
+        <div class="step-bar">
+          <div class="step-item" v-for="(s,i) in stepLabels" :key="i" :class="{active:step===i+1, done:step>i+1}">
+            <div class="step-num">{{ step>i+1 ? '✓' : i+1 }}</div>
+            <div class="step-label">{{ s }}</div>
+          </div>
+        </div>
+
+        <!-- STEP 1: BASICS -->
+        <div v-if="step===1" class="step-content">
+          <h2 class="step-title">Let's start with the basics</h2>
+          <p class="step-sub">Tell us about you and your business</p>
+          <div class="form-row-2"><div class="form-row"><label class="form-label">First Name</label><input class="form-input" v-model="form.firstName" placeholder="Ava"></div><div class="form-row"><label class="form-label">Last Name</label><input class="form-input" v-model="form.lastName" placeholder="Chen"></div></div>
+          <div class="form-row"><label class="form-label">Business Name</label><input class="form-input" v-model="form.businessName" placeholder="Ava Chen Photography"></div>
+          <div class="form-row"><label class="form-label">Email</label><input type="email" class="form-input" v-model="form.email" placeholder="ava@email.com"></div>
+          <div class="form-row"><label class="form-label">Password</label><input type="password" class="form-input" v-model="form.password" placeholder="8+ characters"></div>
+          <div class="form-row"><label class="form-label">Phone (optional)</label><input class="form-input" v-model="form.phone" placeholder="(503) 555-0123"></div>
+          <div class="form-row-2"><div class="form-row"><label class="form-label">City</label><input class="form-input" v-model="form.city" placeholder="Portland"></div><div class="form-row"><label class="form-label">State / Region</label><input class="form-input" v-model="form.state" placeholder="Oregon"></div></div>
+          <div class="form-row"><label class="form-label">Country</label><input class="form-input" v-model="form.country" placeholder="United States"></div>
+          <div class="form-row"><label class="form-label">How far are you willing to travel?</label><select class="form-input" v-model="form.travelRadius"><option v-for="t in travelRadiusOptions" :key="t.value" :value="t.value">{{ t.label }}</option></select></div>
+          <div class="form-row"><label class="form-label">Website (optional)</label><input class="form-input" v-model="form.website" placeholder="https://yoursite.com"></div>
+        </div>
+
+        <!-- STEP 2: STYLE QUIZ -->
+        <div v-if="step===2" class="step-content">
+          <h2 class="step-title">Define your style</h2>
+          <p class="step-sub">Complete the visual profile so our algorithm can match you with the right couples. Pick the option that better represents your work.</p>
+          <div class="quiz-progress"><div class="qp-bar"><div class="qp-fill" :style="{width: ((quizIndex+1)/25*100)+'%'}"></div></div><div class="qp-text">{{ quizIndex+1 }} of 25</div></div>
+          <div class="quiz-q">{{ photoQuestions[quizIndex].question }}</div>
+          <div class="quiz-pair">
+            <div class="quiz-opt" :class="{sel:quizAnswers[quizIndex]==='a'}" @click="quizAnswers[quizIndex]='a'">
+              <div class="quiz-img" :style="{background:photoQuestions[quizIndex].a.gradient}"></div>
+              <div class="quiz-lbl">{{ photoQuestions[quizIndex].a.label }}</div>
+            </div>
+            <div class="quiz-opt" :class="{sel:quizAnswers[quizIndex]==='b'}" @click="quizAnswers[quizIndex]='b'">
+              <div class="quiz-img" :style="{background:photoQuestions[quizIndex].b.gradient}"></div>
+              <div class="quiz-lbl">{{ photoQuestions[quizIndex].b.label }}</div>
+            </div>
+          </div>
+          <div class="quiz-nav">
+            <button class="qn-back" @click="quizIndex > 0 ? quizIndex-- : null" :style="{visibility:quizIndex===0?'hidden':'visible'}">← Back</button>
+            <button class="qn-next" @click="quizIndex < 24 ? quizIndex++ : step++">{{ quizIndex===24 ? 'Next Step →' : 'Next →' }}</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: STYLE TAGS -->
+        <div v-if="step===3" class="step-content">
+          <h2 class="step-title">Describe your style</h2>
+          <p class="step-sub">Select tags that describe your photography (pick 2–5)</p>
+          <label class="form-label">Photography Style</label>
+          <div class="tag-group" style="margin-bottom:28px;">
+            <label class="tag-chip" v-for="s in styleTags" :key="s" :class="{active:form.styles.includes(s)}">
+              <input type="checkbox" :value="s" v-model="form.styles">{{ s }}
+            </label>
+          </div>
+          <label class="form-label">Specialties</label>
+          <div class="tag-group" style="margin-bottom:28px;">
+            <label class="tag-chip" v-for="s in specialtyTags" :key="s" :class="{active:form.specialties.includes(s)}">
+              <input type="checkbox" :value="s" v-model="form.specialties">{{ s }}
+            </label>
+          </div>
+          <div class="form-row"><label class="form-label">Your tagline (1 sentence)</label><input class="form-input" v-model="form.tagline" placeholder="Natural light, real moments, organic warmth"></div>
+          <div class="form-row"><label class="form-label">About You</label><textarea class="form-input" style="min-height:140px;" v-model="form.about" placeholder="Tell couples about your approach, your style, and what makes your work unique..."></textarea></div>
+        </div>
+
+        <!-- STEP 4: PORTFOLIO -->
+        <div v-if="step===4" class="step-content">
+          <h2 class="step-title">Show your best work</h2>
+          <p class="step-sub">Upload 8–20 photos. Mix of couples, details, ceremony, reception.</p>
+          <div class="form-row"><label class="form-label">Cover Photo</label>
+            <div class="upload-zone" @click="$refs.coverInput.click()">
+              <input type="file" ref="coverInput" accept="image/*" @change="handleCover" hidden>
+              <div v-if="!coverPreview" class="upload-placeholder">Click to upload your cover image</div>
+              <img v-else :src="coverPreview" class="upload-preview">
+            </div>
+          </div>
+          <div class="form-row"><label class="form-label">Portfolio Photos ({{ portfolioPreviews.length }}/20)</label>
+            <div class="portfolio-upload-grid">
+              <div class="portfolio-thumb" v-for="(p,i) in portfolioPreviews" :key="i">
+                <img :src="p" class="portfolio-thumb-img">
+                <button class="portfolio-remove" @click="portfolioPreviews.splice(i,1);portfolioFiles.splice(i,1)">✕</button>
+              </div>
+              <div class="upload-zone upload-zone-sm" @click="$refs.portfolioInput.click()" v-if="portfolioPreviews.length < 20">
+                <input type="file" ref="portfolioInput" accept="image/*" multiple @change="handlePortfolio" hidden>
+                <div class="upload-placeholder">+ Add</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row"><label class="form-label">Instagram Handle (optional)</label><input class="form-input" v-model="form.instagram" placeholder="@yourstudio"></div>
+          <div class="form-row"><label class="form-label">TikTok Handle (optional)</label><input class="form-input" v-model="form.tiktok" placeholder="@yourstudio"></div>
+        </div>
+
+        <!-- STEP 5: SERVICES -->
+        <div v-if="step===5" class="step-content">
+          <h2 class="step-title">Services & Pricing</h2>
+          <p class="step-sub">Help couples understand what you offer</p>
+          <div class="form-row-2">
+            <div class="form-row"><label class="form-label">Starting Price ($)</label><input type="number" class="form-input" v-model="form.priceMin" placeholder="3000"></div>
+            <div class="form-row"><label class="form-label">Max Price ($)</label><input type="number" class="form-input" v-model="form.priceMax" placeholder="6000"></div>
+          </div>
+          <div class="form-row"><label class="form-label">What's included in your base package?</label><textarea class="form-input" style="min-height:120px;" v-model="form.basePackage" placeholder="8 hours of coverage&#10;Second shooter&#10;Online gallery&#10;500+ edited images"></textarea></div>
+          <label class="form-label">Add-ons you offer</label>
+          <div class="tag-group" style="margin-bottom:28px;">
+            <label class="tag-chip" v-for="a in addOnServices" :key="a" :class="{active:form.addOns.includes(a)}">
+              <input type="checkbox" :value="a" v-model="form.addOns">{{ a }}
+            </label>
+          </div>
+          <div class="form-row-2">
+            <div class="form-row"><label class="form-label">Delivery Turnaround</label><select class="form-input" v-model="form.turnaround"><option>2–4 weeks</option><option>4–6 weeks</option><option>6–8 weeks</option><option>8–12 weeks</option></select></div>
+            <div class="form-row"><label class="form-label">Years of Experience</label><select class="form-input" v-model="form.yearsExperience"><option>Under 1 year</option><option>1–3 years</option><option>3–5 years</option><option>5–10 years</option><option>10+ years</option></select></div>
+          </div>
+        </div>
+
+        <!-- STEP 6: REVIEW -->
+        <div v-if="step===6" class="step-content">
+          <h2 class="step-title">Review & Publish</h2>
+          <p class="step-sub">Almost there! Review your info and publish your profile.</p>
+          <div class="review-section">
+            <div class="review-label">Business</div>
+            <div class="review-value">{{ form.businessName }} — {{ form.city }}<span v-if="form.state">, {{ form.state }}</span><span v-if="form.country"> · {{ form.country }}</span></div>
+          </div>
+          <div class="review-section">
+            <div class="review-label">Style</div>
+            <div class="review-tags"><span class="review-tag" v-for="s in form.styles" :key="s">{{ s }}</span></div>
+          </div>
+          <div class="review-section">
+            <div class="review-label">Pricing</div>
+            <div class="review-value">${{ form.priceMin || '—' }} – ${{ form.priceMax || '—' }}</div>
+          </div>
+          <div class="review-section">
+            <div class="review-label">Portfolio</div>
+            <div class="review-value">{{ portfolioPreviews.length }} photos uploaded</div>
+          </div>
+          <div class="review-section">
+            <div class="review-label">Quiz</div>
+            <div class="review-value">{{ Object.keys(quizAnswers).length }}/25 questions answered</div>
+          </div>
+          <div class="publish-note">You can always edit your profile later from the dashboard.</div>
+        </div>
+
+        <!-- NAV -->
+        <div class="step-nav">
+          <button class="btn-secondary" @click="step > 1 ? step-- : null" :style="{visibility:step===1?'hidden':'visible'}">← Back</button>
+          <div class="step-error" v-if="error">{{ error }}</div>
+          <button class="btn-primary" @click="nextStep" :disabled="loading">{{ step===6 ? (loading ? 'Publishing...' : 'Publish Profile 🎉') : 'Continue →' }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { photoQuestions, styleTags, specialtyTags, addOnServices, travelRadiusOptions } from '@/data/quizData'
+
+const router = useRouter()
+const step = ref(1)
+const error = ref('')
+const loading = ref(false)
+const quizIndex = ref(0)
+const quizAnswers = reactive({})
+const coverPreview = ref(null)
+const coverFile = ref(null)
+const portfolioPreviews = ref([])
+const portfolioFiles = ref([])
+
+const form = reactive({
+  firstName:'', lastName:'', businessName:'', email:'', password:'',
+  phone:'', city:'', state:'', country:'', travelRadius:'150', website:'',
+  styles:[], specialties:[], tagline:'', about:'',
+  instagram:'', tiktok:'',
+  priceMin:null, priceMax:null, basePackage:'', addOns:[], turnaround:'4–6 weeks', yearsExperience:'3–5 years'
+})
+
+function handleCover(e) {
+  const f = e.target.files[0]; if (!f) return
+  coverFile.value = f; coverPreview.value = URL.createObjectURL(f)
+}
+
+function handlePortfolio(e) {
+  const files = Array.from(e.target.files)
+  files.forEach(f => {
+    if (portfolioPreviews.value.length < 20) {
+      portfolioFiles.value.push(f); portfolioPreviews.value.push(URL.createObjectURL(f))
+    }
+  })
+}
+
+async function nextStep() {
+  error.value = ''
+  if (step.value === 1) {
+    if (!form.firstName || !form.businessName || !form.email || !form.password) { error.value = 'Please fill in required fields.'; return }
+    if (form.password.length < 8) { error.value = 'Password must be 8+ characters.'; return }
+  }
+  if (step.value === 6) {
+    loading.value = true
+    try {
+      const { registerPhotographer } = await import('@/services/auth')
+      const { savePhotographerQuiz, updateStyleTags, publishProfile } = await import('@/services/photographer')
+      const user = await registerPhotographer(form.email, form.password, {
+        firstName:form.firstName, lastName:form.lastName, businessName:form.businessName,
+        phone:form.phone, city:form.city, state:form.state, country:form.country, travelRadius:form.travelRadius,
+        website:form.website, tagline:form.tagline, about:form.about,
+        instagram:form.instagram, tiktok:form.tiktok,
+        priceMin:form.priceMin, priceMax:form.priceMax, basePackage:form.basePackage,
+        addOns:form.addOns, turnaround:form.turnaround, yearsExperience:form.yearsExperience
+      })
+      await savePhotographerQuiz(user.uid, quizAnswers)
+      await updateStyleTags(user.uid, form.styles, form.specialties)
+      await publishProfile(user.uid)
+      router.push('/dashboard')
+    } catch(e) {
+      error.value = e.code === 'auth/email-already-in-use' ? 'Email already registered. Try logging in.' : 'Something went wrong: ' + e.message
+    }
+    loading.value = false
+    return
+  }
+  step.value++
+}
+</script>
+
+<style scoped>
+.signup-page { padding:120px 0 80px; background:var(--cream); min-height:100vh; }
+.signup-card { max-width:680px; margin:0 auto; background:var(--warm-white); border:1px solid var(--light-gray); border-radius:var(--radius-lg); padding:48px; box-shadow:var(--shadow-md); }
+
+.step-bar { display:flex; gap:4px; margin-bottom:40px; }
+.step-item { flex:1; text-align:center; }
+.step-num { width:32px; height:32px; border-radius:50%; background:var(--light-gray); display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:0.78rem; font-weight:600; color:var(--warm-gray); transition:var(--transition); }
+.step-item.active .step-num { background:var(--charcoal); color:var(--cream); }
+.step-item.done .step-num { background:var(--sage); color:white; }
+.step-label { font-size:0.72rem; color:var(--warm-gray); }
+.step-item.active .step-label { color:var(--charcoal); font-weight:500; }
+
+.step-content { margin-bottom:32px; }
+.step-title { font-family:var(--font-display); font-size:1.8rem; font-weight:400; margin-bottom:8px; }
+.step-sub { color:var(--warm-gray); font-size:0.92rem; margin-bottom:32px; line-height:1.6; }
+
+.tag-group { display:flex; flex-wrap:wrap; gap:8px; }
+.tag-chip { display:inline-flex; padding:8px 18px; border:1.5px solid var(--light-gray); border-radius:100px; font-size:0.82rem; color:var(--warm-gray); cursor:pointer; transition:var(--transition); }
+.tag-chip:hover { border-color:var(--sage); }
+.tag-chip.active { background:var(--sage); border-color:var(--sage); color:white; }
+.tag-chip input { display:none; }
+
+.upload-zone { border:2px dashed var(--light-gray); border-radius:var(--radius); padding:40px; text-align:center; cursor:pointer; transition:var(--transition); }
+.upload-zone:hover { border-color:var(--sage); }
+.upload-zone-sm { padding:20px; min-height:120px; display:flex; align-items:center; justify-content:center; }
+.upload-placeholder { color:var(--warm-gray); font-size:0.88rem; }
+.upload-preview { max-height:200px; margin:0 auto; border-radius:var(--radius); }
+
+.portfolio-upload-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.portfolio-thumb { position:relative; border-radius:var(--radius); overflow:hidden; aspect-ratio:1; }
+.portfolio-thumb-img { width:100%; height:100%; object-fit:cover; }
+.portfolio-remove { position:absolute; top:4px; right:4px; width:24px; height:24px; border-radius:50%; background:rgba(44,44,44,0.7); color:white; font-size:0.7rem; display:flex; align-items:center; justify-content:center; }
+
+/* Quiz within signup */
+.quiz-progress { margin-bottom:24px; }
+.qp-bar { height:4px; background:var(--light-gray); border-radius:100px; overflow:hidden; margin-bottom:8px; }
+.qp-fill { height:100%; background:var(--terracotta); border-radius:100px; transition:width 0.4s ease; }
+.qp-text { font-size:0.78rem; color:var(--warm-gray); text-align:center; }
+.quiz-q { font-family:var(--font-display); font-size:1.4rem; text-align:center; margin-bottom:24px; }
+.quiz-pair { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+.quiz-opt { border:3px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); }
+.quiz-opt:hover { border-color:var(--sage); }
+.quiz-opt.sel { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.2); }
+.quiz-img { aspect-ratio:4/3; }
+.quiz-lbl { padding:12px; text-align:center; font-size:0.88rem; font-weight:500; }
+.quiz-nav { display:flex; justify-content:space-between; }
+.qn-back { padding:10px 20px; color:var(--warm-gray); font-size:0.85rem; }
+.qn-next { padding:12px 28px; background:var(--charcoal); color:var(--cream); border-radius:100px; font-size:0.85rem; font-weight:500; }
+
+/* Review */
+.review-section { padding:16px 0; border-bottom:1px solid var(--light-gray); }
+.review-label { font-size:0.78rem; font-weight:500; text-transform:uppercase; letter-spacing:0.04em; color:var(--warm-gray); margin-bottom:4px; }
+.review-value { font-size:0.95rem; }
+.review-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.review-tag { padding:4px 12px; background:rgba(139,158,130,0.1); border-radius:100px; font-size:0.78rem; color:var(--sage-dark); }
+.publish-note { margin-top:24px; padding:16px; background:rgba(139,158,130,0.08); border-radius:var(--radius); font-size:0.88rem; color:var(--sage-dark); text-align:center; }
+
+.step-nav { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.step-error { font-size:0.85rem; color:var(--terracotta); }
+
+@media(max-width:768px) {
+  .signup-card { padding:32px 24px; }
+  .portfolio-upload-grid { grid-template-columns:repeat(3,1fr); }
+  .quiz-pair { grid-template-columns:1fr; }
+  .step-bar { gap:2px; }
+  .step-label { display:none; }
+}
+</style>
