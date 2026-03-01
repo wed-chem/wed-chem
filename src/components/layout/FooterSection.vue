@@ -12,6 +12,7 @@
             <li><router-link to="/quiz">Get Matched</router-link></li>
             <li><router-link to="/directory">Photographers</router-link></li>
             <li><router-link to="/pricing">Pricing</router-link></li>
+            <li><router-link to="/blog">Blog</router-link></li>
           </ul>
         </div>
         <div class="footer-col">

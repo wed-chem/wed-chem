@@ -6,6 +6,7 @@
         <li><router-link to="/#how-it-works" @click="menuOpen = false">How It Works</router-link></li>
         <li><router-link to="/directory" @click="menuOpen = false">Photographers</router-link></li>
         <li><router-link to="/pricing" @click="menuOpen = false">Pricing</router-link></li>
+        <li><router-link to="/blog" @click="menuOpen = false">Blog</router-link></li>
         <li v-if="authStore.isAdmin">
           <router-link to="/admin" @click="menuOpen = false">Admin</router-link>
         </li>

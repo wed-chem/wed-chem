@@ -19,6 +19,8 @@ const routes = [
   { path: '/admin', name: 'Admin', component: () => import('@/views/admin/AdminDashboard.vue'), meta: { requiresAuth: true, role: 'admin' } },
   { path: '/terms', name: 'Terms', component: () => import('@/views/public/TermsPage.vue') },
   { path: '/privacy', name: 'Privacy', component: () => import('@/views/public/PrivacyPage.vue') },
+  { path: '/blog', name: 'Blog', component: () => import('@/views/public/BlogPage.vue') },
+  { path: '/blog/:slug', name: 'BlogPost', component: () => import('@/views/public/BlogPostPage.vue'), props: true },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('@/views/public/NotFoundPage.vue') }
 ]
 
