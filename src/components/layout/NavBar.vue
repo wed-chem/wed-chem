@@ -6,15 +6,20 @@
         <li><router-link to="/#how-it-works" @click="menuOpen = false">How It Works</router-link></li>
         <li><router-link to="/directory" @click="menuOpen = false">Browse</router-link></li>
         <li><router-link to="/pricing" @click="menuOpen = false">Pricing</router-link></li>
-        <li v-if="!authStore.isPhotographer"><router-link to="/quiz" @click="menuOpen = false">Take the Quiz</router-link></li>
         <li v-if="authStore.isAdmin">
           <router-link to="/admin" @click="menuOpen = false">Admin</router-link>
         </li>
         <li v-if="authStore.isPhotographer">
           <router-link to="/dashboard" class="nav-btn" @click="menuOpen = false">Dashboard</router-link>
         </li>
+        <li v-if="authStore.isLoggedIn && !authStore.isPhotographer">
+          <router-link to="/quiz" class="nav-btn" @click="menuOpen = false">Take the Quiz</router-link>
+        </li>
         <li v-if="authStore.isLoggedIn">
           <button class="nav-link-btn" @click="authStore.logout(); menuOpen = false">Logout</button>
+        </li>
+        <li v-if="!authStore.isLoggedIn">
+          <router-link to="/login" @click="menuOpen = false">Log In</router-link>
         </li>
         <li v-if="!authStore.isLoggedIn">
           <router-link to="/quiz" class="nav-btn" @click="menuOpen = false">Take the Quiz</router-link>
