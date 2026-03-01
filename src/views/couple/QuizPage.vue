@@ -147,7 +147,7 @@
         <!-- NAVIGATION -->
         <div v-if="!quizStore.completed && !quizStore.showThinking" class="qz-nav">
           <button class="qz-back" @click="goPrev" :style="{visibility: quizStore.currentIndex === 0 ? 'hidden' : 'visible'}">← Back</button>
-          <button class="qz-next" @click="goNext">{{ quizStore.isLastQuestion ? 'See My Matches →' : 'Next →' }}</button>
+          <button class="qz-next" @click="validateAndNext">{{ quizStore.isLastQuestion ? 'See My Matches →' : 'Next →' }}</button>
         </div>
 
         <!-- ═══════════ RESULTS ═══════════ -->
@@ -216,6 +216,7 @@ import { useAuthStore } from '@/stores/auth'
 import { editingStyles, photoStyles } from '@/data/quizData'
 
 const quizStore = useQuizStore()
+const validationMsg = ref('')
 const authStore = useAuthStore()
 
 const locCity = ref('')
@@ -271,6 +272,47 @@ function runRevealAnimation() {
   setTimeout(() => { beakerStage.value = 4 }, 6500)
   setTimeout(() => { beakerStage.value = 5 }, 8500)
   setTimeout(() => { revealDone.value = true }, 10500)
+}
+
+function validateAndNext() {
+  validationMsg.value = ''
+  const q = quizStore
+  
+  if (q.isEditingRank && q.editingRanking.length === 0) {
+    validationMsg.value = 'Please select at least one editing style — this helps us find your best matches.'
+    return
+  }
+  if (q.isPhotoStyleRank && q.photoStyleRanking.length === 0) {
+    validationMsg.value = 'Please select at least one photo style — the more we know, the better your matches.'
+    return
+  }
+  if (q.isABPair) {
+    const currentQ = q.phases[q.currentIndex]
+    if (currentQ.id === 'saturation' && !q.saturationPick) {
+      validationMsg.value = 'Pick one — this helps us understand your color preferences.'
+      return
+    }
+    if (currentQ.id !== 'saturation' && !q.abAnswers[currentQ.id]) {
+      validationMsg.value = 'Pick the one that speaks to you — there\'s no wrong answer!'
+      return
+    }
+  }
+  if (q.isFeature) {
+    const currentQ = q.phases[q.currentIndex]
+    if (!q.featureAnswers[currentQ.id]) {
+      validationMsg.value = 'Please select an option to continue.'
+      return
+    }
+  }
+  if (q.isLogistical) {
+    const currentQ = q.phases[q.currentIndex]
+    if (currentQ.id === 'budget' && !q.manualAnswers.budget) {
+      validationMsg.value = 'A budget range helps us filter to photographers in your price range.'
+      return
+    }
+  }
+  
+  goNext()
 }
 
 async function goNext() {
@@ -342,12 +384,20 @@ function retakeQuiz() {
 .rank-desc { font-size:0.75rem; color:var(--warm-gray); line-height:1.4; }
 .rank-number { position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--terracotta); color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; }
 
+/* ═══════════ VALIDATION ═══════════ */
+.validation-msg {
+  text-align:center; padding:12px 20px; margin-bottom:16px;
+  background:rgba(196,130,106,0.08); border:1px solid rgba(196,130,106,0.2);
+  border-radius:var(--radius); font-size:0.88rem; color:var(--terracotta-dark);
+  animation:fadeUp 0.3s ease;
+}
+
 /* ═══════════ PHOTO STYLE CARDS WITH IMAGES ═══════════ */
 .style-rank-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:40px; }
 .style-rank-card { position:relative; border:2.5px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); text-align:left; background:var(--warm-white); }
 .style-rank-card:hover { border-color:var(--sage); transform:translateY(-2px); box-shadow:var(--shadow-md); }
 .style-rank-card.selected { border-color:var(--terracotta); box-shadow:0 0 0 3px rgba(196,130,106,0.15); }
-.style-rank-img { height:140px; background-size:cover; background-position:center; }
+.style-rank-img { height:200px; background-size:cover; background-position:center top; }
 .style-rank-body { padding:14px 16px; }
 
 /* ═══════════ A/B PAIRS ═══════════ */
@@ -473,7 +523,7 @@ function retakeQuiz() {
   .rank-grid { grid-template-columns:repeat(2, 1fr); }
   .rank-grid-4 { grid-template-columns:repeat(2, 1fr); }
   .style-rank-grid { grid-template-columns:1fr; }
-  .style-rank-img { height:120px; }
+  .style-rank-img { height:160px; }
   .results-grid { grid-template-columns:1fr; }
   .toggle-options { flex-direction:column; }
   .results-title { font-size:2rem; }
