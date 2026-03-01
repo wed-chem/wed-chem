@@ -150,17 +150,24 @@
       </div>
 
     </div>
+
+    <!-- Lightbox -->
+    <PhotoLightbox :show="lbShow" :photos="lbPhotos" :startIndex="lbIndex" @close="lbShow=false" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import PhotoLightbox from '@/components/ui/PhotoLightbox.vue'
 
 const route = useRoute()
 const saved = ref(false)
 const showInquiry = ref(false)
 const inquiry = ref({ name: '', email: '', date: '', message: '' })
+const lbShow = ref(false)
+const lbIndex = ref(0)
+const lbPhotos = computed(() => photographer.value.portfolio.map(p => p.url || p.gradient).filter(Boolean))
 
 // Mock photographer data — will be replaced with Firestore fetch
 const photographer = ref({
@@ -224,7 +231,8 @@ onMounted(async () => {
 })
 
 function openLightbox(index) {
-  // TODO: implement lightbox
+  lbIndex.value = index
+  lbShow.value = true
 }
 
 async function submitInquiry() {

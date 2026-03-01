@@ -18,7 +18,7 @@
       </button>
 
       <div class="auth-footer">
-        <button class="auth-link" @click="handleReset" v-if="email">Forgot password?</button>
+        <router-link to="/reset-password" class="auth-link">Forgot password?</router-link>
         <div class="auth-divider"></div>
         <div>Don't have an account?</div>
         <div style="display:flex;gap:12px;margin-top:8px;">

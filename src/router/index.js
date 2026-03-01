@@ -8,6 +8,7 @@ const routes = [
   { path: '/photographer/:id', name: 'PhotographerProfile', component: () => import('@/views/public/PhotographerProfilePage.vue'), props: true },
   { path: '/pricing', name: 'Pricing', component: () => import('@/views/public/PricingPage.vue') },
   { path: '/login', name: 'Login', component: () => import('@/views/auth/LoginPage.vue') },
+  { path: '/reset-password', name: 'ResetPassword', component: () => import('@/views/auth/ResetPassword.vue') },
   { path: '/signup/photographer', name: 'PhotographerSignup', component: () => import('@/views/photographer/SignupPage.vue') },
   { path: '/signup/couple', name: 'CoupleSignup', component: () => import('@/views/auth/CoupleSignup.vue') },
   { path: '/dashboard', name: 'Dashboard', component: () => import('@/views/photographer/DashboardPage.vue'), meta: { requiresAuth: true, role: 'photographer' } },

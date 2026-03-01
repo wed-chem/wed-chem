@@ -1,6 +1,6 @@
-import { calculateDistance } from "./geocoding"
 import { db } from './firebase'
 import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore'
+import { calculateDistance } from "./geocoding"
 
 export function calculateMatchScore(coupleAnswers, photographerAnswers) {
   let overlap = 0
