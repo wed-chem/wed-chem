@@ -71,6 +71,7 @@
     </section>
 
     <!-- FOR PHOTOGRAPHERS -->
+    <template v-if="!authStore.isLoggedIn || authStore.isPhotographer">
     <section class="fp-section">
       <div class="container">
         <div class="fp-layout">
@@ -96,8 +97,10 @@
         </div>
       </div>
     </section>
+    </template>
 
     <!-- PRICING -->
+    <template v-if="!authStore.isLoggedIn || authStore.isPhotographer">
     <section class="pricing-section" id="pricing">
       <div class="container">
         <div style="text-align:center">
@@ -149,6 +152,7 @@
         </div>
       </div>
     </section>
+    </template>
 
     <!-- TESTIMONIALS -->
     <section class="testimonials-section">
@@ -171,13 +175,30 @@
     <!-- CTA -->
     <section class="cta-section">
       <div class="container" style="text-align:center">
-        <div class="section-eyebrow">Ready?</div>
-        <h2 class="section-title" style="max-width:600px;margin:0 auto 16px;">Your love story deserves a photographer who gets it</h2>
-        <p class="section-subtitle" style="margin:0 auto 40px;text-align:center;">Take our 3-minute quiz and get matched with photographers whose style you already love.</p>
-        <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+        <!-- Photographer CTA -->
+        <template v-if="authStore.isPhotographer">
+          <div class="section-eyebrow">Welcome back</div>
+          <h2 class="section-title" style="max-width:600px;margin:0 auto 16px;">Manage your profile and connect with couples</h2>
+          <p class="section-subtitle" style="margin:0 auto 40px;text-align:center;">Check your inquiries, update your portfolio, and see how couples are finding you.</p>
+          <router-link to="/dashboard" class="btn-primary">Go to Dashboard →</router-link>
+        </template>
+        <!-- Couple CTA -->
+        <template v-else-if="authStore.isLoggedIn">
+          <div class="section-eyebrow">Ready?</div>
+          <h2 class="section-title" style="max-width:600px;margin:0 auto 16px;">Your love story deserves a photographer who gets it</h2>
+          <p class="section-subtitle" style="margin:0 auto 40px;text-align:center;">Take our 3-minute quiz and get matched with photographers whose style you already love.</p>
           <router-link to="/quiz" class="btn-primary">Find My Photographer →</router-link>
-          <router-link to="/signup/photographer" class="btn-secondary">I'm a Photographer</router-link>
-        </div>
+        </template>
+        <!-- Logged out CTA -->
+        <template v-else>
+          <div class="section-eyebrow">Ready?</div>
+          <h2 class="section-title" style="max-width:600px;margin:0 auto 16px;">Your love story deserves a photographer who gets it</h2>
+          <p class="section-subtitle" style="margin:0 auto 40px;text-align:center;">Take our 3-minute quiz and get matched with photographers whose style you already love.</p>
+          <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+            <router-link to="/quiz" class="btn-primary">Find My Photographer →</router-link>
+            <router-link to="/signup/photographer" class="btn-secondary">I'm a Photographer</router-link>
+          </div>
+        </template>
       </div>
     </section>
   </div>
