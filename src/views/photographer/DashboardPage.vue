@@ -91,6 +91,33 @@
         </div>
         <router-link to="/dashboard/upgrade" class="btn-primary" style="background:var(--terracotta);flex-shrink:0;">Upgrade for $25/mo →</router-link>
       </div>
+
+      <!-- ACCOUNT ACTIONS -->
+      <div class="account-section">
+        <div class="account-row">
+          <div>
+            <div class="account-label">Log out</div>
+            <div class="account-sub">Sign out of your WedChem account</div>
+          </div>
+          <button class="btn-secondary btn-sm" @click="handleLogout">Log Out</button>
+        </div>
+        <div class="account-row account-danger">
+          <div>
+            <div class="account-label">Delete account</div>
+            <div class="account-sub">Permanently remove your profile, portfolio, and all data. This cannot be undone.</div>
+          </div>
+          <button class="btn-danger btn-sm" @click="confirmDelete" :disabled="deleting">{{ deleting ? 'Deleting...' : 'Delete Account' }}</button>
+        </div>
+        <div class="delete-confirm" v-if="showDeleteConfirm">
+          <p style="font-weight:500;margin-bottom:8px;">Are you sure? This is permanent.</p>
+          <p style="font-size:0.85rem;color:var(--warm-gray);margin-bottom:16px;">Type your business name to confirm: <strong>{{ profile?.businessName }}</strong></p>
+          <input type="text" class="form-input" v-model="deleteConfirmText" :placeholder="profile?.businessName" style="margin-bottom:12px;">
+          <div style="display:flex;gap:12px;">
+            <button class="btn-danger btn-sm" @click="executeDelete" :disabled="deleteConfirmText !== profile?.businessName || deleting">{{ deleting ? 'Deleting...' : 'Yes, Delete Everything' }}</button>
+            <button class="btn-secondary btn-sm" @click="showDeleteConfirm = false; deleteConfirmText = ''">Cancel</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -107,6 +134,9 @@ const profile = computed(() => authStore.photographerProfile)
 const stats = ref({ views: 0, inquiries: 0, unread: 0, responded: 0, booked: 0 })
 const recentInquiries = ref([])
 const loadingInq = ref(true)
+const showDeleteConfirm = ref(false)
+const deleteConfirmText = ref('')
+const deleting = ref(false)
 
 onMounted(async () => {
   if (!authStore.uid) return
@@ -136,6 +166,39 @@ onMounted(async () => {
 function getInitials(name) {
   if (!name) return '?'
   return name.split(/[\s&]+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase()
+}
+
+async function handleLogout() {
+  await authStore.logout()
+  window.location.href = '/'
+}
+
+function confirmDelete() {
+  showDeleteConfirm.value = true
+}
+
+async function executeDelete() {
+  if (deleteConfirmText.value !== profile.value?.businessName) return
+  deleting.value = true
+  try {
+    const { deleteDoc, doc: fdoc } = await import('firebase/firestore')
+    const { deleteUser } = await import('firebase/auth')
+    const { auth } = await import('@/services/firebase')
+    // Delete photographer doc
+    await deleteDoc(fdoc(db, 'photographers', authStore.uid))
+    // Delete user doc
+    await deleteDoc(fdoc(db, 'users', authStore.uid))
+    // Delete Firebase Auth user
+    await deleteUser(auth.currentUser)
+    window.location.href = '/'
+  } catch (e) {
+    if (e.code === 'auth/requires-recent-login') {
+      alert('For security, please log out, log back in, and try again.')
+    } else {
+      alert('Error deleting account: ' + e.message)
+    }
+    deleting.value = false
+  }
 }
 
 function formatTime(ts) {
@@ -200,6 +263,17 @@ function formatTime(ts) {
 .tier-banner { display:flex; align-items:center; gap:24px; padding:32px; background:linear-gradient(135deg,var(--charcoal),#3a3535); border-radius:var(--radius-lg); color:var(--cream); }
 .tier-title { font-family:var(--font-display); font-size:1.3rem; font-weight:500; margin-bottom:4px; }
 .tier-sub { font-size:0.88rem; color:rgba(250,247,242,0.6); }
+
+.account-section { margin-top:48px; border-top:1px solid var(--light-gray); padding-top:32px; }
+.account-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 0; flex-wrap:wrap; }
+.account-row + .account-row { border-top:1px solid var(--light-gray); }
+.account-label { font-weight:500; font-size:0.92rem; margin-bottom:2px; }
+.account-sub { font-size:0.82rem; color:var(--warm-gray); }
+.account-danger .account-label { color:#c44; }
+.btn-danger { display:inline-flex; align-items:center; padding:10px 20px; background:transparent; border:1.5px solid #c44; color:#c44; border-radius:100px; font-size:0.83rem; font-weight:500; cursor:pointer; transition:var(--transition); }
+.btn-danger:hover { background:#c44; color:white; }
+.btn-danger:disabled { opacity:0.5; cursor:not-allowed; }
+.delete-confirm { margin-top:16px; padding:20px; background:rgba(204,68,68,0.04); border:1px solid rgba(204,68,68,0.15); border-radius:var(--radius-lg); }
 
 @media(max-width:1024px) { .stats-grid,.quick-grid { grid-template-columns:repeat(2,1fr); } }
 @media(max-width:768px) { .stats-grid,.quick-grid { grid-template-columns:1fr; } .tier-banner { flex-direction:column; text-align:center; } }
