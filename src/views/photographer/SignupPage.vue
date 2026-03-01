@@ -269,7 +269,7 @@ const featureSteps = [
   { id: 'film', question: 'Do you offer film photography?', options: ['Yes, I shoot film', 'No, digital only'] },
   { id: 'secondShooter', question: 'Do you have second shooters available?', options: ['Yes', 'No'] },
   { id: 'personality', question: 'How would clients describe your personality on the job?', options: personalityTypes },
-  { id: 'hours', question: 'What coverage do you typically offer?', options: coverageOptions }
+  { id: 'hours', question: 'What coverages can you offer?', options: coverageOptions, multi: true }
 ]
 
 // Quiz sub-navigation
@@ -290,6 +290,14 @@ const currentQuizStep = computed(() => {
 const quizProgress = computed(() => (currentQuizStep.value / totalQuizSteps.value) * 100)
 const quizStepLabel = computed(() => `${currentQuizStep.value} of ${totalQuizSteps.value}`)
 const isLastQuizStep = computed(() => quizStep.value === 'features' && featureIndex.value >= featureSteps.length - 1)
+
+function toggleMultiFeature(featureId, opt) {
+  if (!quiz.features[featureId]) quiz.features[featureId] = []
+  const arr = quiz.features[featureId]
+  const idx = arr.indexOf(opt)
+  if (idx >= 0) arr.splice(idx, 1)
+  else arr.push(opt)
+}
 
 function toggleList(list, id) {
   const idx = list.indexOf(id)
