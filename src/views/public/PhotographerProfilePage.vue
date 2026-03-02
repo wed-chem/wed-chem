@@ -253,15 +253,17 @@ function cleanStr(str) {
 
 function formatLoc(p) {
   if (!p) return ''
-  const city = cleanStr(p.city)
-  let state = (p.state || '').trim()
-  const abbrevs = { or:'Oregon', ca:'California', wa:'Washington', ny:'New York', tx:'Texas', fl:'Florida', co:'Colorado', az:'Arizona', il:'Illinois', ga:'Georgia', nc:'North Carolina', oh:'Ohio', pa:'Pennsylvania', mi:'Michigan', nj:'New Jersey', va:'Virginia', ma:'Massachusetts', tn:'Tennessee', mn:'Minnesota', wi:'Wisconsin', md:'Maryland', mo:'Missouri', in:'Indiana', sc:'South Carolina', al:'Alabama', la:'Louisiana', ky:'Kentucky', ok:'Oklahoma', ct:'Connecticut', ut:'Utah', ia:'Iowa', nv:'Nevada', ar:'Arkansas', ms:'Mississippi', ks:'Kansas', nm:'New Mexico', ne:'Nebraska', id:'Idaho', hi:'Hawaii', me:'Maine', nh:'New Hampshire', ri:'Rhode Island', mt:'Montana', de:'Delaware', sd:'South Dakota', nd:'North Dakota', ak:'Alaska', vt:'Vermont', wy:'Wyoming', wv:'West Virginia', dc:'Washington DC' }
-  if (state.length === 2 && abbrevs[state.toLowerCase()]) state = abbrevs[state.toLowerCase()]
-  else state = cleanStr(state)
-  let loc = city + (state ? ', ' + state : '')
-  const country = cleanStr(p.country)
-  if (country && country !== 'United States' && country !== 'Usa') loc += ' · ' + country
-  return loc
+  const city = (p.city || '').trim().toLowerCase()
+  const country = (p.country || '').trim().toLowerCase()
+  const isUS = !country || country === 'united states' || country === 'usa' || country === 'us'
+  if (isUS) {
+    let state = (p.state || '').trim().toLowerCase()
+    const abbrevs = { or:'oregon', ca:'california', wa:'washington', ny:'new york', tx:'texas', fl:'florida', co:'colorado', az:'arizona', il:'illinois', ga:'georgia', nc:'north carolina', oh:'ohio', pa:'pennsylvania', mi:'michigan', nj:'new jersey', va:'virginia', ma:'massachusetts', tn:'tennessee', mn:'minnesota', wi:'wisconsin', md:'maryland', mo:'missouri', in:'indiana', sc:'south carolina', al:'alabama', la:'louisiana', ky:'kentucky', ok:'oklahoma', ct:'connecticut', ut:'utah', ia:'iowa', nv:'nevada', ar:'arkansas', ms:'mississippi', ks:'kansas', nm:'new mexico', ne:'nebraska', id:'idaho', hi:'hawaii', me:'maine', nh:'new hampshire', ri:'rhode island', mt:'montana', de:'delaware', sd:'south dakota', nd:'north dakota', ak:'alaska', vt:'vermont', wy:'wyoming', wv:'west virginia', dc:'washington dc' }
+    if (state.length === 2 && abbrevs[state]) state = abbrevs[state]
+    return city + (state ? ', ' + state : '')
+  } else {
+    return city + (country ? ', ' + country : '')
+  }
 }
 
 const photographer = ref(null)

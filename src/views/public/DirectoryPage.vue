@@ -97,12 +97,15 @@ const stateAbbrevs = { or:'oregon', ca:'california', wa:'washington', ny:'new yo
 
 function formatLoc(p) {
   const city = (p.city || '').trim().toLowerCase()
-  let state = (p.state || '').trim().toLowerCase()
-  if (state.length === 2 && stateAbbrevs[state]) state = stateAbbrevs[state]
-  let loc = city + (state ? ', ' + state : '')
   const country = (p.country || '').trim().toLowerCase()
-  if (country && country !== 'united states' && country !== 'usa') loc += ' · ' + country
-  return loc
+  const isUS = !country || country === 'united states' || country === 'usa' || country === 'us'
+  if (isUS) {
+    let state = (p.state || '').trim().toLowerCase()
+    if (state.length === 2 && stateAbbrevs[state]) state = stateAbbrevs[state]
+    return city + (state ? ', ' + state : '')
+  } else {
+    return city + (country ? ', ' + country : '')
+  }
 }
 
 
