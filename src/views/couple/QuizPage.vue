@@ -1,7 +1,7 @@
 <template>
   <div class="quiz-page">
     <div class="container">
-      <div v-if="!quizStore.completed && !showRetakePrompt" style="text-align:center;margin-bottom:48px;">
+      <div v-if="!quizLoading && !quizStore.completed && !showRetakePrompt" style="text-align:center;margin-bottom:48px;">
         <div class="section-eyebrow">Style Quiz</div>
         <h2 class="section-title">Find your photography style</h2>
         <p style="color:var(--warm-gray);font-size:0.95rem;">19 questions · About 3 minutes</p>
@@ -312,6 +312,7 @@ const revealDone = ref(false)
 
 const hasExistingResults = ref(false)
 const showRetakePrompt = ref(false)
+const quizLoading = ref(true)
 
 onMounted(async () => {
   if (authStore.isPhotographer) {
@@ -330,12 +331,14 @@ onMounted(async () => {
       if (resultsDoc.exists() && resultsDoc.data().matches?.length > 0) {
         hasExistingResults.value = true
         showRetakePrompt.value = true
+        quizLoading.value = false
         return
       }
     } catch(e) {}
   }
   
   quizStore.reset('couple')
+  quizLoading.value = false
 })
 
 const currentABAnswer = computed(() => {
