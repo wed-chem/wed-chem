@@ -16,16 +16,36 @@
 
         <!-- ═══════════ THINKING BREAK ═══════════ -->
         <div v-if="quizStore.showThinking" class="thinking-break">
-          <div class="mini-beaker">
-            <div class="mini-beaker-body">
-              <div class="mini-beaker-liquid" :class="'fill-' + quizStore.beakerFill">
-                <div class="mini-bubble mb1"></div>
-                <div class="mini-bubble mb2"></div>
-                <div class="mini-bubble mb3"></div>
-              </div>
-            </div>
-            <div class="mini-beaker-neck"></div>
-            <div class="mini-beaker-rim"></div>
+          <div class="think-beaker">
+            <svg viewBox="0 0 80 110" width="80" height="110" class="beaker-svg">
+              <!-- Beaker body -->
+              <defs>
+                <clipPath id="beakerClip">
+                  <path d="M15,35 L15,90 Q15,100 25,100 L55,100 Q65,100 65,90 L65,35 Z"/>
+                </clipPath>
+                <linearGradient id="liquidGrad" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#C4826A" stop-opacity="0.85"/>
+                  <stop offset="60%" stop-color="#c9a96e" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#c9a96e" stop-opacity="0.4"/>
+                </linearGradient>
+              </defs>
+              <!-- Liquid fill -->
+              <rect :y="liquidY" width="80" height="80" clip-path="url(#beakerClip)" class="beaker-fill-rect"/>
+              <!-- Bubbles inside liquid -->
+              <circle cx="30" cy="85" r="2.5" class="bub bub1" clip-path="url(#beakerClip)"/>
+              <circle cx="45" cy="88" r="2" class="bub bub2" clip-path="url(#beakerClip)"/>
+              <circle cx="52" cy="82" r="3" class="bub bub3" clip-path="url(#beakerClip)"/>
+              <!-- Beaker outline -->
+              <path d="M15,35 L15,90 Q15,100 25,100 L55,100 Q65,100 65,90 L65,35" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Neck -->
+              <path d="M22,35 L22,18 L58,18 L58,35" fill="none" stroke="var(--sage)" stroke-width="2.5"/>
+              <!-- Rim -->
+              <rect x="16" y="12" width="48" height="6" rx="2" fill="none" stroke="var(--sage)" stroke-width="2.5"/>
+              <!-- Measurement marks -->
+              <line x1="17" y1="55" x2="22" y2="55" stroke="var(--sage)" stroke-width="1" opacity="0.4"/>
+              <line x1="17" y1="70" x2="22" y2="70" stroke="var(--sage)" stroke-width="1" opacity="0.4"/>
+              <line x1="17" y1="85" x2="22" y2="85" stroke="var(--sage)" stroke-width="1" opacity="0.4"/>
+            </svg>
           </div>
           <div class="thinking-line" v-for="(line, i) in quizStore.thinkingText" :key="i"
             :style="{'animation-delay': (i * 1.2) + 's'}">{{ line }}</div>
@@ -241,6 +261,13 @@ const weddingDate = ref('')
 const budgetVal = ref(4000)
 
 const beakerFilling = ref(false)
+const liquidY = computed(() => {
+  const fill = quizStore.beakerFill
+  if (fill === 0) return 100
+  if (fill === 1) return 75  // ~33% full
+  if (fill === 2) return 52  // ~66% full
+  return 32                   // ~90% full
+})
 const beakerStage = ref(0)
 const revealDone = ref(false)
 
@@ -463,38 +490,17 @@ function retakeQuiz() {
 /* ═══════════ THINKING BREAK ═══════════ */
 .thinking-break { text-align:center; padding:60px 0 80px; }
 
-.mini-beaker { display:inline-block; position:relative; width:60px; height:90px; margin-bottom:32px; }
-.mini-beaker-body {
-  position:absolute; bottom:0; width:60px; height:68px;
-  border:2.5px solid var(--sage); border-top:none;
-  border-radius:0 0 10px 10px; overflow:hidden; background:rgba(139,158,130,0.05);
+.think-beaker { display:inline-block; margin-bottom:32px; }
+.beaker-svg { overflow:visible; }
+.beaker-fill-rect {
+  fill:url(#liquidGrad);
+  transition:y 2.5s cubic-bezier(0.25,0.46,0.45,0.94);
 }
-.mini-beaker-liquid {
-  position:absolute; bottom:0; left:0; right:0; height:0;
-  background:linear-gradient(to top, var(--terracotta), var(--gold));
-  border-radius:0 0 7px 7px; transition:height 3s cubic-bezier(0.25,0.46,0.45,0.94);
-  overflow:hidden;
-}
-.mini-beaker-liquid.fill-1 { height:33%; }
-.mini-beaker-liquid.fill-2 { height:66%; }
-.mini-beaker-liquid.fill-3 { height:90%; }
-
-.mini-bubble { position:absolute; border-radius:50%; background:rgba(255,255,255,0.4); animation:minirise 1.4s ease-in infinite; }
-.mb1 { width:4px; height:4px; left:25%; bottom:-8px; animation-delay:0s; }
-.mb2 { width:3px; height:3px; left:55%; bottom:-8px; animation-delay:0.4s; }
-.mb3 { width:5px; height:5px; left:70%; bottom:-8px; animation-delay:0.8s; }
-@keyframes minirise { 0%{transform:translateY(0) scale(1);opacity:.7} 100%{transform:translateY(-60px) scale(.3);opacity:0} }
-
-.mini-beaker-neck {
-  position:absolute; top:8px; left:50%; transform:translateX(-50%);
-  width:38px; height:14px; border:2.5px solid var(--sage); border-bottom:none;
-  border-radius:3px 3px 0 0; background:var(--warm-white);
-}
-.mini-beaker-rim {
-  position:absolute; top:3px; left:50%; transform:translateX(-50%);
-  width:46px; height:7px; border:2.5px solid var(--sage);
-  border-radius:3px 3px 0 0;
-}
+.bub { fill:rgba(255,255,255,0.5); animation:svgrise 1.6s ease-in infinite; }
+.bub1 { animation-delay:0s; }
+.bub2 { animation-delay:0.5s; }
+.bub3 { animation-delay:1s; }
+@keyframes svgrise { 0%{transform:translateY(0);opacity:.6} 100%{transform:translateY(-45px);opacity:0} }
 
 .thinking-line { font-family:var(--font-display); font-size:1.15rem; color:var(--warm-gray); opacity:0; animation:fadeUp 0.8s ease forwards; margin-bottom:10px; line-height:1.6; }
 .thinking-line:last-child { color:var(--sage-dark); }
