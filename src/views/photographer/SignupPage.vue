@@ -229,8 +229,8 @@
           <div class="publish-note">Your profile will be reviewed before going live. You can edit everything later from your dashboard.</div>
         </div>
 
-        <!-- NAV -->
-        <div class="step-nav">
+        <!-- NAV (hidden during quiz step - quiz has its own nav) -->
+        <div class="step-nav" v-if="step !== 2">
           <button class="btn-secondary" @click="step > 1 ? step-- : null" :style="{visibility:step===1?'hidden':'visible'}">← Back</button>
           <div class="step-error" v-if="error">{{ error }}</div>
           <button class="btn-primary" @click="nextStep" :disabled="loading">{{ step===6 ? (loading ? 'Publishing...' : 'Publish Profile 🎉') : 'Continue →' }}</button>
