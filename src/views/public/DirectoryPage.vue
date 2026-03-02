@@ -65,7 +65,7 @@
           </div>
           <div class="card-body">
             <div class="card-name">{{ p.businessName }}</div>
-            <div class="card-loc">{{ p.city }}<span v-if="p.state">, {{ p.state }}</span><span v-if="p.country && p.country !== 'United States' && p.country !== 'USA'"> · {{ p.country }}</span></div>
+            <div class="card-loc">{{ formatLoc(p) }}</div>
             <div class="card-excerpt">{{ p.tagline }}</div>
             <div class="card-travel" v-if="p.travelRadiusLabel">✈ {{ p.travelRadiusLabel }}</div>
             <div class="card-meta">

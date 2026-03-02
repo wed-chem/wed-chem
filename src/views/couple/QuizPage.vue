@@ -266,7 +266,7 @@
                 <div class="rc-cover" :style="{background: m.photographer.coverPhoto ? `url(${m.photographer.coverPhoto}) center/cover` : m.photographer.gradient || 'linear-gradient(135deg, var(--sage-light), var(--blush))'}"></div>
                 <div class="rc-info">
                   <div class="rc-name">{{ m.photographer.businessName }}</div>
-                  <div class="rc-loc">{{ m.photographer.city }}<span v-if="m.photographer.state">, {{ m.photographer.state }}</span></div>
+                  <div class="rc-loc">{{ formatLocation(m.photographer) }}</div>
                   <div class="rc-match-bar-wrap">
                     <div class="rc-match-bar"><div class="rc-match-fill" :style="{width: m.totalScore + '%'}"></div></div>
                     <div class="rc-match-score">{{ m.totalScore }}% match</div>
@@ -500,6 +500,24 @@ function setLocUndecided() {
   locCity.value = ''
   locState.value = ''
   locCountry.value = ''
+}
+
+function cleanStr(str) {
+  if (!str) return ''
+  return str.trim().toLowerCase()
+}
+
+function formatLocation(photographer) {
+  const city = cleanStr(photographer.city)
+  let state = (photographer.state || '').trim()
+  // Expand common 2-letter abbreviations
+  const abbrevs = { or:'Oregon', ca:'California', wa:'Washington', ny:'New York', tx:'Texas', fl:'Florida', co:'Colorado', az:'Arizona', il:'Illinois', ga:'Georgia', nc:'North Carolina', oh:'Ohio', pa:'Pennsylvania', mi:'Michigan', nj:'New Jersey', va:'Virginia', ma:'Massachusetts', tn:'Tennessee', mn:'Minnesota', wi:'Wisconsin', md:'Maryland', mo:'Missouri', in:'Indiana', sc:'South Carolina', al:'Alabama', la:'Louisiana', ky:'Kentucky', ok:'Oklahoma', ct:'Connecticut', ut:'Utah', ia:'Iowa', nv:'Nevada', ar:'Arkansas', ms:'Mississippi', ks:'Kansas', nm:'New Mexico', ne:'Nebraska', id:'Idaho', hi:'Hawaii', me:'Maine', nh:'New Hampshire', ri:'Rhode Island', mt:'Montana', de:'Delaware', sd:'South Dakota', nd:'North Dakota', ak:'Alaska', vt:'Vermont', wy:'Wyoming', wv:'West Virginia', dc:'Washington DC' }
+  if (state.length === 2 && abbrevs[state.toLowerCase()]) {
+    state = abbrevs[state.toLowerCase()]
+  } else {
+    state = cleanStr(state)
+  }
+  return city + (state ? ', ' + state : '')
 }
 
 function confirmRetake() {

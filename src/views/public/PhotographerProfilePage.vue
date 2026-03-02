@@ -31,7 +31,7 @@
               <span class="badge-verified" v-if="photographer.status === 'approved'">✓ Verified</span>
             </div>
             <h1 class="profile-name">{{ photographer.businessName }}</h1>
-            <div class="profile-location">{{ photographer.city }}<span v-if="photographer.state">, {{ photographer.state }}</span><span v-if="photographer.country"> · {{ photographer.country }}</span></div>
+            <div class="profile-location">{{ formatLoc(photographer) }}</div>
             <div class="profile-tagline" v-if="photographer.tagline">{{ photographer.tagline }}</div>
           </div>
           <div class="hero-actions">
@@ -246,6 +246,24 @@ const authLoading = ref(false)
 const inquiry = ref({ name: '', email: '', date: '', location: '', guestCount: '', message: '' })
 const lbShow = ref(false)
 const lbIndex = ref(0)
+function cleanStr(str) {
+  if (!str) return ''
+  return str.trim().toLowerCase()
+}
+
+function formatLoc(p) {
+  if (!p) return ''
+  const city = cleanStr(p.city)
+  let state = (p.state || '').trim()
+  const abbrevs = { or:'Oregon', ca:'California', wa:'Washington', ny:'New York', tx:'Texas', fl:'Florida', co:'Colorado', az:'Arizona', il:'Illinois', ga:'Georgia', nc:'North Carolina', oh:'Ohio', pa:'Pennsylvania', mi:'Michigan', nj:'New Jersey', va:'Virginia', ma:'Massachusetts', tn:'Tennessee', mn:'Minnesota', wi:'Wisconsin', md:'Maryland', mo:'Missouri', in:'Indiana', sc:'South Carolina', al:'Alabama', la:'Louisiana', ky:'Kentucky', ok:'Oklahoma', ct:'Connecticut', ut:'Utah', ia:'Iowa', nv:'Nevada', ar:'Arkansas', ms:'Mississippi', ks:'Kansas', nm:'New Mexico', ne:'Nebraska', id:'Idaho', hi:'Hawaii', me:'Maine', nh:'New Hampshire', ri:'Rhode Island', mt:'Montana', de:'Delaware', sd:'South Dakota', nd:'North Dakota', ak:'Alaska', vt:'Vermont', wy:'Wyoming', wv:'West Virginia', dc:'Washington DC' }
+  if (state.length === 2 && abbrevs[state.toLowerCase()]) state = abbrevs[state.toLowerCase()]
+  else state = cleanStr(state)
+  let loc = city + (state ? ', ' + state : '')
+  const country = cleanStr(p.country)
+  if (country && country !== 'United States' && country !== 'Usa') loc += ' · ' + country
+  return loc
+}
+
 const photographer = ref(null)
 
 const initials = computed(() => {
