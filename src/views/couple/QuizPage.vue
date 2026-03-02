@@ -16,35 +16,32 @@
 
         <!-- ═══════════ THINKING BREAK ═══════════ -->
         <div v-if="quizStore.showThinking" class="thinking-break">
-          <div class="think-beaker">
-            <svg viewBox="0 0 80 110" width="80" height="110" class="beaker-svg">
-              <!-- Beaker body -->
+          <div class="think-flask">
+            <svg viewBox="0 0 100 120" width="100" height="120" class="flask-svg">
               <defs>
-                <clipPath id="beakerClip">
-                  <path d="M15,35 L15,90 Q15,100 25,100 L55,100 Q65,100 65,90 L65,35 Z"/>
+                <clipPath id="flaskClip">
+                  <path d="M10,105 Q10,115 20,115 L80,115 Q90,115 90,105 L65,50 L65,15 L35,15 L35,50 Z"/>
                 </clipPath>
                 <linearGradient id="liquidGrad" x1="0" y1="1" x2="0" y2="0">
                   <stop offset="0%" stop-color="#C4826A" stop-opacity="0.85"/>
-                  <stop offset="60%" stop-color="#c9a96e" stop-opacity="0.7"/>
-                  <stop offset="100%" stop-color="#c9a96e" stop-opacity="0.4"/>
+                  <stop offset="50%" stop-color="#c9a96e" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#c9a96e" stop-opacity="0.35"/>
                 </linearGradient>
               </defs>
               <!-- Liquid fill -->
-              <rect :y="liquidY" width="80" height="80" clip-path="url(#beakerClip)" class="beaker-fill-rect"/>
-              <!-- Bubbles inside liquid -->
-              <circle cx="30" cy="85" r="2.5" class="bub bub1" clip-path="url(#beakerClip)"/>
-              <circle cx="45" cy="88" r="2" class="bub bub2" clip-path="url(#beakerClip)"/>
-              <circle cx="52" cy="82" r="3" class="bub bub3" clip-path="url(#beakerClip)"/>
-              <!-- Beaker outline -->
-              <path d="M15,35 L15,90 Q15,100 25,100 L55,100 Q65,100 65,90 L65,35" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linecap="round"/>
-              <!-- Neck -->
-              <path d="M22,35 L22,18 L58,18 L58,35" fill="none" stroke="var(--sage)" stroke-width="2.5"/>
+              <rect :y="liquidY" width="100" height="110" clip-path="url(#flaskClip)" class="flask-fill-rect"/>
+              <!-- Bubbles -->
+              <circle cx="40" cy="95" r="2.5" class="bub bub1" clip-path="url(#flaskClip)"/>
+              <circle cx="55" cy="100" r="2" class="bub bub2" clip-path="url(#flaskClip)"/>
+              <circle cx="65" cy="92" r="3" class="bub bub3" clip-path="url(#flaskClip)"/>
+              <!-- Flask outline -->
+              <path d="M10,105 Q10,115 20,115 L80,115 Q90,115 90,105 L65,50 L65,15 L35,15 L35,50 Z" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linejoin="round"/>
               <!-- Rim -->
-              <rect x="16" y="12" width="48" height="6" rx="2" fill="none" stroke="var(--sage)" stroke-width="2.5"/>
+              <path d="M30,15 L30,10 Q30,6 34,6 L66,6 Q70,6 70,10 L70,15" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linecap="round"/>
               <!-- Measurement marks -->
-              <line x1="17" y1="55" x2="22" y2="55" stroke="var(--sage)" stroke-width="1" opacity="0.4"/>
-              <line x1="17" y1="70" x2="22" y2="70" stroke="var(--sage)" stroke-width="1" opacity="0.4"/>
-              <line x1="17" y1="85" x2="22" y2="85" stroke="var(--sage)" stroke-width="1" opacity="0.4"/>
+              <line x1="18" y1="100" x2="25" y2="96" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
+              <line x1="28" y1="80" x2="33" y2="78" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
+              <line x1="33" y1="65" x2="37" y2="64" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
             </svg>
           </div>
           <div class="thinking-line" v-for="(line, i) in quizStore.thinkingText" :key="i"
@@ -176,15 +173,29 @@
         <!-- ═══════════ RESULTS ═══════════ -->
         <div v-if="quizStore.completed" class="results">
           <div class="beaker-wrap" :class="{'beaker-done': revealDone}">
-            <div class="beaker">
-              <div class="beaker-body">
-                <div class="beaker-liquid" :class="{'filling': beakerFilling}">
-                  <div class="bubble b1"></div><div class="bubble b2"></div><div class="bubble b3"></div><div class="bubble b4"></div><div class="bubble b5"></div>
-                </div>
-              </div>
-              <div class="beaker-neck"></div>
-              <div class="beaker-rim"></div>
-            </div>
+            <svg viewBox="0 0 100 120" width="120" height="144" class="flask-svg results-flask">
+              <defs>
+                <clipPath id="flaskClipBig">
+                  <path d="M10,105 Q10,115 20,115 L80,115 Q90,115 90,105 L65,50 L65,15 L35,15 L35,50 Z"/>
+                </clipPath>
+                <linearGradient id="liquidGradBig" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#C4826A" stop-opacity="0.85"/>
+                  <stop offset="50%" stop-color="#c9a96e" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#c9a96e" stop-opacity="0.35"/>
+                </linearGradient>
+              </defs>
+              <rect y="120" width="100" height="110" clip-path="url(#flaskClipBig)" fill="url(#liquidGradBig)" class="results-flask-fill" :class="{'filling': beakerFilling}"/>
+              <circle cx="40" cy="95" r="3" class="bub bub1" clip-path="url(#flaskClipBig)"/>
+              <circle cx="55" cy="100" r="2.5" class="bub bub2" clip-path="url(#flaskClipBig)"/>
+              <circle cx="65" cy="92" r="3.5" class="bub bub3" clip-path="url(#flaskClipBig)"/>
+              <circle cx="48" cy="88" r="2" class="bub bub1" clip-path="url(#flaskClipBig)" style="animation-delay:1.3s"/>
+              <circle cx="60" cy="96" r="2" class="bub bub2" clip-path="url(#flaskClipBig)" style="animation-delay:0.8s"/>
+              <path d="M10,105 Q10,115 20,115 L80,115 Q90,115 90,105 L65,50 L65,15 L35,15 L35,50 Z" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M30,15 L30,10 Q30,6 34,6 L66,6 Q70,6 70,10 L70,15" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="18" y1="100" x2="25" y2="96" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
+              <line x1="28" y1="80" x2="33" y2="78" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
+              <line x1="33" y1="65" x2="37" y2="64" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
+            </svg>
             <div class="beaker-text" :class="{'show': beakerStage === 1}">Analyzing your visual preferences...</div>
             <div class="beaker-text beaker-text-2" :class="{'show': beakerStage === 2}">Comparing across style dimensions...</div>
             <div class="beaker-text beaker-text-3" :class="{'show': beakerStage === 3}">Scanning photographer portfolios...</div>
@@ -275,10 +286,10 @@ const budgetVal = ref(4000)
 const beakerFilling = ref(false)
 const liquidY = computed(() => {
   const fill = quizStore.beakerFill
-  if (fill === 0) return 100
-  if (fill === 1) return 75  // ~33% full
-  if (fill === 2) return 52  // ~66% full
-  return 32                   // ~90% full
+  if (fill === 0) return 120
+  if (fill === 1) return 85   // ~33% full
+  if (fill === 2) return 55   // ~66% full
+  return 25                    // ~90% full
 })
 const beakerStage = ref(0)
 const revealDone = ref(false)
@@ -487,9 +498,9 @@ function retakeQuiz() {
 /* ═══════════ THINKING BREAK ═══════════ */
 .thinking-break { text-align:center; padding:60px 0 80px; }
 
-.think-beaker { display:inline-block; margin-bottom:32px; }
-.beaker-svg { overflow:visible; }
-.beaker-fill-rect {
+.think-flask { display:inline-block; margin-bottom:32px; }
+.flask-svg { overflow:visible; }
+.flask-fill-rect {
   fill:url(#liquidGrad);
   transition:y 2.5s cubic-bezier(0.25,0.46,0.45,0.94);
 }
@@ -513,15 +524,10 @@ function retakeQuiz() {
 /* ═══════════ BEAKER ANIMATION ═══════════ */
 .beaker-wrap { text-align:center; padding:60px 0 80px; transition:all 0.6s ease; position:relative; }
 .beaker-wrap.beaker-done { height:0; overflow:hidden; padding:0; opacity:0; margin:0; }
-.beaker { display:inline-block; position:relative; width:80px; height:120px; margin-bottom:24px; }
-.beaker-body { position:absolute; bottom:0; width:80px; height:90px; border:3px solid var(--sage); border-top:none; border-radius:0 0 12px 12px; overflow:hidden; background:rgba(139,158,130,0.05); }
-.beaker-liquid { position:absolute; bottom:0; left:0; right:0; height:0; background:linear-gradient(to top, var(--terracotta), var(--gold)); border-radius:0 0 9px 9px; transition:height 8s cubic-bezier(0.25,0.46,0.45,0.94); overflow:hidden; }
-.beaker-liquid.filling { height:85%; }
-.bubble { position:absolute; border-radius:50%; background:rgba(255,255,255,0.4); animation:rise 1.5s ease-in infinite; }
-.b1{width:6px;height:6px;left:20%;bottom:-10px;animation-delay:0s} .b2{width:4px;height:4px;left:50%;bottom:-10px;animation-delay:.3s} .b3{width:8px;height:8px;left:70%;bottom:-10px;animation-delay:.6s} .b4{width:5px;height:5px;left:35%;bottom:-10px;animation-delay:.9s} .b5{width:3px;height:3px;left:60%;bottom:-10px;animation-delay:1.2s}
-@keyframes rise { 0%{transform:translateY(0) scale(1);opacity:.8} 100%{transform:translateY(-80px) scale(.3);opacity:0} }
-.beaker-neck { position:absolute; top:10px; left:50%; transform:translateX(-50%); width:50px; height:20px; border:3px solid var(--sage); border-bottom:none; border-radius:4px 4px 0 0; background:var(--warm-white); }
-.beaker-rim { position:absolute; top:5px; left:50%; transform:translateX(-50%); width:60px; height:8px; border:3px solid var(--sage); border-radius:4px 4px 0 0; }
+.results-flask { margin-bottom:24px; overflow:visible; }
+.results-flask-fill { transition:y 8s cubic-bezier(0.25,0.46,0.45,0.94); }
+.results-flask-fill.filling { y:20; }
+
 .beaker-text { font-size:0.92rem; color:var(--warm-gray); opacity:0; transition:opacity 0.5s ease; position:absolute; left:0; right:0; bottom:-40px; }
 .beaker-text.show { opacity:1; }
 .beaker-text-2 { color:var(--sage-dark); } .beaker-text-3 { color:var(--sage-dark); }
