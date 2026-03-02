@@ -93,6 +93,18 @@ import { browsePhotographers } from '@/services/photographer'
 
 useSEO({ title: 'Browse Wedding Photographers', description: 'Explore our directory of vetted wedding photographers. Filter by location, style, and budget to find your perfect match.', path: '/directory' })
 
+const stateAbbrevs = { or:'oregon', ca:'california', wa:'washington', ny:'new york', tx:'texas', fl:'florida', co:'colorado', az:'arizona', il:'illinois', ga:'georgia', nc:'north carolina', oh:'ohio', pa:'pennsylvania', mi:'michigan', nj:'new jersey', va:'virginia', ma:'massachusetts', tn:'tennessee', mn:'minnesota', wi:'wisconsin', md:'maryland', mo:'missouri', in:'indiana', sc:'south carolina', al:'alabama', la:'louisiana', ky:'kentucky', ok:'oklahoma', ct:'connecticut', ut:'utah', ia:'iowa', nv:'nevada', ar:'arkansas', ms:'mississippi', ks:'kansas', nm:'new mexico', ne:'nebraska', id:'idaho', hi:'hawaii', me:'maine', nh:'new hampshire', ri:'rhode island', mt:'montana', de:'delaware', sd:'south dakota', nd:'north dakota', ak:'alaska', vt:'vermont', wy:'wyoming', wv:'west virginia', dc:'washington dc' }
+
+function formatLoc(p) {
+  const city = (p.city || '').trim().toLowerCase()
+  let state = (p.state || '').trim().toLowerCase()
+  if (state.length === 2 && stateAbbrevs[state]) state = stateAbbrevs[state]
+  let loc = city + (state ? ', ' + state : '')
+  const country = (p.country || '').trim().toLowerCase()
+  if (country && country !== 'united states' && country !== 'usa') loc += ' · ' + country
+  return loc
+}
+
 
 const styles = styleTags
 const filters = ref({ city:'', country:'', style:'', budget:'', travel:'' })
