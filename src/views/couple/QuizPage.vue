@@ -1,7 +1,7 @@
 <template>
   <div class="quiz-page">
     <div class="container">
-      <div v-if="!quizStore.completed" style="text-align:center;margin-bottom:48px;">
+      <div v-if="!quizStore.completed && !showRetakePrompt" style="text-align:center;margin-bottom:48px;">
         <div class="section-eyebrow">Style Quiz</div>
         <h2 class="section-title">Find your photography style</h2>
         <p style="color:var(--warm-gray);font-size:0.95rem;">19 questions · About 3 minutes</p>
@@ -310,15 +310,32 @@ const liquidY = computed(() => {
 const beakerStage = ref(0)
 const revealDone = ref(false)
 
-onMounted(() => {
+const hasExistingResults = ref(false)
+const showRetakePrompt = ref(false)
+
+onMounted(async () => {
   if (authStore.isPhotographer) {
     router.replace('/dashboard')
     return
   }
   // Don't reset if quiz is already completed (user returning from signup)
-  if (!quizStore.completed) {
-    quizStore.reset('couple')
+  if (quizStore.completed) return
+  
+  // Check if user has existing quiz results
+  if (authStore.uid) {
+    try {
+      const { doc, getDoc } = await import('firebase/firestore')
+      const { db } = await import('@/services/firebase')
+      const resultsDoc = await getDoc(doc(db, 'quizResults', authStore.uid))
+      if (resultsDoc.exists() && resultsDoc.data().matches?.length > 0) {
+        hasExistingResults.value = true
+        showRetakePrompt.value = true
+        return
+      }
+    } catch(e) {}
   }
+  
+  quizStore.reset('couple')
 })
 
 const currentABAnswer = computed(() => {
@@ -424,6 +441,13 @@ function goPrev() {
 function confirmRetake() {
   if (!confirm('Retaking the quiz will replace your current matches. Continue?')) return
   retakeQuiz()
+}
+
+function startFreshQuiz() {
+  if (!confirm('This will replace your current matches. Continue?')) return
+  showRetakePrompt.value = false
+  hasExistingResults.value = false
+  quizStore.reset('couple')
 }
 
 function retakeQuiz() {
