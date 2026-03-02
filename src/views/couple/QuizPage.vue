@@ -274,6 +274,8 @@ import { useQuizStore } from '@/stores/quiz'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { editingStyles, photoStyles } from '@/data/quizData'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '@/services/firebase'
 
 useSEO({ title: 'Style Matching Quiz', description: 'Take our 3-minute visual style quiz to find wedding photographers whose aesthetic matches yours. Free, fun, and shockingly accurate.', path: '/quiz' })
 
@@ -340,8 +342,6 @@ onMounted(async () => {
   // Check if user has existing quiz results
   if (uid) {
     try {
-      const { doc, getDoc } = await import('firebase/firestore')
-      const { db } = await import('@/services/firebase')
       const resultsDoc = await getDoc(doc(db, 'quizResults', uid))
       if (resultsDoc.exists() && resultsDoc.data().matches?.length > 0) {
         hasExistingResults.value = true
