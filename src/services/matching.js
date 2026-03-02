@@ -182,13 +182,24 @@ export async function getMatches(quizAnswers) {
   }
 }
 
-export async function saveQuizResults(userId, quizAnswers) {
+export async function saveQuizResults(userId, quizAnswers, matchResults = []) {
   try {
     await addDoc(collection(db, 'quizSessions'), {
       userId: userId || null,
       ...quizAnswers,
       completedAt: serverTimestamp()
     })
+    // Save matches for the account page
+    if (userId && matchResults.length) {
+      const { setDoc, doc } = await import('firebase/firestore')
+      await setDoc(doc(db, 'quizResults', userId), {
+        matches: matchResults.slice(0, 10).map(m => ({
+          photographerId: m.photographer.id,
+          score: m.totalScore
+        })),
+        updatedAt: serverTimestamp()
+      }, { merge: true })
+    }
   } catch (e) {
     console.error('Error saving quiz results:', e)
   }

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   { path: '/', name: 'Home', component: () => import('@/views/public/HomePage.vue') },
   { path: '/quiz', name: 'Quiz', component: () => import('@/views/couple/QuizPage.vue') },
+  { path: '/account', name: 'Account', component: () => import('@/views/couple/AccountPage.vue'), meta: { requiresAuth: true } },
   { path: '/results', name: 'Results', component: () => import('@/views/couple/ResultsPage.vue') },
   { path: '/directory', name: 'Directory', component: () => import('@/views/public/DirectoryPage.vue') },
   { path: '/photographer/:id', name: 'PhotographerProfile', component: () => import('@/views/public/PhotographerProfilePage.vue'), props: true },

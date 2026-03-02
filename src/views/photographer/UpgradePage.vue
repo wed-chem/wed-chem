@@ -27,7 +27,8 @@
           <li>Match rate insights</li>
           <li>Priority support</li>
         </ul>
-        <button class="btn-primary" style="width:100%;max-width:400px;justify-content:center;background:var(--terracotta);" @click="handleUpgrade">Upgrade Now →</button>
+        <div v-if="error" style="color:var(--terracotta);font-size:0.85rem;margin-bottom:12px;">{{ error }}</div>
+        <button class="btn-primary" style="width:100%;max-width:400px;justify-content:center;background:var(--terracotta);" @click="handleUpgrade" :disabled="loading">{{ loading ? 'Processing...' : 'Upgrade Now →' }}</button>
         <div style="font-size:0.78rem;color:var(--warm-gray);margin-top:12px;">Secure payment via Stripe. Cancel anytime.</div>
       </div>
     </div>
@@ -35,10 +36,26 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useSEO } from '@/composables/useSEO'
+
+useSEO({ title: 'Upgrade to Featured', description: 'Get featured placement on WedChem for $25/mo.', path: '/dashboard/upgrade' })
+
+const authStore = useAuthStore()
 const plan = ref('monthly')
+const loading = ref(false)
+const error = ref('')
+
 async function handleUpgrade() {
-  try { const { createCheckoutSession } = await import('@/services/stripe'); await createCheckoutSession('uid', plan.value==='monthly'?'featured_monthly':'featured_yearly') }
-  catch(e) { alert('Stripe checkout would open here. (Demo mode — configure Stripe to enable.)') }
+  loading.value = true; error.value = ''
+  try {
+    const { createCheckoutSession } = await import('@/services/stripe')
+    await createCheckoutSession(authStore.uid, plan.value === 'monthly' ? 'featured_monthly' : 'featured_yearly')
+  } catch(e) {
+    error.value = 'Could not start checkout. Please try again or contact support.'
+    console.error(e)
+  }
+  loading.value = false
 }
 </script>
 <style scoped>

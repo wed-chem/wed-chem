@@ -14,6 +14,9 @@
           <router-link to="/dashboard" class="nav-btn" @click="menuOpen = false">Dashboard</router-link>
         </li>
         <li v-if="authStore.isLoggedIn && !authStore.isPhotographer">
+          <router-link to="/account" @click="menuOpen = false">My Matches</router-link>
+        </li>
+        <li v-if="authStore.isLoggedIn && !authStore.isPhotographer">
           <router-link to="/quiz" class="nav-btn" @click="menuOpen = false">Get Matched</router-link>
         </li>
         <li v-if="authStore.isLoggedIn">

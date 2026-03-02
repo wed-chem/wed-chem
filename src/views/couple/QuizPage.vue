@@ -375,7 +375,7 @@ async function goNext() {
       const answers = quizStore.getAllAnswers()
       const matches = await getMatches(answers)
       quizStore.setMatches(matches)
-      await saveQuizResults(authStore.uid, answers)
+      await saveQuizResults(authStore.uid, answers, matches)
     } catch (e) {
       console.error('Matching error:', e)
       quizStore.setMatches([])
