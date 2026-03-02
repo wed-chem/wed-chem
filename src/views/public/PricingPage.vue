@@ -92,15 +92,13 @@
             <thead>
               <tr>
                 <th>Feature</th>
-                <th>Couples</th>
-                <th>Photographers (Free)</th>
-                <th>Featured</th>
+                <th>Free</th>
+                <th>Featured ($25/mo)</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in comparisonRows" :key="row.feature">
                 <td>{{ row.feature }}</td>
-                <td><span :class="row.couple === true ? 'check' : row.couple === false ? 'dash' : 'text'">{{ row.couple === true ? '✓' : row.couple === false ? '—' : row.couple }}</span></td>
                 <td><span :class="row.free === true ? 'check' : row.free === false ? 'dash' : 'text'">{{ row.free === true ? '✓' : row.free === false ? '—' : row.free }}</span></td>
                 <td><span :class="row.featured === true ? 'check-gold' : row.featured === false ? 'dash' : 'text'">{{ row.featured === true ? '✓' : row.featured === false ? '—' : row.featured }}</span></td>
               </tr>
