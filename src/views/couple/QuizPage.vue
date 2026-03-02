@@ -444,7 +444,12 @@ async function validateAndNext() {
     }
   }
   if (q.isLogistical) {
-    // Save logistical answer before validation check
+    const currentQ = q.phases[q.currentIndex]
+    if (currentQ.data.id === 'location' && !locCity.value.trim()) {
+      validationMsg.value = 'Please enter your wedding city so we can find photographers near you.'
+      return
+    }
+    // Save logistical answer before proceeding
     await saveCurrentLogistical()
   }
   
