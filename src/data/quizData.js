@@ -2,8 +2,8 @@
 
 // Q1: Editing Style (multi-select, rank 1-5)
 export const editingStyles = [
-  { id: 'warm', label: 'Warm', description: 'Sepia tones, golden warmth', image: '/quiz/q1-warm.jpg', gradient: 'linear-gradient(135deg, #c9a96e, #d4a574, #e8d5cc)' },
-  { id: 'cool', label: 'Cool', description: 'Cold, dark, blue-toned', image: '/quiz/q1-cool.jpg', gradient: 'linear-gradient(135deg, #1a1a2e, #2c3e50, #b0c4d4)' },
+  { id: 'warm', label: 'Warm', description: 'Sepia tones, golden warmth', image: '/quiz/q1-cool.jpg', gradient: 'linear-gradient(135deg, #c9a96e, #d4a574, #e8d5cc)' },
+  { id: 'cool', label: 'Cool', description: 'Cold, dark, blue-toned', image: '/quiz/q1-warm.jpg', gradient: 'linear-gradient(135deg, #1a1a2e, #2c3e50, #b0c4d4)' },
   { id: 'true', label: 'True to Life', description: 'Accurate, natural colors', image: '/quiz/q1-true.jpg', gradient: 'linear-gradient(135deg, #8B9E82, #c5d4be, #e8e3dc)' },
   { id: 'vibrant', label: 'Vibrant', description: 'Rich, punchy, saturated', image: '/quiz/q1-vibrant.jpg', gradient: 'linear-gradient(135deg, #C4826A, #c9a96e, #6B7E62)' },
   { id: 'airy', label: 'Light & Airy', description: 'Bright, soft, pastel', image: '/quiz/q1-airy.jpg', gradient: 'linear-gradient(135deg, #e8e3dc, #faf7f2, #c5d4be)' }
