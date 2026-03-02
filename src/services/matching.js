@@ -135,7 +135,16 @@ export async function getMatches(quizAnswers) {
         const loc = quizAnswers.manual.location
         const radius = p.travelRadius || '150'
 
-        if (radius === 'anywhere') {
+        // Couple doesn't know their location yet - only show nationwide/worldwide
+        if (loc.undecided) {
+          if (radius === 'anywhere') {
+            geoBonus = 3
+          } else if (radius === 'nationwide') {
+            geoBonus = 2
+          } else {
+            geoPass = false
+          }
+        } else if (radius === 'anywhere') {
           geoBonus = 3
         } else if (radius === 'nationwide') {
           const coupleCountry = (loc.country || '').toLowerCase().trim()
