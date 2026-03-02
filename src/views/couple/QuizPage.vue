@@ -565,7 +565,7 @@ function retakeQuiz() {
 .rank-card:hover { border-color:var(--sage); transform:translateY(-2px); }
 .rank-card.selected { border-color:var(--terracotta); background:rgba(196,130,106,0.04); }
 .rank-preview { height:48px; border-radius:6px; margin-bottom:10px; }
-.rank-preview-img { width:100%; height:120px; object-fit:cover; border-radius:6px; margin-bottom:10px; }
+.rank-preview-img { width:100%; height:200px; object-fit:cover; border-radius:6px; margin-bottom:10px; }
 .rank-label { font-weight:500; font-size:0.88rem; margin-bottom:4px; }
 .rank-desc { font-size:0.75rem; color:var(--warm-gray); line-height:1.4; }
 .rank-number { position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--terracotta); color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; }
