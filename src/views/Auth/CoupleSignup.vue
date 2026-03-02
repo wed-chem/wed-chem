@@ -28,6 +28,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useQuizStore } from '@/stores/quiz'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const route = useRoute()
@@ -38,15 +40,39 @@ async function handleSignup() {
   error.value=''; loading.value=true
   try {
     const { registerCouple } = await import('@/services/auth')
-    await registerCouple(email.value, password.value, name.value)
-    router.push(route.query.redirect || '/quiz')
+    const user = await registerCouple(email.value, password.value, name.value)
+    
+    // Save quiz results if coming from quiz
+    const quizStore = useQuizStore()
+    if (quizStore.completed && quizStore.matches.length > 0) {
+      try {
+        const { saveQuizResults } = await import('@/services/matching')
+        await saveQuizResults(user.uid, quizStore.getAllAnswers(), quizStore.matches)
+      } catch(e) { console.warn('Could not save quiz results:', e) }
+    }
+    
+    const authStore = useAuthStore()
+    authStore.role = 'couple'
+    router.push(route.query.redirect || '/')
   } catch(e) { error.value = e.code==='auth/email-already-in-use' ? 'Email already registered.' : 'Something went wrong.' }
   loading.value=false
 }
 
 async function handleGoogle() {
-  try { const { signInWithGoogle } = await import('@/services/auth'); await signInWithGoogle(); router.push(route.query.redirect || '/quiz') }
-  catch(e) { error.value='Google sign-up failed.' }
+  try {
+    const { signInWithGoogle } = await import('@/services/auth')
+    const user = await signInWithGoogle()
+    
+    const quizStore = useQuizStore()
+    if (quizStore.completed && quizStore.matches.length > 0) {
+      try {
+        const { saveQuizResults } = await import('@/services/matching')
+        await saveQuizResults(user.uid, quizStore.getAllAnswers(), quizStore.matches)
+      } catch(e) { console.warn('Could not save quiz results:', e) }
+    }
+    
+    router.push(route.query.redirect || '/')
+  } catch(e) { error.value='Google sign-up failed.' }
 }
 </script>
 

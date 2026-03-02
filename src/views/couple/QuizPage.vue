@@ -247,7 +247,7 @@
                 <div class="save-title">Save your results</div>
                 <div class="save-sub">Create a free account to save your matches and send inquiries to photographers.</div>
               </div>
-              <router-link to="/signup/couple" class="btn-primary btn-sm">Create Free Account →</router-link>
+              <router-link to="/signup/couple?redirect=/quiz&save=true" class="btn-primary btn-sm">Create Free Account →</router-link>
             </div>
 
             <div style="text-align:center;margin-top:32px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
@@ -263,7 +263,7 @@
 
 <script setup>
 import { useSEO } from '@/composables/useSEO'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useQuizStore } from '@/stores/quiz'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
@@ -276,6 +276,16 @@ const quizStore = useQuizStore()
 const router = useRouter()
 const validationMsg = ref('')
 const authStore = useAuthStore()
+
+// If user logs in/signs up while quiz is completed, save their results
+watch(() => authStore.uid, async (uid) => {
+  if (uid && quizStore.completed && quizStore.matches.length > 0) {
+    try {
+      const { saveQuizResults } = await import('@/services/matching')
+      await saveQuizResults(uid, quizStore.getAllAnswers(), quizStore.matches)
+    } catch(e) {}
+  }
+})
 
 const locCity = ref('')
 const locState = ref('')
@@ -299,7 +309,10 @@ onMounted(() => {
     router.replace('/dashboard')
     return
   }
-  quizStore.reset('couple')
+  // Don't reset if quiz is already completed (user returning from signup)
+  if (!quizStore.completed) {
+    quizStore.reset('couple')
+  }
 })
 
 const currentABAnswer = computed(() => {
