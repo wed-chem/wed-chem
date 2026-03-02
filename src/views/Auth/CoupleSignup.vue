@@ -49,6 +49,8 @@ async function handleSignup() {
         const { saveQuizResults } = await import('@/services/matching')
         await saveQuizResults(user.uid, quizStore.getAllAnswers(), quizStore.matches)
       } catch(e) { console.warn('Could not save quiz results:', e) }
+      router.push('/account')
+      return
     }
     
     const authStore = useAuthStore()
@@ -69,6 +71,8 @@ async function handleGoogle() {
         const { saveQuizResults } = await import('@/services/matching')
         await saveQuizResults(user.uid, quizStore.getAllAnswers(), quizStore.matches)
       } catch(e) { console.warn('Could not save quiz results:', e) }
+      router.push('/account')
+      return
     }
     
     router.push(route.query.redirect || '/')

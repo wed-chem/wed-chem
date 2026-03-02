@@ -1,13 +1,36 @@
 <template>
   <div class="quiz-page">
     <div class="container">
-      <div v-if="!quizLoading && !quizStore.completed && !showRetakePrompt" style="text-align:center;margin-bottom:48px;">
+      <!-- LOADING while checking for existing results -->
+      <div v-if="quizLoading" class="quiz-card" style="text-align:center;padding:80px 40px;">
+        <div class="think-flask">
+          <svg viewBox="0 0 100 120" width="80" height="96" class="flask-svg">
+            <path d="M10,105 Q10,115 20,115 L80,115 Q90,115 90,105 L65,50 L65,15 L35,15 L35,50 Z" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M30,15 L30,10 Q30,6 34,6 L66,6 Q70,6 70,10 L70,15" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p style="color:var(--warm-gray);font-size:0.9rem;">Loading...</p>
+      </div>
+
+      <!-- RETAKE PROMPT for users with existing results -->
+      <div v-else-if="showRetakePrompt" class="quiz-card" style="text-align:center;padding:60px 40px;">
+        <div style="font-size:2.5rem;margin-bottom:16px;">🧪</div>
+        <h2 style="font-family:var(--font-display);font-size:1.6rem;margin-bottom:8px;">Welcome back!</h2>
+        <p style="color:var(--warm-gray);max-width:400px;margin:0 auto 32px;line-height:1.6;">You already have quiz results saved. Would you like to view them or start fresh?</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <router-link to="/account" class="btn-primary">View My Matches →</router-link>
+          <button class="btn-secondary" @click="startFreshQuiz">Retake Quiz</button>
+        </div>
+      </div>
+
+      <!-- QUIZ HEADER -->
+      <div v-else-if="!quizStore.completed && !showRetakePrompt" style="text-align:center;margin-bottom:48px;">
         <div class="section-eyebrow">Style Quiz</div>
         <h2 class="section-title">Find your photography style</h2>
         <p style="color:var(--warm-gray);font-size:0.95rem;">19 questions · About 3 minutes</p>
       </div>
 
-      <div class="quiz-card" :class="{'quiz-card-results': quizStore.completed}">
+      <div v-if="!quizLoading && !showRetakePrompt" class="quiz-card" :class="{'quiz-card-results': quizStore.completed}">
         <!-- PROGRESS -->
         <div v-if="!quizStore.completed && !quizStore.showThinking" class="qz-progress">
           <div class="qz-bar"><div class="qz-fill" :style="{width: quizStore.progress + '%'}"></div></div>
@@ -327,14 +350,13 @@ onMounted(async () => {
     return
   }
   
-  // Wait for auth to resolve if not ready yet
+  // Wait for auth to actually resolve
   let uid = authStore.uid
-  if (!uid && !authStore.initialized) {
+  if (!uid && authStore.loading) {
     uid = await new Promise((resolve) => {
-      const unwatch = watch(() => authStore.initialized, (ready) => {
-        if (ready) { unwatch(); resolve(authStore.uid) }
+      const unwatch = watch(() => authStore.loading, (loading) => {
+        if (!loading) { unwatch(); resolve(authStore.uid) }
       }, { immediate: true })
-      // Timeout after 3 seconds
       setTimeout(() => { unwatch(); resolve(null) }, 3000)
     })
   }
