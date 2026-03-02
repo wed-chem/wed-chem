@@ -1,7 +1,7 @@
 import {
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signOut, onAuthStateChanged, signInAnonymously,
-  GoogleAuthProvider, signInWithPopup, updateProfile, sendPasswordResetEmail
+  GoogleAuthProvider, signInWithPopup, updateProfile, sendPasswordResetEmail, sendEmailVerification
 } from 'firebase/auth'
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
 import { auth, db } from './firebase'
@@ -19,6 +19,7 @@ export async function registerPhotographer(email, password, profileData) {
     createdAt: serverTimestamp(), updatedAt: serverTimestamp()
   })
   await setDoc(doc(db, 'users', user.uid), { uid: user.uid, email, role: 'photographer', createdAt: serverTimestamp() })
+  try { await sendEmailVerification(user) } catch(e) { console.warn('Verification email failed:', e) }
   return user
 }
 
@@ -26,6 +27,7 @@ export async function registerCouple(email, password, name) {
   const cred = await createUserWithEmailAndPassword(auth, email, password)
   if (name) await updateProfile(cred.user, { displayName: name })
   await setDoc(doc(db, 'users', cred.user.uid), { uid: cred.user.uid, email, displayName: name || '', role: 'couple', createdAt: serverTimestamp() })
+  try { await sendEmailVerification(cred.user) } catch(e) { console.warn('Verification email failed:', e) }
   return cred.user
 }
 
@@ -44,3 +46,5 @@ export async function logout() { await signOut(auth) }
 export async function resetPassword(email) { await sendPasswordResetEmail(auth, email) }
 export async function getUserRole(uid) { const d = await getDoc(doc(db, 'users', uid)); return d.exists() ? d.data().role : null }
 export function onAuth(callback) { return onAuthStateChanged(auth, callback) }
+
+export async function resendVerification() { if (auth.currentUser) await sendEmailVerification(auth.currentUser) }

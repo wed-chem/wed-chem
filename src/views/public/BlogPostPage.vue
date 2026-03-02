@@ -46,12 +46,24 @@
 
 <script setup>
 import { computed, watch } from 'vue'
+import { useSEO } from '@/composables/useSEO'
 import { useRoute } from 'vue-router'
 import { getBlogPost, getRelatedPosts } from '@/data/blogData'
 
 const route = useRoute()
 const post = computed(() => getBlogPost(route.params.slug))
 const related = computed(() => post.value ? getRelatedPosts(route.params.slug, 3) : [])
+
+// Dynamic SEO from article data
+watch(() => post.value, (p) => {
+  if (p) {
+    useSEO({
+      title: p.title,
+      description: p.excerpt || p.title + ' — Wedding photography tips and style guides from WedChem.',
+      path: '/blog/' + route.params.slug
+    })
+  }
+}, { immediate: true })
 
 watch(() => route.params.slug, () => { window.scrollTo(0, 0) })
 

@@ -199,7 +199,15 @@
               <div class="results-sub">We analyzed your style preferences and found {{ quizStore.matches.length }} photographers with strong chemistry</div>
             </div>
 
-            <div class="results-grid">
+            <!-- No matches -->
+            <div v-if="quizStore.matches.length === 0" class="no-matches">
+              <div style="font-size:2rem;margin-bottom:12px;">🔬</div>
+              <div style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:8px;">We're still growing!</div>
+              <p style="color:var(--warm-gray);max-width:400px;margin:0 auto 20px;line-height:1.6;">We don't have enough photographers in our network yet to find your perfect match. Browse our directory or check back soon as more photographers join.</p>
+              <router-link to="/directory" class="btn-primary">Browse All Photographers →</router-link>
+            </div>
+
+            <div class="results-grid" v-else>
               <div class="result-card" v-for="(m, i) in quizStore.matches.slice(0, 6)" :key="m.photographer.id"
                 :class="{'result-featured': m.isFeatured}" :style="{'animation-delay': (i * 0.1) + 's'}"
                 @click="$router.push('/photographer/' + m.photographer.id)">
@@ -243,11 +251,15 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { ref, computed, onMounted } from 'vue'
 import { useQuizStore } from '@/stores/quiz'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { editingStyles, photoStyles } from '@/data/quizData'
+
+useSEO({ title: 'Style Matching Quiz', description: 'Take our 3-minute visual style quiz to find wedding photographers whose aesthetic matches yours. Free, fun, and shockingly accurate.', path: '/quiz' })
+
 
 const quizStore = useQuizStore()
 const router = useRouter()
@@ -303,14 +315,6 @@ async function saveCurrentLogistical() {
   if (q.data.type === 'budget') quizStore.setManualAnswer(id, budgetVal.value)
 }
 
-const mockPhotographers = [
-  { id:'demo1', businessName:'Ava Chen Photography', city:'Portland', state:'OR', styles:['Traditional','Candid / Documentary'], gradient:'linear-gradient(135deg, #e8d5cc, #faf7f2, #c5d4be)' },
-  { id:'demo2', businessName:'Marcus Webb Studio', city:'Seattle', state:'WA', styles:['Editorial','Fine Art'], gradient:'linear-gradient(135deg, #1a1a2e, #2c2c3e, #4a3f55)' },
-  { id:'demo3', businessName:'Riley & Fox Co.', city:'Austin', state:'TX', styles:['Candid / Documentary','Traditional'], gradient:'linear-gradient(135deg, #c5d4be, #e8e3dc, #faf7f2)' },
-  { id:'demo4', businessName:'Sage & Cellulose', city:'Denver', state:'CO', styles:['Fine Art','Editorial'], gradient:'linear-gradient(135deg, #d4a574, #b8866a, #c9a96e)' },
-  { id:'demo5', businessName:'Hannah Leigh Photo', city:'Nashville', state:'TN', styles:['Traditional','Fine Art'], gradient:'linear-gradient(135deg, #e8d5cc, #f5ebe3, #c5d4be)' },
-  { id:'demo6', businessName:'Noir Collective', city:'Los Angeles', state:'CA', styles:['Editorial','Dark & Moody'], gradient:'linear-gradient(135deg, #2c2c2c, #4a3f35, #c9a96e)' },
-]
 
 function runRevealAnimation() {
   beakerFilling.value = false; beakerStage.value = 0; revealDone.value = false
@@ -370,26 +374,17 @@ async function goNext() {
       const { getMatches, saveQuizResults } = await import('@/services/matching')
       const answers = quizStore.getAllAnswers()
       const matches = await getMatches(answers)
-      if (matches.length > 0) {
-        quizStore.setMatches(matches)
-      } else {
-        setMockMatches()
-      }
+      quizStore.setMatches(matches)
       await saveQuizResults(authStore.uid, answers)
     } catch (e) {
-      setMockMatches()
+      console.error('Matching error:', e)
+      quizStore.setMatches([])
     }
     quizStore.complete()
     runRevealAnimation()
   } else {
     await quizStore.next()
   }
-}
-
-function setMockMatches() {
-  quizStore.setMatches(mockPhotographers.map((p, i) => ({
-    photographer: p, styleScore: 96 - (i * 4), totalScore: 96 - (i * 4), isFeatured: i === 1 || i === 5
-  })))
 }
 
 function goPrev() {

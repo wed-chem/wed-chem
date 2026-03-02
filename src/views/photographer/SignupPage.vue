@@ -241,10 +241,14 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { editingStyles, photoStyles, saturationQuestion, abPairs, specialtyTags, addOnServices, travelRadiusOptions, personalityTypes, coverageOptions } from '@/data/quizData'
+
+useSEO({ title: 'Join as a Photographer', description: 'Create your free photographer profile on WedChem. Get matched with couples who love your style. Takes about 5 minutes.', path: '/signup/photographer' })
+
 
 const router = useRouter()
 const authStore = useAuthStore()

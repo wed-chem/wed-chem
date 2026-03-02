@@ -31,9 +31,13 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+
+useSEO({ title: 'Log In', description: 'Log in to your WedChem account.', path: '/login' })
+
 
 const router = useRouter()
 const route = useRoute()

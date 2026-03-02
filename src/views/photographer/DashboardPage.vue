@@ -123,10 +123,14 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { db } from '@/services/firebase'
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
+
+useSEO({ title: 'Dashboard', description: 'Manage your WedChem photographer profile, view inquiries, and track performance.', path: '/dashboard' })
+
 
 const authStore = useAuthStore()
 const profile = computed(() => authStore.photographerProfile)

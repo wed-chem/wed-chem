@@ -191,7 +191,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useSEO } from '@/composables/useSEO'
 import { useAuthStore } from '@/stores/auth'
 import { useRoute } from 'vue-router'
 import { db } from '@/services/firebase'
@@ -251,6 +252,18 @@ onMounted(async () => {
   } catch (e) { console.error('Error loading photographer:', e) }
   loading.value = false
 })
+
+// Dynamic SEO
+watch(() => photographer.value, (p) => {
+  if (p) {
+    useSEO({
+      title: p.businessName + ' — Wedding Photographer',
+      description: p.tagline || p.businessName + ' wedding photography. ' + (p.city ? p.city + (p.state ? ', ' + p.state : '') + '. ' : '') + 'View portfolio and get in touch on WedChem.',
+      path: '/photographer/' + p.id,
+      ogImage: p.coverPhoto || undefined
+    })
+  }
+}, { immediate: true })
 
 function openLightbox(index) { lbIndex.value = index; lbShow.value = true }
 

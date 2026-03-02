@@ -43,17 +43,33 @@
 
       <!-- CTA -->
       <div class="blog-cta-section">
-        <h2>Ready to find your photographer?</h2>
-        <p>Take our 3-minute style quiz and get matched with photographers who share your aesthetic.</p>
-        <router-link to="/quiz" class="btn-primary">Take the Style Quiz →</router-link>
+        <template v-if="authStore.isPhotographer">
+          <h2>Want more couples to find you?</h2>
+          <p>Keep your profile updated and your portfolio fresh to attract the right clients.</p>
+          <router-link to="/dashboard" class="btn-primary">Go to Dashboard →</router-link>
+        </template>
+        <template v-else>
+          <h2>Ready to find your photographer?</h2>
+          <p>Take our 3-minute style quiz and get matched with photographers who share your aesthetic.</p>
+          <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+            <router-link to="/quiz" class="btn-primary">Take the Style Quiz →</router-link>
+            <router-link v-if="!authStore.isLoggedIn" to="/signup/photographer" class="btn-secondary">I'm a Photographer →</router-link>
+          </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { ref, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
 import { blogPosts } from '@/data/blogData'
+
+useSEO({ title: 'Wedding Photography Blog', description: 'Style guides, planning tips, and everything you need to find the right wedding photographer. Expert advice from real professionals.', path: '/blog' })
+
 
 const activeCategory = ref('')
 

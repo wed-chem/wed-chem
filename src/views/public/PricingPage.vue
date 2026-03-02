@@ -22,7 +22,7 @@
             <span class="pc-period">forever</span>
           </div>
           <ul class="pc-features">
-            <li>Take the 25-photo style quiz</li>
+            <li>Take the 19-question style quiz</li>
             <li>Get personalized photographer matches</li>
             <li>Browse the full directory</li>
             <li>Send unlimited inquiries</li>
@@ -92,6 +92,7 @@
             <thead>
               <tr>
                 <th>Feature</th>
+                <th>Couples</th>
                 <th>Photographers (Free)</th>
                 <th>Featured</th>
               </tr>
@@ -99,6 +100,7 @@
             <tbody>
               <tr v-for="row in comparisonRows" :key="row.feature">
                 <td>{{ row.feature }}</td>
+                <td><span :class="row.couple === true ? 'check' : row.couple === false ? 'dash' : 'text'">{{ row.couple === true ? '✓' : row.couple === false ? '—' : row.couple }}</span></td>
                 <td><span :class="row.free === true ? 'check' : row.free === false ? 'dash' : 'text'">{{ row.free === true ? '✓' : row.free === false ? '—' : row.free }}</span></td>
                 <td><span :class="row.featured === true ? 'check-gold' : row.featured === false ? 'dash' : 'text'">{{ row.featured === true ? '✓' : row.featured === false ? '—' : row.featured }}</span></td>
               </tr>
@@ -136,24 +138,28 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { reactive } from 'vue'
 
+useSEO({ title: 'Pricing for Photographers', description: 'List your photography business on WedChem. Free tier available. Featured photographers get priority placement and premium tools for $25/mo.', path: '/pricing' })
+
+
 const comparisonRows = [
-  { feature: 'Style matching quiz', free: true, featured: true },
-  { feature: 'Profile with portfolio', free: true, featured: true },
-  { feature: 'Appear in match results', free: true, featured: true },
-  { feature: 'Receive inquiries', free: true, featured: true },
-  { feature: 'Send inquiries', free: false, featured: false },
-  { feature: 'Browse directory', free: true, featured: true },
-  { feature: 'Social media links', free: true, featured: true },
-  { feature: 'Commission on bookings', free: '0%', featured: '0%' },
-  { feature: 'Boosted in match results', free: false, featured: true },
-  { feature: '"Featured" profile badge', free: false, featured: true },
-  { feature: 'Priority directory placement', free: false, featured: true },
-  { feature: 'Homepage spotlight', free: false, featured: true },
-  { feature: 'Advanced analytics', free: false, featured: true },
-  { feature: 'Match rate insights', free: false, featured: true },
-  { feature: 'Priority support', free: false, featured: true },
+  { feature: 'Style matching quiz', couple: true, free: true, featured: true },
+  { feature: 'Profile with portfolio', couple: false, free: true, featured: true },
+  { feature: 'Appear in match results', couple: false, free: true, featured: true },
+  { feature: 'Receive inquiries', couple: false, free: true, featured: true },
+  { feature: 'Send inquiries', couple: true, free: false, featured: false },
+  { feature: 'Browse directory', couple: true, free: true, featured: true },
+  { feature: 'Social media links', couple: false, free: true, featured: true },
+  { feature: 'Commission on bookings', couple: '0%', free: '0%', featured: '0%' },
+  { feature: 'Boosted in match results', couple: false, free: false, featured: true },
+  { feature: '"Featured" profile badge', couple: false, free: false, featured: true },
+  { feature: 'Priority directory placement', couple: false, free: false, featured: true },
+  { feature: 'Homepage spotlight', couple: false, free: false, featured: true },
+  { feature: 'Advanced analytics', couple: false, free: false, featured: true },
+  { feature: 'Match rate insights', couple: false, free: false, featured: true },
+  { feature: 'Priority support', couple: false, free: false, featured: true },
 ]
 
 const faqs = reactive([
@@ -161,7 +167,7 @@ const faqs = reactive([
   { question: 'Is it really free for photographers to list?', answer: "Yes. You can create a full profile with portfolio, appear in match results, and receive direct inquiries at no cost. The Featured tier is optional — it just gives you extra visibility.", open: false },
   { question: 'What does the Featured tier actually do?', answer: "Featured photographers get boosted to the top of match results, a gold badge on their profile, priority placement in the directory, homepage spotlight rotation, and advanced analytics showing your match rates and inquiry trends. It's designed for photographers who want to maximize their visibility.", open: false },
   { question: 'Do you take a commission on bookings?', answer: 'Never. Zero commission, zero referral fees. When a couple books you, that\'s between you and them. We make money from the optional Featured tier, not from your bookings.', open: false },
-  { question: 'How does the matching algorithm work?', answer: "Our proprietary algorithm analyzes visual preferences across 25 dimensions including editing style, lighting, composition, and mood. When a couple's preferences align with a photographer's style, that's a high match. We also factor in location, budget, and other practical details.", open: false },
+  { question: 'How does the matching algorithm work?', answer: "Our quiz measures your preferences across editing style, photo style, color tones, contrast, lighting mood, and more — 15 style questions plus a few practical ones like budget and location. When your preferences align with a photographer's style profile, that's a high match.", open: false },
   { question: 'Can I cancel Featured anytime?', answer: 'Yes. No contracts, no cancellation fees. You can upgrade or downgrade anytime. If you cancel, your profile stays listed — you just lose the Featured benefits.', open: false },
   { question: 'How many photos can I upload to my portfolio?', answer: 'We recommend 8–20 photos that represent the range of your work. Include a mix of couples, details, ceremony, reception, indoor, and outdoor shots.', open: false },
   { question: "I'm a couple — do I need an account?", answer: "No. You can take the quiz and see your matches without creating an account. If you want to save your favorites or send inquiries, we'll ask you to sign up (it's free and takes 30 seconds).", open: false },

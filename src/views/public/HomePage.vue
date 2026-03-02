@@ -205,9 +205,13 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { useAuthStore } from '@/stores/auth'
 const authStore = useAuthStore()
 import { ref } from 'vue'
+
+useSEO({ description: 'WedChem matches you with wedding photographers based on visual style chemistry. Take our free 3-minute quiz and find photographers whose aesthetic aligns with yours.', path: '/' })
+
 
 const demoChoice = ref('a')
 

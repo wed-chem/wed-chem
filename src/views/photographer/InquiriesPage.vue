@@ -96,10 +96,14 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { ref, computed, onMounted } from 'vue'
 import { db } from '@/services/firebase'
 import { collection, query, where, getDocs, doc, updateDoc, serverTimestamp, orderBy, Timestamp } from 'firebase/firestore'
 import { useAuthStore } from '@/stores/auth'
+
+useSEO({ title: 'Inquiries', description: 'View and manage couple inquiries on WedChem.', path: '/dashboard/inquiries' })
+
 
 const authStore = useAuthStore()
 const tab = ref('all')

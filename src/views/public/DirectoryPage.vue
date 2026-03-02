@@ -86,23 +86,19 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { ref, computed, onMounted } from 'vue'
 import { styleTags } from '@/data/quizData'
 import { browsePhotographers } from '@/services/photographer'
+
+useSEO({ title: 'Browse Wedding Photographers', description: 'Explore our directory of vetted wedding photographers. Filter by location, style, and budget to find your perfect match.', path: '/directory' })
+
 
 const styles = styleTags
 const filters = ref({ city:'', country:'', style:'', budget:'', travel:'' })
 const sortBy = ref('featured')
 const realPhotographers = ref([])
 
-const mockPhotographers = [
-  { id:'demo1', businessName:'Ava Chen Photography', city:'Portland', state:'OR', country:'USA', styles:['Light & Airy','Documentary'], tagline:'Natural light, real moments, organic warmth', priceRange:'$3,200–$5,500', priceMin:3200, tier:'featured', travelRadius:'250', travelRadiusLabel:'Up to 250 mi', gradient:'linear-gradient(135deg,#e8d5cc,#faf7f2,#c5d4be)' },
-  { id:'demo2', businessName:'Marcus Webb Studio', city:'Seattle', state:'WA', country:'USA', styles:['Moody & Dark','Cinematic'], tagline:'Cinematic storytelling with bold, dramatic tones', priceRange:'$4,000–$7,500', priceMin:4000, tier:'featured', travelRadius:'anywhere', travelRadiusLabel:'Travels Worldwide', gradient:'linear-gradient(135deg,#1a1a2e,#2c2c3e,#4a3f55)' },
-  { id:'demo3', businessName:'Riley & Fox Co.', city:'Austin', state:'TX', country:'USA', styles:['Documentary','Photojournalistic'], tagline:'Husband-wife team capturing real, unscripted love', priceRange:'$2,800–$4,500', priceMin:2800, tier:'free', travelRadius:'150', travelRadiusLabel:'Up to 150 mi', gradient:'linear-gradient(135deg,#c5d4be,#e8e3dc,#faf7f2)' },
-  { id:'demo4', businessName:'Sage & Cellulose', city:'Denver', state:'CO', country:'USA', styles:['Film / Analog','Fine Art'], tagline:'Medium format film with analog soul', priceRange:'$4,500–$8,000', priceMin:4500, tier:'free', travelRadius:'nationwide', travelRadiusLabel:'Nationwide', gradient:'linear-gradient(135deg,#d4a574,#b8866a,#c9a96e)' },
-  { id:'demo5', businessName:'Hannah Leigh Photo', city:'Nashville', state:'TN', country:'USA', styles:['Classic / Timeless','Light & Airy'], tagline:'Timeless images, genuine emotion, clean editing', priceRange:'$2,500–$4,000', priceMin:2500, tier:'free', travelRadius:'100', travelRadiusLabel:'Up to 100 mi', gradient:'linear-gradient(135deg,#e8d5cc,#f5ebe3,#c5d4be)' },
-  { id:'demo6', businessName:'Noir Collective', city:'Los Angeles', state:'CA', country:'USA', styles:['Editorial','Fashion-Forward'], tagline:'Magazine-worthy wedding photography', priceRange:'$5,000–$10,000', priceMin:5000, tier:'featured', travelRadius:'anywhere', travelRadiusLabel:'Travels Worldwide', gradient:'linear-gradient(135deg,#2c2c2c,#4a3f35,#c9a96e)' },
-]
 
 onMounted(async () => {
   try {
@@ -116,11 +112,7 @@ onMounted(async () => {
   } catch(e) { console.warn('Could not load photographers:', e) }
 })
 
-const allPhotographers = computed(() => {
-  const realIds = realPhotographers.value.map(p => p.id)
-  const mocks = mockPhotographers.filter(m => !realIds.includes(m.id))
-  return [...realPhotographers.value, ...mocks]
-})
+const allPhotographers = computed(() => realPhotographers.value)
 
 const hasFilters = computed(() => filters.value.city || filters.value.country || filters.value.style || filters.value.budget || filters.value.travel)
 

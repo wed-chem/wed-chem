@@ -113,9 +113,13 @@
 </template>
 
 <script setup>
+import { useSEO } from '@/composables/useSEO'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { travelRadiusOptions, addOnServices } from '@/data/quizData'
+
+useSEO({ title: 'Edit Profile', description: 'Update your photographer profile, portfolio, and pricing on WedChem.', path: '/dashboard/profile' })
+
 
 const authStore = useAuthStore()
 const profile = computed(() => authStore.photographerProfile)
