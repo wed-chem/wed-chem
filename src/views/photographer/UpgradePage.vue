@@ -3,8 +3,9 @@
     <div class="container">
       <div style="max-width:600px;margin:0 auto;text-align:center;">
         <div class="section-eyebrow" style="margin-bottom:16px;">Upgrade</div>
-        <h1 class="section-title">Get Featured on WedChem</h1>
-        <p style="color:var(--warm-gray);margin-bottom:48px;line-height:1.7;">Boost your profile to the top of match results and get more inquiries from couples who love your style.</p>
+        <h1 class="section-title">Get in front of more couples</h1>
+        <p style="color:var(--warm-gray);margin-bottom:16px;line-height:1.7;">Featured photographers show up first in match results, sit at the top of the directory, and rotate on the homepage. One booking covers years of Featured.</p>
+        <p style="color:var(--sage-dark);font-weight:500;margin-bottom:48px;font-size:0.9rem;">No commission. No contracts. Cancel anytime.</p>
         <div class="upgrade-cards">
           <div class="up-card" :class="{sel:plan==='monthly'}" @click="plan='monthly'">
             <div class="up-label">Monthly</div>
@@ -19,13 +20,13 @@
           </div>
         </div>
         <ul class="up-features">
-          <li>Boosted to the top of match results</li>
-          <li>"Featured" badge on your profile</li>
-          <li>Priority placement in directory</li>
-          <li>Homepage spotlight rotation</li>
-          <li>Advanced analytics dashboard</li>
-          <li>Match rate insights</li>
-          <li>Priority support</li>
+          <li>Show up first when couples get their results — not buried on page two</li>
+          <li>Gold "Featured" badge that signals quality before they even click</li>
+          <li>Listed above every free profile in the directory</li>
+          <li>Rotate on the homepage so couples find you before they search</li>
+          <li>Analytics: see which styles and locations drive your views</li>
+          <li>Match rate insights — know how you compare</li>
+          <li>Priority support from the WedChem team</li>
         </ul>
         <div v-if="error" style="color:var(--terracotta);font-size:0.85rem;margin-bottom:12px;">{{ error }}</div>
         <button class="btn-primary" style="width:100%;max-width:400px;justify-content:center;background:var(--terracotta);" @click="handleUpgrade" :disabled="loading">{{ loading ? 'Processing...' : 'Upgrade Now →' }}</button>

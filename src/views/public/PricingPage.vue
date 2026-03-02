@@ -61,25 +61,26 @@
           <div class="pc-popular">MOST POPULAR</div>
           <div class="pc-icon">⭐</div>
           <div class="pc-title">Featured</div>
-          <div class="pc-desc">Boost your visibility and get more inquiries</div>
+          <div class="pc-desc">Be the first photographer couples see — not the tenth</div>
           <div class="pc-price">
             <span class="pc-cur">$</span>
             <span class="pc-val">25</span>
             <span class="pc-period">/ month</span>
           </div>
           <div class="pc-annual">or $250/year <span class="pc-save">Save 17%</span></div>
+          <div class="pc-pitch">One booking pays for years of Featured. Most photographers book within their first month.</div>
           <ul class="pc-features">
             <li class="feat-highlight">Everything in Free, plus:</li>
-            <li>Boosted to the top of match results</li>
-            <li>"Featured" badge on your profile</li>
-            <li>Priority placement in directory</li>
-            <li>Homepage spotlight rotation</li>
-            <li>Advanced analytics dashboard</li>
-            <li>Match rate insights</li>
-            <li>Priority support</li>
+            <li>Show up first when couples get their match results</li>
+            <li>Gold "Featured" badge that builds instant trust</li>
+            <li>Top of directory — above every free listing</li>
+            <li>Rotate on the homepage so couples find you before they even search</li>
+            <li>See which styles and locations are driving your views</li>
+            <li>Know your match rate — how often couples choose you over others</li>
+            <li>Priority support from the WedChem team</li>
           </ul>
           <router-link to="/signup/photographer" class="btn-primary pc-btn" style="background:var(--terracotta);">Get Featured →</router-link>
-          <div class="pc-note">Cancel anytime. No long-term contracts.</div>
+          <div class="pc-note">Cancel anytime. No contracts. No commission. Ever.</div>
         </div>
 
       </div>
@@ -144,20 +145,19 @@ useSEO({ title: 'Pricing for Photographers', description: 'List your photography
 
 
 const comparisonRows = [
-  { feature: 'Style matching quiz', couple: true, free: true, featured: true },
-  { feature: 'Profile with portfolio', couple: false, free: true, featured: true },
-  { feature: 'Appear in match results', couple: false, free: true, featured: true },
-  { feature: 'Receive inquiries', couple: false, free: true, featured: true },
-  { feature: 'Browse directory', couple: true, free: true, featured: true },
-  { feature: 'Social media links', couple: false, free: true, featured: true },
-  { feature: 'Commission on bookings', couple: '0%', free: '0%', featured: '0%' },
-  { feature: 'Boosted in match results', couple: false, free: false, featured: true },
-  { feature: '"Featured" profile badge', couple: false, free: false, featured: true },
-  { feature: 'Priority directory placement', couple: false, free: false, featured: true },
-  { feature: 'Homepage spotlight', couple: false, free: false, featured: true },
-  { feature: 'Advanced analytics', couple: false, free: false, featured: true },
-  { feature: 'Match rate insights', couple: false, free: false, featured: true },
-  { feature: 'Priority support', couple: false, free: false, featured: true },
+  { feature: 'Profile with portfolio', free: true, featured: true },
+  { feature: 'Appear in match results', free: true, featured: true },
+  { feature: 'Receive couple inquiries', free: true, featured: true },
+  { feature: 'Directory listing', free: true, featured: true },
+  { feature: 'Social links on profile', free: true, featured: true },
+  { feature: 'Commission on bookings', free: '0%', featured: '0%' },
+  { feature: 'Appear first in match results', free: false, featured: true },
+  { feature: '"Featured" trust badge', free: false, featured: true },
+  { feature: 'Top of directory above free listings', free: false, featured: true },
+  { feature: 'Homepage spotlight rotation', free: false, featured: true },
+  { feature: 'Advanced analytics', free: false, featured: true },
+  { feature: 'Match rate insights', free: false, featured: true },
+  { feature: 'Priority support', free: false, featured: true },
 ]
 
 const faqs = reactive([
@@ -211,6 +211,7 @@ const faqs = reactive([
 .feat-highlight::before { content:''; }
 
 .pc-btn { width:100%; justify-content:center; }
+.pc-pitch { font-size:0.85rem; color:var(--sage-dark); font-weight:500; line-height:1.5; margin-bottom:16px; padding:12px 16px; background:rgba(139,158,130,0.1); border-radius:var(--radius); }
 .pc-note { font-size:0.78rem; color:var(--warm-gray); margin-top:12px; }
 
 /* COMPARISON TABLE */
