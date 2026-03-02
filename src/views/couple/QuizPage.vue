@@ -80,7 +80,8 @@
             <button class="rank-card" v-for="style in editingStyles" :key="style.id"
               :class="{selected: quizStore.editingRanking.includes(style.id)}"
               @click="quizStore.toggleEditingStyle(style.id)">
-              <div class="rank-preview" :style="{background: style.gradient}"></div>
+              <img class="rank-preview-img" v-if="style.image" :src="style.image" :alt="style.label">
+              <div class="rank-preview" v-else :style="{background: style.gradient}"></div>
               <div class="rank-label">{{ style.label }}</div>
               <div class="rank-desc">{{ style.description }}</div>
               <div class="rank-number" v-if="quizStore.editingRanking.includes(style.id)">
@@ -564,6 +565,7 @@ function retakeQuiz() {
 .rank-card:hover { border-color:var(--sage); transform:translateY(-2px); }
 .rank-card.selected { border-color:var(--terracotta); background:rgba(196,130,106,0.04); }
 .rank-preview { height:48px; border-radius:6px; margin-bottom:10px; }
+.rank-preview-img { width:100%; height:120px; object-fit:cover; border-radius:6px; margin-bottom:10px; }
 .rank-label { font-weight:500; font-size:0.88rem; margin-bottom:4px; }
 .rank-desc { font-size:0.75rem; color:var(--warm-gray); line-height:1.4; }
 .rank-number { position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--terracotta); color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; }
