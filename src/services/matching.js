@@ -214,14 +214,14 @@ export async function saveQuizResults(userId, quizAnswers, matchResults = []) {
       completedAt: serverTimestamp()
     })
     // Save matches for the account page
-    if (userId && matchResults.length) {
+    if (userId) {
       await setDoc(doc(db, 'quizResults', userId), {
         matches: matchResults.slice(0, 10).map(m => ({
           photographerId: m.photographer.id,
           score: m.totalScore
         })),
         updatedAt: serverTimestamp()
-      }, { merge: true })
+      })
     }
   } catch (e) {
     console.error('Error saving quiz results:', e)

@@ -258,7 +258,7 @@
 
             <div style="text-align:center;margin-top:32px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
               <router-link to="/directory" class="btn-primary">Browse All Photographers →</router-link>
-              <button class="btn-secondary" @click="retakeQuiz">Retake Quiz</button>
+              <button class="btn-secondary" @click="confirmRetake">Retake Quiz</button>
             </div>
           </div>
         </div>
@@ -419,6 +419,11 @@ function goPrev() {
   if (quizStore.isLogistical) saveCurrentLogistical()
   quizStore.prev()
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function confirmRetake() {
+  if (!confirm('Retaking the quiz will replace your current matches. Continue?')) return
+  retakeQuiz()
 }
 
 function retakeQuiz() {
