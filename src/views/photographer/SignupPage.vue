@@ -1,7 +1,19 @@
 <template>
   <div class="signup-page">
     <div class="container">
-      <div class="signup-card">
+      <!-- Logged in as couple warning -->
+      <div v-if="authStore.isLoggedIn && !authStore.isPhotographer && !proceedAsPhotographer" class="signup-card" style="text-align:center;padding:60px 40px;">
+        <div style="font-size:2.5rem;margin-bottom:16px;">📷</div>
+        <h2 style="font-family:var(--font-display);font-size:1.6rem;margin-bottom:8px;">Switch to a photographer account?</h2>
+        <p style="color:var(--warm-gray);max-width:440px;margin:0 auto 12px;line-height:1.6;">You're currently signed in as <strong>{{ authStore.user?.email }}</strong>. To create a photographer profile, you'll need to sign out first and create a new account.</p>
+        <p style="color:var(--warm-gray);font-size:0.85rem;max-width:440px;margin:0 auto 32px;line-height:1.6;">Your couple account and quiz results will stay saved — you can always sign back in.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn-primary" @click="signOutAndContinue">Sign Out & Continue →</button>
+          <router-link to="/" class="btn-secondary">Go Back</router-link>
+        </div>
+      </div>
+
+      <div v-else class="signup-card">
         <!-- PROGRESS -->
         <div class="step-bar">
           <div class="step-item" v-for="(s,i) in stepLabels" :key="i" :class="{active:step===i+1, done:step>i+1}">
@@ -252,7 +264,13 @@ useSEO({ title: 'Join as a Photographer', description: 'Create your free photogr
 
 const router = useRouter()
 const authStore = useAuthStore()
+
+async function signOutAndContinue() {
+  await authStore.logout()
+  proceedAsPhotographer.value = true
+}
 const step = ref(1)
+const proceedAsPhotographer = ref(false)
 const error = ref('')
 const loading = ref(false)
 const coverPreview = ref(null)
