@@ -36,7 +36,7 @@
           </div>
           <div class="hero-actions">
             <button class="btn-primary" @click="handleInquiryClick">Get in Touch →</button>
-            <button class="btn-secondary btn-sm" @click="saved = !saved">{{ saved ? '♥ Saved' : '♡ Save' }}</button>
+            <button class="btn-secondary btn-sm" @click="toggleSave">{{ saved ? '♥ Saved' : '♡ Save' }}</button>
           </div>
         </div>
       </div>
@@ -203,6 +203,38 @@ const authStore = useAuthStore()
 const route = useRoute()
 const loading = ref(true)
 const saved = ref(false)
+
+// Check if photographer is saved by this couple
+async function checkSaved() {
+  if (!authStore.uid) return
+  try {
+    const savedDoc = await getDoc(doc(db, 'savedPhotographers', authStore.uid + '_' + route.params.id))
+    saved.value = savedDoc.exists()
+  } catch(e) {}
+}
+
+async function toggleSave() {
+  if (!authStore.isLoggedIn) {
+    showAuthModal.value = true
+    return
+  }
+  const docId = authStore.uid + '_' + route.params.id
+  try {
+    if (saved.value) {
+      const { deleteDoc } = await import('firebase/firestore')
+      await deleteDoc(doc(db, 'savedPhotographers', docId))
+      saved.value = false
+    } else {
+      const { setDoc } = await import('firebase/firestore')
+      await setDoc(doc(db, 'savedPhotographers', docId), {
+        coupleUid: authStore.uid,
+        photographerId: route.params.id,
+        savedAt: serverTimestamp()
+      })
+      saved.value = true
+    }
+  } catch(e) { console.error('Save toggle failed:', e) }
+}
 const showInquiry = ref(false)
 const showAuthGate = ref(false)
 const authMode = ref('signup')

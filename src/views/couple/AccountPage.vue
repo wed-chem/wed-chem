@@ -136,6 +136,22 @@ onMounted(async () => {
     }
   } catch(e) { console.warn('Could not load matches:', e) }
 
+  // Load saved photographers
+  try {
+    const savedQuery = query(collection(db, 'savedPhotographers'), where('coupleUid', '==', authStore.uid))
+    const savedSnap = await getDocs(savedQuery)
+    for (const d of savedSnap.docs) {
+      const s = d.data()
+      try {
+        const pDoc = await getDoc(doc(db, 'photographers', s.photographerId))
+        if (pDoc.exists()) {
+          const p = pDoc.data()
+          saved.value.push({ id: s.photographerId, businessName: p.businessName, city: p.city, state: p.state, coverPhoto: p.coverPhoto })
+        }
+      } catch(e) {}
+    }
+  } catch(e) { console.warn('Could not load saved:', e) }
+
   // Load inquiries sent by this couple
   try {
     const q = query(collection(db, 'inquiries'), where('coupleUid', '==', authStore.uid), orderBy('createdAt', 'desc'))
