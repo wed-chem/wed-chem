@@ -3,7 +3,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <router-link to="/" class="logo">Wed<span>Chem</span></router-link>
+          <router-link to="/" class="logo"><img src="/logo-transparent.png" alt="WedChem" class="footer-logo-img"></router-link>
           <p>The smarter way to find your wedding photographer. Style-matched through real photo chemistry.</p>
         </div>
         <div class="footer-col">
@@ -45,8 +45,8 @@
 <style scoped>
 footer { padding:80px 0 40px; background:var(--charcoal); color:rgba(250,247,242,0.6); }
 .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; margin-bottom:64px; }
-.footer-brand .logo { font-family:var(--font-display); font-size:1.5rem; font-weight:500; color:var(--cream); display:inline-block; margin-bottom:16px; }
-.footer-brand .logo span { color:var(--terracotta); font-style:italic; }
+.footer-brand .logo { display:inline-block; margin-bottom:16px; }
+.footer-logo-img { height:36px; width:auto; filter:brightness(0) invert(1); }
 .footer-brand p { font-size:0.88rem; line-height:1.7; max-width:300px; }
 .footer-col h4 { font-size:0.78rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:rgba(250,247,242,0.4); margin-bottom:20px; }
 .footer-col ul { list-style:none; }

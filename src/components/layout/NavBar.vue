@@ -2,7 +2,7 @@
   <a href="#main-content" class="skip-nav">Skip to content</a>
   <nav role="navigation" aria-label="Main navigation" :class="{ scrolled }">
     <div class="container">
-      <router-link to="/" class="nav-logo">Wed<span>Chem</span></router-link>
+      <router-link to="/" class="nav-logo"><img src="/logo-transparent.png" alt="WedChem" class="nav-logo-img"></router-link>
       <ul class="nav-links" :class="{ open: menuOpen }">
         <li><router-link to="/#how-it-works" @click="menuOpen = false">How It Works</router-link></li>
         <li><router-link to="/directory" @click="menuOpen = false">Photographers</router-link></li>
@@ -54,8 +54,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 nav { position:fixed; top:0; left:0; right:0; z-index:1000; padding:20px 0; transition:var(--transition); background:transparent; }
 nav.scrolled { background:rgba(250,247,242,0.95); backdrop-filter:blur(20px); padding:14px 0; box-shadow:0 1px 10px rgba(44,44,44,0.06); }
 nav .container { display:flex; justify-content:space-between; align-items:center; }
-.nav-logo { font-family:var(--font-display); font-size:1.7rem; font-weight:500; color:var(--charcoal); letter-spacing:-0.02em; }
-.nav-logo span { color:var(--terracotta); font-style:italic; }
+.nav-logo { display:flex; align-items:center; }
+.nav-logo-img { height:40px; width:auto; }
 .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
 .nav-links a, .nav-links button { color:var(--warm-gray); font-size:0.86rem; font-weight:400; letter-spacing:0.04em; text-transform:uppercase; transition:var(--transition); }
 .nav-links a:hover, .nav-links button:hover { color:var(--charcoal); }
