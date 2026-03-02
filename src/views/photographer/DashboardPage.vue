@@ -172,6 +172,12 @@ useSEO({ title: 'Dashboard', description: 'Manage your WedChem photographer prof
 const authStore = useAuthStore()
 const route = useRoute()
 const showUpgradeSuccess = ref(route.query.upgraded === 'true')
+
+// If arriving from successful upgrade, ensure profile reflects featured tier
+if (route.query.upgraded === 'true' && profile.value && profile.value.tier !== 'featured') {
+  profile.value.tier = 'featured'
+  authStore.refreshPhotographerProfile()
+}
 const profile = computed(() => authStore.photographerProfile)
 
 const stats = ref({ views: 0, inquiries: 0, unread: 0, responded: 0, booked: 0 })
