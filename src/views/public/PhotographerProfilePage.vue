@@ -310,7 +310,7 @@ async function authWithGoogle() {
 async function submitInquiry() {
   try {
     const { sendInquiry } = await import('@/services/matching')
-    await sendInquiry({ photographerId: photographer.value.id, name: inquiry.value.name, email: inquiry.value.email, weddingDate: inquiry.value.date, message: inquiry.value.message, matchScore: null })
+    await sendInquiry({ photographerId: photographer.value.id, coupleUid: authStore.uid, name: inquiry.value.name, email: inquiry.value.email, weddingDate: inquiry.value.date, message: inquiry.value.message, matchScore: null })
     alert('Inquiry sent! ' + photographer.value.businessName + ' will get back to you soon.')
     showInquiry.value = false
   } catch (e) { alert('Something went wrong. Please try again.') }

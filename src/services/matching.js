@@ -205,10 +205,11 @@ export async function saveQuizResults(userId, quizAnswers, matchResults = []) {
   }
 }
 
-export async function sendInquiry({ photographerId, name, email, weddingDate, message, matchScore }) {
+export async function sendInquiry({ photographerId, coupleUid, name, email, weddingDate, message, matchScore }) {
   try {
     await addDoc(collection(db, 'inquiries'), {
       photographerId,
+      coupleUid: coupleUid || null,
       coupleName: name,
       coupleEmail: email,
       weddingDate: weddingDate || null,
