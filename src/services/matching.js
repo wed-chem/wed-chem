@@ -215,7 +215,6 @@ export async function saveQuizResults(userId, quizAnswers, matchResults = []) {
     })
     // Save matches for the account page
     if (userId && matchResults.length) {
-      const { setDoc, doc } = await import('firebase/firestore')
       await setDoc(doc(db, 'quizResults', userId), {
         matches: matchResults.slice(0, 10).map(m => ({
           photographerId: m.photographer.id,
