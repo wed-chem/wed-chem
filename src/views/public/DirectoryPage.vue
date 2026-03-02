@@ -138,7 +138,7 @@ function clearFilters() { filters.value = { city:'', country:'', style:'', budge
 
 <style scoped>
 .dir-page { padding:120px 0 80px; background:var(--cream); min-height:100vh; }
-.dir-header { text-align:center; margin-bottom:48px; }
+.dir-header { text-align:center; margin-bottom:48px; padding-top:12px; }
 .dir-title { font-family:var(--font-display); font-size:clamp(2.2rem,4vw,3rem); font-weight:300; margin-bottom:12px; }
 .dir-sub { font-size:1rem; color:var(--warm-gray); }
 
@@ -183,7 +183,7 @@ function clearFilters() { filters.value = { city:'', country:'', style:'', budge
 
 @media(max-width:1024px) { .grid { grid-template-columns:repeat(2,1fr); } }
 @media(max-width:768px) { .grid { grid-template-columns:1fr; } .filter-row { flex-direction:column; } }
-.photog-banner { background:var(--charcoal); padding:14px 0; }
+.photog-banner { background:var(--charcoal); padding:12px 0; margin-bottom:12px; }
 .banner-btn { color:var(--cream); font-size:0.85rem; font-weight:600; padding:8px 20px; border:1.5px solid rgba(250,247,242,0.4); border-radius:100px; transition:var(--transition); white-space:nowrap; }
 .banner-btn:hover { background:rgba(250,247,242,0.1); border-color:var(--cream); }
 @media(max-width:768px) { .photog-banner .container { flex-direction:column; text-align:center; } }
