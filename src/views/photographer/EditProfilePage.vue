@@ -18,7 +18,7 @@
           <div class="photo-label">Profile Photo</div>
           <div class="headshot-wrap" @click="$refs.headshotInput.click()">
             <input type="file" ref="headshotInput" accept="image/*" @change="uploadHeadshotFile" hidden>
-            <img v-if="profile?.avatar" :src="profile.avatar" class="headshot-current" alt="Your headshot">
+            <img v-if="profile?.avatar" :src="profile.avatar" class="headshot-current">
             <div v-else class="headshot-empty">{{ initials }}</div>
             <div class="photo-overlay"><span>Change</span></div>
           </div>
@@ -29,8 +29,8 @@
           <div class="photo-label">Cover Photo</div>
           <div class="cover-wrap" @click="$refs.coverInput.click()">
             <input type="file" ref="coverInput" accept="image/*" @change="uploadCoverFile" hidden>
-            <img v-if="profile?.coverPhoto" :src="profile.coverPhoto" class="cover-current" alt="Your cover photo">
-            <div v-else class="cover-empty">Click to upload cover photo<br><span style="font-size:0.78rem;">Landscape photo recommended (e.g. 1600×600)</span></div>
+            <img v-if="profile?.coverPhoto" :src="profile.coverPhoto" class="cover-current">
+            <div v-else class="cover-empty">Click to upload cover photo</div>
             <div class="photo-overlay"><span>Change</span></div>
           </div>
         </div>
@@ -40,7 +40,7 @@
           <div class="photo-label">Portfolio ({{ currentPortfolio.length }}/20)</div>
           <div class="portfolio-edit-grid">
             <div class="portfolio-edit-thumb" v-for="(url, i) in currentPortfolio" :key="i">
-              <img :src="url" class="pet-img" alt="Portfolio photo">
+              <img :src="url" class="pet-img">
               <button class="pet-remove" @click="removePortfolioPhoto(i)">✕</button>
             </div>
             <div class="portfolio-edit-add" @click="$refs.addPortfolioInput.click()" v-if="currentPortfolio.length < 20">
@@ -113,13 +113,9 @@
 </template>
 
 <script setup>
-import { useSEO } from '@/composables/useSEO'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { travelRadiusOptions, addOnServices } from '@/data/quizData'
-
-useSEO({ title: 'Edit Profile', description: 'Update your photographer profile, portfolio, and pricing on WedChem.', path: '/dashboard/profile' })
-
 
 const authStore = useAuthStore()
 const profile = computed(() => authStore.photographerProfile)

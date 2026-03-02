@@ -1,19 +1,7 @@
 <template>
   <div class="signup-page">
     <div class="container">
-      <!-- Logged in as couple warning -->
-      <div v-if="authStore.isLoggedIn && !authStore.isPhotographer && !proceedAsPhotographer" class="signup-card" style="text-align:center;padding:60px 40px;">
-        <div style="font-size:2.5rem;margin-bottom:16px;">📷</div>
-        <h2 style="font-family:var(--font-display);font-size:1.6rem;margin-bottom:8px;">Switch to a photographer account?</h2>
-        <p style="color:var(--warm-gray);max-width:440px;margin:0 auto 12px;line-height:1.6;">You're currently signed in as <strong>{{ authStore.user?.email }}</strong>. To create a photographer profile, you'll need to sign out first and create a new account.</p>
-        <p style="color:var(--warm-gray);font-size:0.85rem;max-width:440px;margin:0 auto 32px;line-height:1.6;">Your couple account and quiz results will stay saved — you can always sign back in.</p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn-primary" @click="signOutAndContinue">Sign Out & Continue →</button>
-          <router-link to="/" class="btn-secondary">Go Back</router-link>
-        </div>
-      </div>
-
-      <div v-else class="signup-card">
+      <div class="signup-card">
         <!-- PROGRESS -->
         <div class="step-bar">
           <div class="step-item" v-for="(s,i) in stepLabels" :key="i" :class="{active:step===i+1, done:step>i+1}">
@@ -162,7 +150,7 @@
             <div class="headshot-upload" @click="$refs.headshotInput.click()">
               <input type="file" ref="headshotInput" accept="image/*" @change="handleHeadshot" hidden>
               <div class="headshot-preview" v-if="headshotPreview">
-                <img :src="headshotPreview" class="headshot-img" alt="Headshot preview">
+                <img :src="headshotPreview" class="headshot-img">
               </div>
               <div class="headshot-empty" v-else>
                 <span style="font-size:1.5rem;">📷</span>
@@ -173,14 +161,14 @@
           <div class="form-row"><label class="form-label">Cover Photo</label>
             <div class="upload-zone" @click="$refs.coverInput.click()">
               <input type="file" ref="coverInput" accept="image/*" @change="handleCover" hidden>
-              <div v-if="!coverPreview" class="upload-placeholder">Click to upload cover image<br><span style="font-size:0.78rem;color:var(--warm-gray);">Landscape photo recommended (e.g. 1600×600)</span></div>
-              <img v-else :src="coverPreview" class="upload-preview" alt="Cover photo preview">
+              <div v-if="!coverPreview" class="upload-placeholder">Click to upload your cover image</div>
+              <img v-else :src="coverPreview" class="upload-preview">
             </div>
           </div>
           <div class="form-row"><label class="form-label">Portfolio Photos ({{ portfolioPreviews.length }}/20)</label>
             <div class="portfolio-upload-grid">
               <div class="portfolio-thumb" v-for="(p,i) in portfolioPreviews" :key="i">
-                <img :src="p" class="portfolio-thumb-img" alt="Portfolio photo">
+                <img :src="p" class="portfolio-thumb-img">
                 <button class="portfolio-remove" @click="portfolioPreviews.splice(i,1);portfolioFiles.splice(i,1)">✕</button>
               </div>
               <div class="upload-zone upload-zone-sm" @click="$refs.portfolioInput.click()" v-if="portfolioPreviews.length < 20">
@@ -241,8 +229,8 @@
           <div class="publish-note">Your profile will be reviewed before going live. You can edit everything later from your dashboard.</div>
         </div>
 
-        <!-- NAV (hidden during quiz step - quiz has its own nav) -->
-        <div class="step-nav" v-if="step !== 2">
+        <!-- NAV -->
+        <div class="step-nav">
           <button class="btn-secondary" @click="step > 1 ? step-- : null" :style="{visibility:step===1?'hidden':'visible'}">← Back</button>
           <div class="step-error" v-if="error">{{ error }}</div>
           <button class="btn-primary" @click="nextStep" :disabled="loading">{{ step===6 ? (loading ? 'Publishing...' : 'Publish Profile 🎉') : 'Continue →' }}</button>
@@ -253,24 +241,14 @@
 </template>
 
 <script setup>
-import { useSEO } from '@/composables/useSEO'
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { editingStyles, photoStyles, saturationQuestion, abPairs, specialtyTags, addOnServices, travelRadiusOptions, personalityTypes, coverageOptions } from '@/data/quizData'
 
-useSEO({ title: 'Join as a Photographer', description: 'Create your free photographer profile on WedChem. Get matched with couples who love your style. Takes about 5 minutes.', path: '/signup/photographer' })
-
-
 const router = useRouter()
 const authStore = useAuthStore()
-
-async function signOutAndContinue() {
-  await authStore.logout()
-  proceedAsPhotographer.value = true
-}
 const step = ref(1)
-const proceedAsPhotographer = ref(false)
 const error = ref('')
 const loading = ref(false)
 const coverPreview = ref(null)
