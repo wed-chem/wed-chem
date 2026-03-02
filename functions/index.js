@@ -212,20 +212,46 @@ exports.onNewInquiry = functions.firestore
       if (!photographer.email) return;
 
       const client = getPostmarkClient();
+
+      const detailRows = [
+        `<tr><td style="padding:8px 0;font-size:14px;color:#6B6560;width:130px;">Couple</td><td style="padding:8px 0;font-size:14px;font-weight:500;">${inquiry.coupleName}</td></tr>`,
+        `<tr><td style="padding:8px 0;font-size:14px;color:#6B6560;">Email</td><td style="padding:8px 0;font-size:14px;"><a href="mailto:${inquiry.coupleEmail}" style="color:#C4826A;">${inquiry.coupleEmail}</a></td></tr>`,
+      ];
+      if (inquiry.weddingDate) detailRows.push(`<tr><td style="padding:8px 0;font-size:14px;color:#6B6560;">Wedding Date</td><td style="padding:8px 0;font-size:14px;">${inquiry.weddingDate}</td></tr>`);
+      if (inquiry.weddingLocation) detailRows.push(`<tr><td style="padding:8px 0;font-size:14px;color:#6B6560;">Location</td><td style="padding:8px 0;font-size:14px;">${inquiry.weddingLocation}</td></tr>`);
+      if (inquiry.guestCount) detailRows.push(`<tr><td style="padding:8px 0;font-size:14px;color:#6B6560;">Guest Count</td><td style="padding:8px 0;font-size:14px;">~${inquiry.guestCount}</td></tr>`);
+      if (inquiry.matchScore) detailRows.push(`<tr><td style="padding:8px 0;font-size:14px;color:#6B6560;">Match Score</td><td style="padding:8px 0;font-size:14px;"><span style="background:#7A8E72;color:white;padding:2px 12px;border-radius:100px;font-size:12px;font-weight:600;">${inquiry.matchScore}%</span></td></tr>`);
+
+      const firstName = inquiry.coupleName.split(" ")[0];
+
       await client.sendEmail({
         From: FROM_EMAIL,
         To: photographer.email,
-        Subject: `💌 New inquiry from ${inquiry.coupleName} on WedChem`,
-        HtmlBody: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;">
-          <h1 style="font-size:24px;color:#2c2c2c;">New inquiry!</h1>
-          <div style="background:#faf7f2;border:1px solid #e8e3dc;border-radius:12px;padding:24px;margin:24px 0;">
-            <p><strong>From:</strong> ${inquiry.coupleName}</p>
-            <p><strong>Email:</strong> <a href="mailto:${inquiry.coupleEmail}">${inquiry.coupleEmail}</a></p>
-            ${inquiry.weddingDate ? `<p><strong>Wedding:</strong> ${inquiry.weddingDate}</p>` : ""}
-            <hr style="border:none;border-top:1px solid #e8e3dc;margin:16px 0;">
-            <p style="white-space:pre-line;">${inquiry.message}</p>
+        ReplyTo: inquiry.coupleEmail,
+        Subject: `New inquiry from ${inquiry.coupleName}`,
+        HtmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;color:#2c2c2c;">
+          <div style="text-align:center;margin-bottom:32px;">
+            <span style="font-family:Georgia,serif;font-size:1.5rem;font-weight:400;letter-spacing:-0.02em;">Wed<span style="color:#C4826A;font-style:italic;">Chem</span></span>
           </div>
-          <a href="https://wedchem.com/dashboard/inquiries" style="display:inline-block;padding:14px 28px;background:#2c2c2c;color:#faf7f2;border-radius:100px;text-decoration:none;font-weight:500;">View Inquiries →</a>
+          <h1 style="font-size:22px;font-weight:500;margin-bottom:8px;">You have a new inquiry!</h1>
+          <p style="color:#6B6560;font-size:15px;margin-bottom:24px;">${inquiry.coupleName} found you through WedChem and wants to connect.</p>
+          <div style="background:#faf7f2;border:1px solid #e8e3dc;border-radius:12px;overflow:hidden;margin-bottom:24px;">
+            <div style="padding:20px 24px;border-bottom:1px solid #e8e3dc;">
+              <table style="width:100%;border-collapse:collapse;">${detailRows.join("")}</table>
+            </div>
+            <div style="padding:20px 24px;">
+              <p style="font-size:13px;color:#6B6560;margin:0 0 8px;font-weight:500;">Message</p>
+              <p style="font-size:14px;line-height:1.6;margin:0;white-space:pre-line;">${inquiry.message}</p>
+            </div>
+          </div>
+          <div style="text-align:center;margin-bottom:16px;">
+            <a href="mailto:${inquiry.coupleEmail}?subject=Re: Your WedChem inquiry" style="display:inline-block;padding:14px 32px;background:#2c2c2c;color:#faf7f2;border-radius:100px;text-decoration:none;font-weight:500;font-size:15px;">Reply to ${firstName} →</a>
+          </div>
+          <div style="text-align:center;margin-bottom:32px;">
+            <a href="https://wedchem.com/dashboard/inquiries" style="color:#6B6560;font-size:13px;text-decoration:underline;">or view in your dashboard</a>
+          </div>
+          <hr style="border:none;border-top:1px solid #e8e3dc;margin:24px 0;">
+          <p style="font-size:12px;color:#b8a99a;text-align:center;">Couples who hear back within 24 hours are 3x more likely to book.<br>This inquiry was sent through <a href="https://wedchem.com" style="color:#b8a99a;">WedChem</a>.</p>
         </div>`,
         MessageStream: "outbound",
       });

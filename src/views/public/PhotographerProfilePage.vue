@@ -149,8 +149,12 @@
           <p class="modal-sub">They'll typically respond within 24–48 hours</p>
           <div class="form-row"><label class="form-label">Your Name</label><input type="text" class="form-input" placeholder="Jane & John" v-model="inquiry.name"></div>
           <div class="form-row"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="you@email.com" v-model="inquiry.email"></div>
-          <div class="form-row"><label class="form-label">Wedding Date</label><input type="date" class="form-input" v-model="inquiry.date"></div>
-          <div class="form-row"><label class="form-label">Message</label><textarea class="form-input" style="min-height:120px;resize:vertical;" placeholder="Tell them about your wedding — venue, vibe, what you're looking for..." v-model="inquiry.message"></textarea></div>
+          <div class="inq-row-2">
+            <div class="form-row" style="flex:1;"><label class="form-label">Wedding Date</label><input type="date" class="form-input" v-model="inquiry.date"></div>
+            <div class="form-row" style="flex:1;"><label class="form-label">Wedding Location</label><input type="text" class="form-input" placeholder="City, State" v-model="inquiry.location"></div>
+          </div>
+          <div class="form-row"><label class="form-label">Estimated Guest Count</label><input type="text" class="form-input" placeholder="e.g. 150" v-model="inquiry.guestCount"></div>
+          <div class="form-row"><label class="form-label">Message</label><textarea class="form-input" style="min-height:120px;resize:vertical;" v-model="inquiry.message"></textarea></div>
           <button class="btn-primary" style="width:100%;justify-content:center;" @click="submitInquiry">Send Inquiry →</button>
         </div>
       </div>
@@ -239,7 +243,7 @@ const authMode = ref('signup')
 const authForm = ref({ name: '', email: '', password: '' })
 const authError = ref('')
 const authLoading = ref(false)
-const inquiry = ref({ name: '', email: '', date: '', message: '' })
+const inquiry = ref({ name: '', email: '', date: '', location: '', guestCount: '', message: '' })
 const lbShow = ref(false)
 const lbIndex = ref(0)
 const photographer = ref(null)
@@ -304,6 +308,10 @@ function handleInquiryClick() {
   if (authStore.isLoggedIn) {
     if (authStore.user?.displayName && !inquiry.value.name) inquiry.value.name = authStore.user.displayName
     if (authStore.user?.email && !inquiry.value.email) inquiry.value.email = authStore.user.email
+    if (!inquiry.value.message) {
+      const name = photographer.value?.businessName || 'there'
+      inquiry.value.message = `Hi ${name}!\n\nI came across your profile on WedChem and love your work! We're planning our wedding and your style is exactly what we're looking for.\n\nWe'd love to learn more about your availability and packages. Are you free to chat?`
+    }
     showInquiry.value = true
   } else { showAuthGate.value = true }
 }
@@ -343,7 +351,7 @@ async function authWithGoogle() {
 async function submitInquiry() {
   try {
     const { sendInquiry } = await import('@/services/matching')
-    await sendInquiry({ photographerId: photographer.value.id, coupleUid: authStore.uid, name: inquiry.value.name, email: inquiry.value.email, weddingDate: inquiry.value.date, message: inquiry.value.message, matchScore: null })
+    await sendInquiry({ photographerId: photographer.value.id, coupleUid: authStore.uid, name: inquiry.value.name, email: inquiry.value.email, weddingDate: inquiry.value.date, weddingLocation: inquiry.value.location, guestCount: inquiry.value.guestCount, message: inquiry.value.message, matchScore: inquiry.value.matchScore || null })
     alert('Inquiry sent! ' + photographer.value.businessName + ' will get back to you soon.')
     showInquiry.value = false
   } catch (e) { alert('Something went wrong. Please try again.') }
@@ -430,4 +438,6 @@ async function submitInquiry() {
   .portfolio-item:nth-child(1) { grid-column:span 2; grid-row:span 1; }
   .portfolio-item:nth-child(1) .portfolio-img { aspect-ratio:16/9; }
 }
+.inq-row-2 { display:flex; gap:12px; }
+@media(max-width:480px) { .inq-row-2 { flex-direction:column; } }
 </style>

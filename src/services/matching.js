@@ -228,7 +228,7 @@ export async function saveQuizResults(userId, quizAnswers, matchResults = []) {
   }
 }
 
-export async function sendInquiry({ photographerId, coupleUid, name, email, weddingDate, message, matchScore }) {
+export async function sendInquiry({ photographerId, coupleUid, name, email, weddingDate, weddingLocation, guestCount, message, matchScore }) {
   try {
     await addDoc(collection(db, 'inquiries'), {
       photographerId,
@@ -236,6 +236,8 @@ export async function sendInquiry({ photographerId, coupleUid, name, email, wedd
       coupleName: name,
       coupleEmail: email,
       weddingDate: weddingDate || null,
+      weddingLocation: weddingLocation || null,
+      guestCount: guestCount || null,
       message,
       matchScore: matchScore || null,
       status: 'new',

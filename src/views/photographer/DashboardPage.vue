@@ -77,9 +77,10 @@
             <div class="an-trend" v-if="analytics.profileClicks > 0">{{ analytics.clickRate }}% click-through rate</div>
           </div>
           <div class="an-card">
-            <div class="an-num">{{ analytics.avgMatchScore }}%</div>
-            <div class="an-label">Average match score</div>
-            <div class="an-trend">How well you match with couples who see you</div>
+            <div class="an-num">{{ analytics.inquiriesThisMonth }}</div>
+            <div class="an-label">Inquiries this month</div>
+            <div class="an-trend" v-if="analytics.inquiriesThisMonth > 0">Keep your response time under 24 hours</div>
+            <div class="an-trend" v-else>Featured photographers get 2x more inquiries</div>
           </div>
           <div class="an-card">
             <div class="an-num">{{ analytics.topStyles.join(', ') || '—' }}</div>
@@ -177,7 +178,7 @@ const stats = ref({ views: 0, inquiries: 0, unread: 0, responded: 0, booked: 0 }
 const analytics = ref({
   matchAppearances: 0, matchRate: 0,
   profileClicks: 0, clickRate: 0,
-  avgMatchScore: 0, topStyles: []
+  inquiriesThisMonth: 0, topStyles: []
 })
 const recentInquiries = ref([])
 const loadingInq = ref(true)
