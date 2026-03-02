@@ -11,6 +11,7 @@
         <div class="matches-grid">
           <div class="match-card" v-for="(m, i) in matches" :key="m.photographerId"
             @click="$router.push('/photographer/' + m.photographerId)">
+            <button class="mc-remove" @click.stop="removeMatch(i)" title="Remove match">✕</button>
             <div class="mc-rank">#{{ i + 1 }}</div>
             <div class="mc-cover" :style="{background: m.coverPhoto ? `url(${m.coverPhoto}) center/cover` : 'linear-gradient(135deg, var(--sage-light), var(--blush))'}"></div>
             <div class="mc-info">
@@ -97,7 +98,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useSEO } from '@/composables/useSEO'
 import { db } from '@/services/firebase'
-import { collection, query, where, getDocs, doc, getDoc, orderBy } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, getDoc, orderBy, updateDoc } from 'firebase/firestore'
 
 useSEO({ title: 'My Matches', description: 'View your quiz results, saved photographers, and manage your WedChem account.', path: '/account' })
 
@@ -168,6 +169,18 @@ onMounted(async () => {
   } catch(e) { console.warn('Could not load inquiries:', e) }
 })
 
+async function removeMatch(index) {
+  if (!confirm('Remove this match from your results?')) return
+  matches.value.splice(index, 1)
+  // Update Firestore
+  try {
+    const { setDoc } = await import('firebase/firestore')
+    await setDoc(doc(db, 'quizResults', authStore.uid), {
+      matches: matches.value.map(m => ({ photographerId: m.photographerId, score: m.score }))
+    }, { merge: true })
+  } catch(e) { console.warn('Could not update matches:', e) }
+}
+
 function formatDate(ts) {
   if (!ts) return 'recently'
   const d = ts.toDate ? ts.toDate() : new Date(ts)
@@ -215,6 +228,8 @@ async function handleDelete() {
 .matches-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
 .match-card { border:1px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); background:var(--warm-white); position:relative; }
 .match-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--sage); }
+.mc-remove { position:absolute; top:8px; left:8px; width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,0.5); color:white; border:none; font-size:0.7rem; cursor:pointer; z-index:2; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; }
+.match-card:hover .mc-remove { opacity:1; }
 .mc-rank { position:absolute; top:10px; right:10px; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:600; z-index:1; }
 .mc-cover { height:140px; }
 .mc-info { padding:16px; }

@@ -196,7 +196,7 @@ import { useSEO } from '@/composables/useSEO'
 import { useAuthStore } from '@/stores/auth'
 import { useRoute } from 'vue-router'
 import { db } from '@/services/firebase'
-import { doc, getDoc, updateDoc, increment } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, increment, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore'
 import PhotoLightbox from '@/components/ui/PhotoLightbox.vue'
 
 const authStore = useAuthStore()
@@ -221,11 +221,9 @@ async function toggleSave() {
   const docId = authStore.uid + '_' + route.params.id
   try {
     if (saved.value) {
-      const { deleteDoc } = await import('firebase/firestore')
       await deleteDoc(doc(db, 'savedPhotographers', docId))
       saved.value = false
     } else {
-      const { setDoc } = await import('firebase/firestore')
       await setDoc(doc(db, 'savedPhotographers', docId), {
         coupleUid: authStore.uid,
         photographerId: route.params.id,
