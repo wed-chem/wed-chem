@@ -51,11 +51,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 </script>
 
 <style scoped>
-nav { position:fixed; top:0; left:0; right:0; z-index:1000; padding:20px 0; transition:var(--transition); background:transparent; }
-nav.scrolled { background:rgba(250,247,242,0.95); backdrop-filter:blur(20px); padding:14px 0; box-shadow:0 1px 10px rgba(44,44,44,0.06); }
+nav { position:fixed; top:0; left:0; right:0; z-index:1000; padding:8px 0; transition:var(--transition); background:transparent; }
+nav.scrolled { background:rgba(250,247,242,0.95); backdrop-filter:blur(20px); padding:4px 0; box-shadow:0 1px 10px rgba(44,44,44,0.06); }
 nav .container { display:flex; justify-content:space-between; align-items:center; }
 .nav-logo { display:flex; align-items:center; }
-.nav-logo-img { height:80px; width:auto; }
+.nav-logo-img { height:100px; width:auto; }
 .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
 .nav-links a, .nav-links button { color:var(--warm-gray); font-size:0.86rem; font-weight:400; letter-spacing:0.04em; text-transform:uppercase; transition:var(--transition); }
 .nav-links a:hover, .nav-links button:hover { color:var(--charcoal); }
