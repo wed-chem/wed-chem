@@ -86,7 +86,8 @@
 
       <!-- COMPARISON TABLE -->
       <div class="compare-section">
-        <h2 class="compare-title">Feature Comparison</h2>
+        <h2 class="compare-title">Photographer Plans</h2>
+        <p style="text-align:center;color:var(--warm-gray);font-size:0.9rem;margin-bottom:24px;">Couples use WedChem 100% free — this comparison is for photographer listings.</p>
         <div class="compare-table-wrap">
           <table class="compare-table">
             <thead>
@@ -147,7 +148,6 @@ const comparisonRows = [
   { feature: 'Profile with portfolio', couple: false, free: true, featured: true },
   { feature: 'Appear in match results', couple: false, free: true, featured: true },
   { feature: 'Receive inquiries', couple: false, free: true, featured: true },
-  { feature: 'Send inquiries', couple: true, free: false, featured: false },
   { feature: 'Browse directory', couple: true, free: true, featured: true },
   { feature: 'Social media links', couple: false, free: true, featured: true },
   { feature: 'Commission on bookings', couple: '0%', free: '0%', featured: '0%' },
