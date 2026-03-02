@@ -157,11 +157,20 @@
           <div class="qz-sub">{{ quizStore.currentQuestion.data.subtitle }}</div>
           <div class="manual-form">
             <template v-if="quizStore.currentQuestion.data.type === 'location'">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-                <div><label class="form-label">City</label><input type="text" class="form-input" placeholder="Portland" v-model="locCity"></div>
-                <div><label class="form-label">State / Region</label><input type="text" class="form-input" placeholder="Oregon" v-model="locState"></div>
+              <div v-if="!locUndecided">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                  <div><label class="form-label">City</label><input type="text" class="form-input" placeholder="Portland" v-model="locCity"></div>
+                  <div><label class="form-label">State / Region</label><input type="text" class="form-input" placeholder="Oregon" v-model="locState"></div>
+                </div>
+                <div style="margin-bottom:16px;"><label class="form-label">Country</label><input type="text" class="form-input" placeholder="United States" v-model="locCountry"></div>
+                <button class="btn-text" @click="setLocUndecided" style="color:var(--warm-gray);font-size:0.85rem;text-decoration:underline;cursor:pointer;background:none;border:none;padding:0;">Don't know yet →</button>
               </div>
-              <div><label class="form-label">Country</label><input type="text" class="form-input" placeholder="United States" v-model="locCountry"></div>
+              <div v-else class="loc-undecided-card">
+                <div style="font-size:1.5rem;margin-bottom:8px;">🌎</div>
+                <p style="font-weight:500;margin-bottom:4px;">No problem!</p>
+                <p style="color:var(--warm-gray);font-size:0.88rem;line-height:1.5;margin-bottom:16px;">We'll only show you photographers who travel nationwide or worldwide.</p>
+                <button class="btn-text" @click="locUndecided = false" style="color:var(--terracotta);font-size:0.85rem;cursor:pointer;background:none;border:none;padding:0;">Actually, I do have a location →</button>
+              </div>
             </template>
             <template v-if="quizStore.currentQuestion.data.type === 'date'">
               <label class="form-label">Wedding Date</label>
@@ -319,6 +328,7 @@ watch(() => authStore.uid, async (uid) => {
 })
 
 const locCity = ref('')
+const locUndecided = ref(false)
 const locState = ref('')
 const locCountry = ref('')
 const weddingDate = ref('')
@@ -396,6 +406,7 @@ async function saveCurrentLogistical() {
       const geo = await validateAndGeocode(locCity.value, locState.value, locCountry.value)
       if (geo.valid) { locData.lat = geo.lat; locData.lng = geo.lng }
     } catch (e) {}
+    if (locUndecided.value) locData.undecided = true
     quizStore.setManualAnswer(id, locData)
   }
   if (q.data.type === 'date') quizStore.setManualAnswer(id, weddingDate.value)
@@ -445,7 +456,7 @@ async function validateAndNext() {
   }
   if (q.isLogistical) {
     const currentQ = q.phases[q.currentIndex]
-    if (currentQ.data.id === 'location' && !locCity.value.trim()) {
+    if (currentQ.data.id === 'location' && !locCity.value.trim() && !locUndecided.value) {
       validationMsg.value = 'Please enter your wedding city so we can find photographers near you.'
       return
     }
@@ -481,6 +492,13 @@ function goPrev() {
   if (quizStore.isLogistical) saveCurrentLogistical()
   quizStore.prev()
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function setLocUndecided() {
+  locUndecided.value = true
+  locCity.value = ''
+  locState.value = ''
+  locCountry.value = ''
 }
 
 function confirmRetake() {
@@ -665,4 +683,5 @@ function retakeQuiz() {
   .toggle-options { flex-direction:column; }
   .results-title { font-size:2rem; }
 }
+.loc-undecided-card { background:var(--warm-white); border:1px solid var(--light-gray); border-radius:var(--radius-lg); padding:24px; text-align:center; }
 </style>
