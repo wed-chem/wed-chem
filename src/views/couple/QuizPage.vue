@@ -384,12 +384,14 @@ async function goNext() {
     runRevealAnimation()
   } else {
     await quizStore.next()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
 
 function goPrev() {
   if (quizStore.isLogistical) saveCurrentLogistical()
   quizStore.prev()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 function retakeQuiz() {
