@@ -320,21 +320,36 @@ onMounted(async () => {
     return
   }
   // Don't reset if quiz is already completed (user returning from signup)
-  if (quizStore.completed) return
+  if (quizStore.completed) {
+    quizLoading.value = false
+    return
+  }
+  
+  // Wait for auth to resolve if not ready yet
+  let uid = authStore.uid
+  if (!uid && !authStore.initialized) {
+    uid = await new Promise((resolve) => {
+      const unwatch = watch(() => authStore.initialized, (ready) => {
+        if (ready) { unwatch(); resolve(authStore.uid) }
+      }, { immediate: true })
+      // Timeout after 3 seconds
+      setTimeout(() => { unwatch(); resolve(null) }, 3000)
+    })
+  }
   
   // Check if user has existing quiz results
-  if (authStore.uid) {
+  if (uid) {
     try {
       const { doc, getDoc } = await import('firebase/firestore')
       const { db } = await import('@/services/firebase')
-      const resultsDoc = await getDoc(doc(db, 'quizResults', authStore.uid))
+      const resultsDoc = await getDoc(doc(db, 'quizResults', uid))
       if (resultsDoc.exists() && resultsDoc.data().matches?.length > 0) {
         hasExistingResults.value = true
         showRetakePrompt.value = true
         quizLoading.value = false
         return
       }
-    } catch(e) {}
+    } catch(e) { console.warn('Quiz results check failed:', e) }
   }
   
   quizStore.reset('couple')
