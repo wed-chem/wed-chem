@@ -21,8 +21,8 @@ export const photoStyles = [
 export const saturationQuestion = {
   id: 'saturation',
   question: 'Which feels more like you?',
-  a: { label: 'Saturated', description: 'Bold, rich, full color', gradient: 'linear-gradient(135deg, #6B7E62 0%, #C4826A 50%, #c9a96e 100%)' },
-  b: { label: 'Desaturated', description: 'Muted, faded, film-like', gradient: 'linear-gradient(135deg, #b8a99a 0%, #c5bdb4 50%, #d4ccc3 100%)' }
+  a: { label: 'Saturated', description: 'Bold, rich, full color', image: '/quiz/q3-a.jpg', gradient: 'linear-gradient(135deg, #6B7E62 0%, #C4826A 50%, #c9a96e 100%)' },
+  b: { label: 'Desaturated', description: 'Muted, faded, film-like', image: '/quiz/q3-b.jpg', gradient: 'linear-gradient(135deg, #b8a99a 0%, #c5bdb4 50%, #d4ccc3 100%)' }
 }
 
 // Q4-10: A/B photo pairs (will use real photos later, gradients for now)
