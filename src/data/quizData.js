@@ -28,32 +28,32 @@ export const saturationQuestion = {
 // Q4-10: A/B photo pairs (will use real photos later, gradients for now)
 export const abPairs = [
   { id: 4, category: 'Tone', question: 'Which portrait edit do you prefer?',
-    a: { label: 'Dark & Moody', image: null, gradient: 'linear-gradient(135deg, #2c2c2c 0%, #4a3f35 40%, #8B6914 100%)' },
-    b: { label: 'Light & Bright', image: null, gradient: 'linear-gradient(135deg, #e8e3dc 0%, #faf7f2 50%, #c5d4be 100%)' }
+    a: { label: 'Dark & Moody', image: '/quiz/q4-a.jpg', gradient: null },
+    b: { label: 'Light & Bright', image: '/quiz/q4-b.jpg', gradient: null }
   },
   { id: 5, category: 'Temperature', question: 'Which color tone draws you in?',
-    a: { label: 'Cool Blue Tones', image: null, gradient: 'linear-gradient(135deg, #b0c4d4 0%, #d4dfe8 50%, #e8edf2 100%)' },
-    b: { label: 'Warm Amber Tones', image: null, gradient: 'linear-gradient(135deg, #c9a96e 0%, #d4a574 50%, #e8d5cc 100%)' }
+    a: { label: 'Cool Blue Tones', image: '/quiz/q5-a.jpg', gradient: null },
+    b: { label: 'Warm Amber Tones', image: '/quiz/q5-b.jpg', gradient: null }
   },
   { id: 6, category: 'Contrast', question: 'Which contrast level?',
-    a: { label: 'Bold & Dramatic', image: null, gradient: 'linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 40%, #faf7f2 100%)' },
-    b: { label: 'Soft & Dreamy', image: null, gradient: 'linear-gradient(135deg, #d4ccc3 0%, #e8e3dc 40%, #ede8e0 100%)' }
+    a: { label: 'Bold & Dramatic', image: '/quiz/q6-a.jpg', gradient: null },
+    b: { label: 'Soft & Dreamy', image: '/quiz/q6-b.jpg', gradient: null }
   },
   { id: 7, category: 'Film vs Digital', question: 'Which look do you prefer?',
-    a: { label: 'Film Grain', image: null, gradient: 'linear-gradient(135deg, #b8a99a 0%, #c5bdb4 40%, #d4a574 100%)' },
-    b: { label: 'Clean Digital', image: null, gradient: 'linear-gradient(135deg, #e8e3dc 0%, #faf7f2 50%, #c5d4be 100%)' }
+    a: { label: 'Film Grain', image: '/quiz/q7-a.jpg', gradient: null },
+    b: { label: 'Clean Digital', image: '/quiz/q7-b.jpg', gradient: null }
   },
   { id: 8, category: 'Shadows', question: 'How should shadows look?',
-    a: { label: 'Deep & Crushed', image: null, gradient: 'linear-gradient(135deg, #0a0a0a 0%, #2c2c2c 50%, #4a4a4a 100%)' },
-    b: { label: 'Lifted & Open', image: null, gradient: 'linear-gradient(135deg, #d4ccc3 0%, #e8e3dc 50%, #faf7f2 100%)' }
+    a: { label: 'Deep & Crushed', image: '/quiz/q8-a.jpg', gradient: null },
+    b: { label: 'Lifted & Open', image: '/quiz/q8-b.jpg', gradient: null }
   },
   { id: 9, category: 'Black & White', question: 'Black & white or color?',
-    a: { label: 'Love B&W', image: null, gradient: 'linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 40%, #d4d4d4 100%)' },
-    b: { label: 'Keep It Color', image: null, gradient: 'linear-gradient(135deg, #6B7E62 0%, #c9a96e 40%, #C4826A 100%)' }
+    a: { label: 'Love B&W', image: '/quiz/q9-a.jpg', gradient: null },
+    b: { label: 'Keep It Color', image: '/quiz/q9-b.jpg', gradient: null }
   },
   { id: 10, category: 'Palette', question: 'Which overall palette?',
-    a: { label: 'Earth Tones', image: null, gradient: 'linear-gradient(135deg, #8B6914 0%, #C4826A 40%, #4a5d3f 100%)' },
-    b: { label: 'Soft Pastels', image: null, gradient: 'linear-gradient(135deg, #e8d5cc 0%, #d4dfe8 40%, #e8e3dc 100%)' }
+    a: { label: 'Earth Tones', image: '/quiz/q10-a.jpg', gradient: null },
+    b: { label: 'Soft Pastels', image: '/quiz/q10-b.jpg', gradient: null }
   }
 ]
 
