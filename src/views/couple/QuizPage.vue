@@ -242,15 +242,17 @@
           </div>
 
           <div class="results-content" :class="{'show': revealDone}">
-            <div class="results-header">
+            <div class="results-header" v-if="quizStore.matches.length > 0">
               <div class="results-icon">🧪✨</div>
               <div class="results-title">Your chemistry results</div>
-              <div class="results-sub">We analyzed your style preferences and found {{ quizStore.matches.length }} photographers with strong chemistry</div>
+              <div class="results-sub">We analyzed your style preferences and found {{ quizStore.matches.length }} photographer{{ quizStore.matches.length !== 1 ? 's' : '' }} with strong chemistry</div>
             </div>
 
             <!-- No matches -->
             <div v-if="quizStore.matches.length === 0" class="no-matches">
-              <div style="font-size:2rem;margin-bottom:12px;">🔬</div>
+              <div class="results-icon">🧪</div>
+              <div class="results-title">Your chemistry results</div>
+              <div style="font-size:2.5rem;margin:24px 0 12px;">🔬</div>
               <div style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:8px;">We're still growing!</div>
               <p style="color:var(--warm-gray);max-width:400px;margin:0 auto 20px;line-height:1.6;">We don't have enough photographers in our network yet to find your perfect match. Browse our directory or check back soon as more photographers join.</p>
             </div>
@@ -683,4 +685,5 @@ function retakeQuiz() {
   .results-title { font-size:2rem; }
 }
 .loc-undecided-card { background:var(--warm-white); border:1px solid var(--light-gray); border-radius:var(--radius-lg); padding:24px; text-align:center; }
+.no-matches { text-align:center; padding:20px 0 40px; }
 </style>
