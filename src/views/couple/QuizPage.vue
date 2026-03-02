@@ -253,7 +253,6 @@
               <div style="font-size:2rem;margin-bottom:12px;">🔬</div>
               <div style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:8px;">We're still growing!</div>
               <p style="color:var(--warm-gray);max-width:400px;margin:0 auto 20px;line-height:1.6;">We don't have enough photographers in our network yet to find your perfect match. Browse our directory or check back soon as more photographers join.</p>
-              <router-link to="/directory" class="btn-primary">Browse All Photographers →</router-link>
             </div>
 
             <div class="results-grid" v-else>
