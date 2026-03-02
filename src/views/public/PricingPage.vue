@@ -114,7 +114,7 @@
         <h2 class="faq-title">Frequently Asked Questions</h2>
         <div class="faq-grid">
           <div class="faq-item" v-for="(faq, i) in faqs" :key="i">
-            <button class="faq-q" @click="faq.open = !faq.open" :class="{open: faq.open}">
+            <button class="faq-q" @click="faq.open = !faq.open" :class="{open: faq.open}" :aria-expanded="faq.open" aria-controls="faq-answer">
               {{ faq.question }}
               <span class="faq-toggle">{{ faq.open ? '−' : '+' }}</span>
             </button>

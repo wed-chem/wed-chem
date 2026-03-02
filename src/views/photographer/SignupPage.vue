@@ -150,7 +150,7 @@
             <div class="headshot-upload" @click="$refs.headshotInput.click()">
               <input type="file" ref="headshotInput" accept="image/*" @change="handleHeadshot" hidden>
               <div class="headshot-preview" v-if="headshotPreview">
-                <img :src="headshotPreview" class="headshot-img">
+                <img :src="headshotPreview" class="headshot-img" alt="Headshot preview">
               </div>
               <div class="headshot-empty" v-else>
                 <span style="font-size:1.5rem;">📷</span>
@@ -162,13 +162,13 @@
             <div class="upload-zone" @click="$refs.coverInput.click()">
               <input type="file" ref="coverInput" accept="image/*" @change="handleCover" hidden>
               <div v-if="!coverPreview" class="upload-placeholder">Click to upload cover image<br><span style="font-size:0.78rem;color:var(--warm-gray);">Landscape photo recommended (e.g. 1600×600)</span></div>
-              <img v-else :src="coverPreview" class="upload-preview">
+              <img v-else :src="coverPreview" class="upload-preview" alt="Cover photo preview">
             </div>
           </div>
           <div class="form-row"><label class="form-label">Portfolio Photos ({{ portfolioPreviews.length }}/20)</label>
             <div class="portfolio-upload-grid">
               <div class="portfolio-thumb" v-for="(p,i) in portfolioPreviews" :key="i">
-                <img :src="p" class="portfolio-thumb-img">
+                <img :src="p" class="portfolio-thumb-img" alt="Portfolio photo">
                 <button class="portfolio-remove" @click="portfolioPreviews.splice(i,1);portfolioFiles.splice(i,1)">✕</button>
               </div>
               <div class="upload-zone upload-zone-sm" @click="$refs.portfolioInput.click()" v-if="portfolioPreviews.length < 20">

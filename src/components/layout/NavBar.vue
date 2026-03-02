@@ -1,5 +1,6 @@
 <template>
-  <nav :class="{ scrolled }">
+  <a href="#main-content" class="skip-nav">Skip to content</a>
+  <nav role="navigation" aria-label="Main navigation" :class="{ scrolled }">
     <div class="container">
       <router-link to="/" class="nav-logo">Wed<span>Chem</span></router-link>
       <ul class="nav-links" :class="{ open: menuOpen }">
@@ -69,4 +70,6 @@ nav .container { display:flex; justify-content:space-between; align-items:center
   .mobile-toggle { display:block; }
 }
 .nav-photog-link { color:var(--terracotta) !important; font-weight:500 !important; }
+.skip-nav { position:absolute; top:-100px; left:50%; transform:translateX(-50%); padding:12px 24px; background:var(--charcoal); color:var(--cream); border-radius:0 0 8px 8px; z-index:9999; font-size:0.85rem; transition:top 0.2s; }
+.skip-nav:focus { top:0; }
 </style>

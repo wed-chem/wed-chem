@@ -1,16 +1,17 @@
 :root {
   --cream: #FAF7F2;
   --warm-white: #FFFCF7;
-  --sage: #8B9E82;
-  --sage-dark: #6B7E62;
+  --sage: #7A8E72;
+  --sage-dark: #5C6E53;
   --sage-light: #C5D4BE;
   --terracotta: #C4826A;
   --terracotta-dark: #A96B54;
   --charcoal: #2C2C2C;
-  --warm-gray: #6B6560;
+  --warm-gray: #615C57;
   --light-gray: #E8E3DC;
   --blush: #E8D5CC;
   --gold: #C9A96E;
+  --gold-text: #8B7540;
   --gold-light: #E8D9B4;
   --shadow-sm: 0 1px 3px rgba(44,44,44,0.06);
   --shadow-md: 0 4px 20px rgba(44,44,44,0.08);
@@ -115,3 +116,21 @@ input, select, textarea { font-family: inherit; }
 @media (max-width: 768px) {
   .form-row-2 { grid-template-columns: 1fr; }
 }
+
+/* ═══════ ACCESSIBILITY ═══════ */
+*:focus-visible {
+  outline: 2px solid var(--sage-dark);
+  outline-offset: 2px;
+}
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--sage-dark);
+  outline-offset: 2px;
+}
+/* Ensure sufficient contrast for interactive elements */
+.btn-primary:focus-visible { outline-color: var(--charcoal); }
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+/* Screen reader only */
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }

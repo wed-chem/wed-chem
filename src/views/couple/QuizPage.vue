@@ -184,7 +184,7 @@
                   <stop offset="100%" stop-color="#c9a96e" stop-opacity="0.35"/>
                 </linearGradient>
               </defs>
-              <rect y="120" width="100" height="110" clip-path="url(#flaskClipBig)" fill="url(#liquidGradBig)" class="results-flask-fill" :class="{'filling': beakerFilling}"/>
+              <rect :y="beakerFilling ? 15 : 120" width="100" height="110" clip-path="url(#flaskClipBig)" fill="url(#liquidGradBig)" class="results-flask-fill"/>
               <circle cx="40" cy="95" r="3" class="bub bub1" clip-path="url(#flaskClipBig)"/>
               <circle cx="55" cy="100" r="2.5" class="bub bub2" clip-path="url(#flaskClipBig)"/>
               <circle cx="65" cy="92" r="3.5" class="bub bub3" clip-path="url(#flaskClipBig)"/>
@@ -195,6 +195,12 @@
               <line x1="18" y1="100" x2="25" y2="96" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
               <line x1="28" y1="80" x2="33" y2="78" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
               <line x1="33" y1="65" x2="37" y2="64" stroke="var(--sage)" stroke-width="1" opacity="0.3"/>
+              <!-- Overflow bubbles rising out of flask -->
+              <circle v-if="beakerFilling" cx="45" cy="8" r="4" class="overflow-bub ob1"/>
+              <circle v-if="beakerFilling" cx="55" cy="3" r="3" class="overflow-bub ob2"/>
+              <circle v-if="beakerFilling" cx="50" cy="-5" r="5" class="overflow-bub ob3"/>
+              <circle v-if="beakerFilling" cx="42" cy="-12" r="3.5" class="overflow-bub ob4"/>
+              <circle v-if="beakerFilling" cx="58" cy="-8" r="2.5" class="overflow-bub ob5"/>
             </svg>
             <div class="beaker-text" :class="{'show': beakerStage === 1}">Analyzing your visual preferences...</div>
             <div class="beaker-text beaker-text-2" :class="{'show': beakerStage === 2}">Comparing across style dimensions...</div>
@@ -350,7 +356,7 @@ function runRevealAnimation() {
   setTimeout(() => { revealDone.value = true }, 10500)
 }
 
-function validateAndNext() {
+async function validateAndNext() {
   validationMsg.value = ''
   const q = quizStore
   
@@ -381,11 +387,8 @@ function validateAndNext() {
     }
   }
   if (q.isLogistical) {
-    const currentQ = q.phases[q.currentIndex]
-    if (currentQ.data.id === 'budget' && !q.manualAnswers.budget) {
-      validationMsg.value = 'A budget range helps us filter to photographers in your price range.'
-      return
-    }
+    // Save logistical answer before validation check
+    await saveCurrentLogistical()
   }
   
   goNext()
@@ -538,6 +541,9 @@ function retakeQuiz() {
 .beaker-wrap { text-align:center; padding:60px 0 80px; transition:all 0.6s ease; position:relative; }
 .beaker-wrap.beaker-done { height:0; overflow:hidden; padding:0; opacity:0; margin:0; }
 .results-flask { margin-bottom:24px; overflow:visible; }
+.overflow-bub { fill:rgba(201,169,110,0.5); animation:overflowRise 2s ease-in infinite; }
+.ob1 { animation-delay:0s; } .ob2 { animation-delay:0.4s; } .ob3 { animation-delay:0.8s; } .ob4 { animation-delay:1.2s; } .ob5 { animation-delay:1.6s; }
+@keyframes overflowRise { 0%{transform:translateY(0);opacity:0.6} 50%{opacity:0.4} 100%{transform:translateY(-30px);opacity:0} }
 .results-flask-fill { transition:y 8s cubic-bezier(0.25,0.46,0.45,0.94); }
 .results-flask-fill.filling { y:20; }
 
