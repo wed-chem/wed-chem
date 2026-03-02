@@ -1,6 +1,10 @@
 <template>
   <div class="dash-page">
     <div class="container">
+      <div v-if="showUpgradeSuccess" class="upgrade-banner">
+        <span>🎉 Welcome to Featured! Your profile is now boosted to the top of match results.</span>
+        <button @click="showUpgradeSuccess = false" style="background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
       <div class="dash-header">
         <div>
           <h1 class="dash-title">Welcome back, {{ profile?.businessName || 'Photographer' }}</h1>
@@ -125,6 +129,7 @@
 <script setup>
 import { useSEO } from '@/composables/useSEO'
 import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { db } from '@/services/firebase'
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
@@ -133,6 +138,8 @@ useSEO({ title: 'Dashboard', description: 'Manage your WedChem photographer prof
 
 
 const authStore = useAuthStore()
+const route = useRoute()
+const showUpgradeSuccess = ref(route.query.upgraded === 'true')
 const profile = computed(() => authStore.photographerProfile)
 
 const stats = ref({ views: 0, inquiries: 0, unread: 0, responded: 0, booked: 0 })
@@ -281,4 +288,5 @@ function formatTime(ts) {
 
 @media(max-width:1024px) { .stats-grid,.quick-grid { grid-template-columns:repeat(2,1fr); } }
 @media(max-width:768px) { .stats-grid,.quick-grid { grid-template-columns:1fr; } .tier-banner { flex-direction:column; text-align:center; } }
+.upgrade-banner { display:flex; align-items:center; justify-content:space-between; padding:16px 24px; background:var(--sage-dark); color:white; border-radius:var(--radius-lg); margin-bottom:24px; font-size:0.9rem; }
 </style>

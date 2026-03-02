@@ -181,7 +181,7 @@ app.post("/api/stripe/checkout", async (req, res) => {
   const { uid, plan } = req.body;
 
   try {
-    const priceId = plan === "yearly"
+    const priceId = (plan === "yearly" || plan === "featured_yearly")
       ? process.env.STRIPE_PRICE_YEARLY
       : process.env.STRIPE_PRICE_MONTHLY;
 
