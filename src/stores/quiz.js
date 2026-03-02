@@ -144,7 +144,7 @@ export const useQuizStore = defineStore('quiz', () => {
   return {
     currentIndex, mode, completed, matches, showThinking, thinkingText, beakerFill,
     editingRanking, photoStyleRanking, saturationPick, abAnswers, featureAnswers, manualAnswers,
-    totalQuestions, progress, currentQuestion, isLastQuestion,
+    phases, totalQuestions, progress, currentQuestion, isLastQuestion,
     isEditingRank, isPhotoStyleRank, isABPair, isFeature, isLogistical,
     reset, toggleEditingStyle, togglePhotoStyle, selectAB,
     setFeatureAnswer, setManualAnswer, next, prev, complete, setMatches, getAllAnswers
