@@ -4,7 +4,7 @@
       <div v-if="!quizStore.completed" style="text-align:center;margin-bottom:48px;">
         <div class="section-eyebrow">Style Quiz</div>
         <h2 class="section-title">Find your photography style</h2>
-        <p style="color:var(--warm-gray);font-size:0.95rem;">15 questions · About 3 minutes</p>
+        <p style="color:var(--warm-gray);font-size:0.95rem;">19 questions · About 3 minutes</p>
       </div>
 
       <div class="quiz-card" :class="{'quiz-card-results': quizStore.completed}">

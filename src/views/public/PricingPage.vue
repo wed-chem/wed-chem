@@ -22,7 +22,7 @@
             <span class="pc-period">forever</span>
           </div>
           <ul class="pc-features">
-            <li>Take the 19-question style quiz</li>
+            <li>Take the style-matching quiz</li>
             <li>Get personalized photographer matches</li>
             <li>Browse the full directory</li>
             <li>Send unlimited inquiries</li>
@@ -164,7 +164,7 @@ const faqs = reactive([
   { question: 'Is it really free to list?', answer: "Completely. Create your profile, upload your portfolio, show up in match results, receive inquiries — all free, forever. No trial period, no hidden fees. We only make money when photographers choose to upgrade to Featured.", open: false },
   { question: 'What makes Featured worth $25/month?', answer: "Think about it this way: one wedding booking covers years of Featured. Featured photographers appear first in couple match results, sit above every free listing in the directory, rotate on the homepage, and carry a gold trust badge. Early data shows Featured photographers receive significantly more profile views and inquiries than free listings.", open: false },
   { question: 'Do you take a cut of my bookings?', answer: "Never. Zero commission, zero referral fees — now and forever. When a couple books you through WedChem, 100% of that booking is yours. We think commission-based models create bad incentives. Our only revenue is the optional Featured tier.", open: false },
-  { question: 'How does the matching actually work?', answer: "Couples answer 15 visual style questions — ranking editing styles, choosing between photo pairs, picking color and contrast preferences. Your photographer profile has the same style dimensions. Our algorithm scores compatibility across all of them and surfaces photographers whose work genuinely matches what each couple is looking for. It's not a keyword search — it's real style chemistry.", open: false },
+  { question: 'How does the matching actually work?', answer: "Couples answer 19 questions — 15 on visual style, plus a few on budget, location, and timing — ranking editing styles, choosing between photo pairs, picking color and contrast preferences. Your photographer profile has the same style dimensions. Our algorithm scores compatibility across all of them and surfaces photographers whose work genuinely matches what each couple is looking for. It's not a keyword search — it's real style chemistry.", open: false },
   { question: 'What kind of photographers do well on WedChem?', answer: "Photographers with a clear visual identity. Our algorithm matches on style, so if your portfolio has a consistent look — whether that's dark and moody, light and airy, or classic and timeless — couples who love that look will find you. A strong portfolio of 10-15 images and complete pricing info make the biggest difference.", open: false },
   { question: 'Can I cancel Featured anytime?', answer: "Yes. No contracts, no cancellation fees, no awkward phone calls. Cancel in one click from your dashboard. Your profile stays listed on the free tier — you just move out of the priority spots.", open: false },
   { question: "How is this different from The Knot or WeddingWire?", answer: "Those are directories where couples scroll endlessly and filter by location. WedChem matches on visual style — the thing that actually matters when choosing a photographer. Couples take a quiz about what they like, and we show them photographers whose work matches their taste. It's more like a dating app for creative chemistry than a phone book.", open: false },
