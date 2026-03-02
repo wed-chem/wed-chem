@@ -175,7 +175,31 @@ export async function getMatches(quizAnswers) {
     })
 
     results.sort((a, b) => b.totalScore - a.totalScore)
-    return results.slice(0, 20)
+    const topResults = results.slice(0, 20)
+
+    // Track match appearances for analytics (fire-and-forget)
+    try {
+      const { doc, updateDoc, increment } = await import('firebase/firestore')
+      for (const r of topResults) {
+        updateDoc(doc(db, 'photographerAnalytics', r.photographer.id), {
+          matchAppearances: increment(1),
+          lastMatchAt: serverTimestamp()
+        }).catch(() => {
+          // Doc may not exist yet — create it
+          import('firebase/firestore').then(({ setDoc }) => {
+            setDoc(doc(db, 'photographerAnalytics', r.photographer.id), {
+              matchAppearances: 1,
+              profileClicks: 0,
+              avgMatchScore: r.totalScore,
+              topStyles: r.photographer.styles?.slice(0, 3) || [],
+              lastMatchAt: serverTimestamp()
+            })
+          }).catch(() => {})
+        })
+      }
+    } catch(e) {}
+
+    return topResults
   } catch (e) {
     console.error('Error fetching matches:', e)
     return []

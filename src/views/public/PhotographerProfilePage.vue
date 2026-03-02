@@ -247,7 +247,10 @@ onMounted(async () => {
     const snap = await getDoc(doc(db, 'photographers', route.params.id))
     if (snap.exists()) {
       photographer.value = { id: snap.id, ...snap.data() }
-      try { await updateDoc(doc(db, 'photographers', route.params.id), { profileViews: increment(1) }) } catch(e) {}
+      try {
+        await updateDoc(doc(db, 'photographers', route.params.id), { profileViews: increment(1) })
+        updateDoc(doc(db, 'photographerAnalytics', route.params.id), { profileClicks: increment(1) }).catch(() => {})
+      } catch(e) {}
     }
   } catch (e) { console.error('Error loading photographer:', e) }
   loading.value = false

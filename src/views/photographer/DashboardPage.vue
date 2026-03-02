@@ -58,6 +58,37 @@
         </router-link>
       </div>
 
+
+      <!-- FEATURED ANALYTICS -->
+      <div class="dash-section" v-if="profile?.tier === 'featured'">
+        <div class="ds-header">
+          <h2 class="ds-title">Featured Insights</h2>
+          <span class="ds-badge">⭐ Featured Perk</span>
+        </div>
+        <div class="analytics-grid">
+          <div class="an-card">
+            <div class="an-num">{{ analytics.matchAppearances }}</div>
+            <div class="an-label">Times shown in match results</div>
+            <div class="an-trend" v-if="analytics.matchAppearances > 0">You appear in {{ analytics.matchRate }}% of couple quizzes</div>
+          </div>
+          <div class="an-card">
+            <div class="an-num">{{ analytics.profileClicks }}</div>
+            <div class="an-label">Profile clicks from results</div>
+            <div class="an-trend" v-if="analytics.profileClicks > 0">{{ analytics.clickRate }}% click-through rate</div>
+          </div>
+          <div class="an-card">
+            <div class="an-num">{{ analytics.avgMatchScore }}%</div>
+            <div class="an-label">Average match score</div>
+            <div class="an-trend">How well you match with couples who see you</div>
+          </div>
+          <div class="an-card">
+            <div class="an-num">{{ analytics.topStyles.join(', ') || '—' }}</div>
+            <div class="an-label">Styles couples match you on</div>
+            <div class="an-trend">What draws couples to your profile</div>
+          </div>
+        </div>
+      </div>
+
       <!-- RECENT INQUIRIES -->
       <div class="dash-section" v-if="recentInquiries.length">
         <div class="ds-header">
@@ -132,7 +163,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { db } from '@/services/firebase'
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
+import { collection, query, where, getDocs, orderBy, limit, doc, getDoc } from 'firebase/firestore'
 
 useSEO({ title: 'Dashboard', description: 'Manage your WedChem photographer profile, view inquiries, and track performance.', path: '/dashboard' })
 
@@ -143,6 +174,11 @@ const showUpgradeSuccess = ref(route.query.upgraded === 'true')
 const profile = computed(() => authStore.photographerProfile)
 
 const stats = ref({ views: 0, inquiries: 0, unread: 0, responded: 0, booked: 0 })
+const analytics = ref({
+  matchAppearances: 0, matchRate: 0,
+  profileClicks: 0, clickRate: 0,
+  avgMatchScore: 0, topStyles: []
+})
 const recentInquiries = ref([])
 const loadingInq = ref(true)
 const showDeleteConfirm = ref(false)
@@ -289,4 +325,11 @@ function formatTime(ts) {
 @media(max-width:1024px) { .stats-grid,.quick-grid { grid-template-columns:repeat(2,1fr); } }
 @media(max-width:768px) { .stats-grid,.quick-grid { grid-template-columns:1fr; } .tier-banner { flex-direction:column; text-align:center; } }
 .upgrade-banner { display:flex; align-items:center; justify-content:space-between; padding:16px 24px; background:var(--sage-dark); color:white; border-radius:var(--radius-lg); margin-bottom:24px; font-size:0.9rem; }
+.analytics-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+.an-card { background:var(--cream); border:1px solid var(--gold-light); border-radius:var(--radius-lg); padding:20px; }
+.an-num { font-family:var(--font-display); font-size:1.6rem; font-weight:400; margin-bottom:4px; color:var(--charcoal); }
+.an-label { font-size:0.82rem; color:var(--warm-gray); margin-bottom:6px; }
+.an-trend { font-size:0.78rem; color:var(--sage-dark); }
+.ds-badge { padding:4px 12px; background:var(--gold); color:white; border-radius:100px; font-size:0.7rem; font-weight:600; }
+@media(max-width:768px) { .analytics-grid { grid-template-columns:1fr; } }
 </style>

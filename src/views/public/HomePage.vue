@@ -70,6 +70,33 @@
       </div>
     </section>
 
+    <!-- FEATURED PHOTOGRAPHERS SPOTLIGHT -->
+    <section class="spotlight-section" v-if="spotlightPhotographers.length">
+      <div class="container">
+        <div class="section-eyebrow">Featured Photographers</div>
+        <h2 class="section-title">Photographers couples love</h2>
+        <p class="section-subtitle" style="margin:0 auto 40px;text-align:center;">These photographers have been style-matched with hundreds of couples on WedChem.</p>
+        <div class="spotlight-grid">
+          <div class="spot-card" v-for="p in spotlightPhotographers" :key="p.id" @click="$router.push('/photographer/' + p.id)">
+            <div class="spot-cover" :style="{background: p.coverPhoto ? `url(${p.coverPhoto}) center/cover` : p.gradient || 'linear-gradient(135deg, var(--sage-light), var(--blush))'}">
+              <span class="spot-badge">⭐ Featured</span>
+            </div>
+            <div class="spot-info">
+              <div class="spot-name">{{ p.businessName }}</div>
+              <div class="spot-loc">{{ p.city }}<span v-if="p.state">, {{ p.state }}</span></div>
+              <div class="spot-tagline" v-if="p.tagline">{{ p.tagline }}</div>
+              <div class="spot-styles">
+                <span class="spot-tag" v-for="s in (p.styles || []).slice(0, 2)" :key="s">{{ s }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:32px;">
+          <router-link to="/directory" class="btn-secondary">Browse All Photographers →</router-link>
+        </div>
+      </div>
+    </section>
+
     <!-- FOR PHOTOGRAPHERS -->
     <template v-if="!authStore.isLoggedIn || authStore.isPhotographer">
     <section class="fp-section">
@@ -207,8 +234,19 @@
 <script setup>
 import { useSEO } from '@/composables/useSEO'
 import { useAuthStore } from '@/stores/auth'
+import { ref, onMounted } from 'vue'
+import { browsePhotographers } from '@/services/photographer'
 const authStore = useAuthStore()
-import { ref } from 'vue'
+const spotlightPhotographers = ref([])
+
+onMounted(async () => {
+  try {
+    const { photographers } = await browsePhotographers({ pageSize: 50 })
+    spotlightPhotographers.value = photographers
+      .filter(p => p.tier === 'featured')
+      .slice(0, 4)
+  } catch(e) { console.warn('Spotlight load failed:', e) }
+})
 
 useSEO({ description: 'WedChem matches you with wedding photographers based on visual style chemistry. Take our free 3-minute quiz and find photographers whose aesthetic aligns with yours.', path: '/' })
 
@@ -342,4 +380,18 @@ h1 em { font-style:italic; font-weight:400; color:var(--terracotta); }
   .hcard-2 { width:170px;height:230px; }
   .hcard-3 { width:150px;height:200px; }
 }
+.spotlight-section { padding:80px 0; background:var(--warm-white); }
+.spotlight-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:20px; }
+.spot-card { border:1px solid var(--light-gray); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); background:var(--cream); }
+.spot-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--gold-light); }
+.spot-cover { height:160px; position:relative; }
+.spot-badge { position:absolute; top:10px; left:10px; padding:4px 12px; background:var(--gold); color:white; border-radius:100px; font-size:0.7rem; font-weight:600; }
+.spot-info { padding:18px; }
+.spot-name { font-family:var(--font-display); font-size:1.15rem; font-weight:500; margin-bottom:2px; }
+.spot-loc { font-size:0.82rem; color:var(--warm-gray); margin-bottom:6px; }
+.spot-tagline { font-size:0.85rem; color:var(--warm-gray); line-height:1.5; margin-bottom:10px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.spot-styles { display:flex; gap:6px; flex-wrap:wrap; }
+.spot-tag { padding:3px 10px; background:rgba(139,158,130,0.1); color:var(--sage-dark); border-radius:100px; font-size:0.72rem; font-weight:500; }
+@media(max-width:768px) { .spotlight-grid { grid-template-columns:1fr 1fr; } }
+@media(max-width:480px) { .spotlight-grid { grid-template-columns:1fr; } }
 </style>
