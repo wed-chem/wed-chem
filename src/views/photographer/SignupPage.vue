@@ -41,7 +41,8 @@
               <button class="rank-card" v-for="style in editingStyles" :key="style.id"
                 :class="{selected: quiz.editingStyles.includes(style.id)}"
                 @click="toggleList(quiz.editingStyles, style.id)">
-                <div class="rank-preview" :style="{background: style.gradient}"></div>
+                <img v-if="style.image" :src="style.image" :alt="style.label" class="rank-preview-img">
+                <div v-else class="rank-preview" :style="{background: style.gradient}"></div>
                 <div class="rank-label">{{ style.label }}</div>
                 <div class="rank-desc">{{ style.description }}</div>
                 <div class="rank-number" v-if="quiz.editingStyles.includes(style.id)">
@@ -77,11 +78,11 @@
             <div class="quiz-sub">Pick the one that best represents your editing</div>
             <div class="quiz-pair">
               <div class="quiz-opt" :class="{sel:quiz.saturation==='a'}" @click="quiz.saturation='a'">
-                <div class="quiz-img" :style="{background:saturationQuestion.a.gradient}"></div>
+                <div class="quiz-img" :style="{background: saturationQuestion.a.image ? `url(${saturationQuestion.a.image}) center/cover` : saturationQuestion.a.gradient}"></div>
                 <div class="quiz-lbl">{{ saturationQuestion.a.label }}</div>
               </div>
               <div class="quiz-opt" :class="{sel:quiz.saturation==='b'}" @click="quiz.saturation='b'">
-                <div class="quiz-img" :style="{background:saturationQuestion.b.gradient}"></div>
+                <div class="quiz-img" :style="{background: saturationQuestion.b.image ? `url(${saturationQuestion.b.image}) center/cover` : saturationQuestion.b.gradient}"></div>
                 <div class="quiz-lbl">{{ saturationQuestion.b.label }}</div>
               </div>
             </div>
@@ -230,7 +231,7 @@
         </div>
 
         <!-- NAV -->
-        <div class="step-nav">
+        <div class="step-nav" v-if="step !== 2">
           <button class="btn-secondary" @click="step > 1 ? step-- : null" :style="{visibility:step===1?'hidden':'visible'}">← Back</button>
           <div class="step-error" v-if="error">{{ error }}</div>
           <button class="btn-primary" @click="nextStep" :disabled="loading">{{ step===6 ? (loading ? 'Publishing...' : 'Publish Profile 🎉') : 'Continue →' }}</button>
@@ -484,6 +485,7 @@ async function nextStep() {
 .rank-card:hover { border-color:var(--sage); transform:translateY(-2px); }
 .rank-card.selected { border-color:var(--terracotta); background:rgba(196,130,106,0.04); }
 .rank-preview { height:40px; border-radius:6px; margin-bottom:8px; }
+.rank-preview-img { width:100%; height:200px; object-fit:cover; border-radius:6px; margin-bottom:8px; }
 .rank-label { font-weight:500; font-size:0.82rem; margin-bottom:2px; }
 .rank-desc { font-size:0.7rem; color:var(--warm-gray); line-height:1.3; }
 .rank-number { position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; background:var(--terracotta); color:white; display:flex; align-items:center; justify-content:center; font-size:0.68rem; font-weight:700; }
