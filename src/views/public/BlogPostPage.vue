@@ -10,9 +10,8 @@
           <div class="post-meta">{{ formatDate(post.date) }} · {{ post.readTime }} read</div>
         </div>
 
-        <!-- HERO IMAGE PLACEHOLDER -->
+        <!-- HERO IMAGE -->
         <div class="post-hero" :style="{background: post.heroImage ? `url(${post.heroImage}) center/cover` : gradientForCategory(post.category)}">
-          <div class="hero-placeholder" v-if="!post.heroImage">📷 {{ post.heroPlaceholder }}</div>
         </div>
 
         <!-- CONTENT -->
@@ -104,10 +103,9 @@ function gradientForCategory(cat) {
 .post-content :deep(strong) { font-weight:600; }
 
 .post-content :deep(.blog-photo-placeholder) {
-  margin:32px 0; padding:40px; background:var(--light-gray);
-  border-radius:var(--radius-lg); text-align:center; border:2px dashed rgba(0,0,0,0.1);
+  display:none;
 }
-.post-content :deep(.placeholder-label) { font-size:0.88rem; color:var(--warm-gray); }
+.post-content :deep(.placeholder-label) { display:none; }
 
 .post-content :deep(.blog-gallery) {
   display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:32px 0 8px; border-radius:var(--radius-lg); overflow:hidden;
