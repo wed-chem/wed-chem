@@ -21,7 +21,7 @@
         <router-link to="/reset-password" class="auth-link">Forgot password?</router-link>
         <div class="auth-divider"></div>
         <div>Don't have an account?</div>
-        <div style="display:flex;gap:12px;margin-top:8px;">
+        <div style="display:flex;gap:20px;margin-top:8px;justify-content:center;">
           <router-link to="/signup/photographer" class="auth-link">I'm a Photographer</router-link>
           <router-link to="/signup/couple" class="auth-link">I'm a Couple</router-link>
         </div>
